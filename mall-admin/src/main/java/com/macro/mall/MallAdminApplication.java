@@ -8,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Created by macro on 2018/4/26.
  */
 @SpringBootApplication
-public class MallAdminApplication {
+public class
+MallAdminApplication {
     public static void main(String[] args) {
         SpringApplication.run(MallAdminApplication.class, args);
     }
