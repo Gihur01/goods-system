@@ -56,14 +56,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>io.fabric8</groupId>-->
+<!--                <artifactId>docker-maven-plugin</artifactId>-->
+<!--            </plugin>-->
         </plugins>
     </build>
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
+
 
 </project>

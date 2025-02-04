@@ -36,7 +36,6 @@ public interface PmsProductService {
      * 分页查询商品
      */
     List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum);
-
     /**
      * 批量修改审核状态
      * @param ids 商品ID列表

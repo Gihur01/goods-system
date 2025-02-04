@@ -12,6 +12,17 @@ public class PmsProductExample {
 
     protected List<Criteria> oredCriteria;
 
+    private String warehouse;
+
+    // Getter 和 Setter 方法
+    public String getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(String warehouse) {
+        this.warehouse = warehouse;
+    }
+
     public PmsProductExample() {
         oredCriteria = new ArrayList<>();
     }
@@ -104,6 +115,21 @@ public class PmsProductExample {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
             }
             criteria.add(new Criterion(condition, value1, value2));
+        }
+
+        public Criteria andWarehouseEqualTo(String value) {
+            addCriterion("warehouse =", value, "warehouse");
+            return (Criteria) this;
+        }
+
+//        public Criteria andShelfTimeLike(String value) {
+//            addCriterion("DATE_FORMAT(shelf_time, '%Y-%m') like", value + "%", "shelf_time");
+//            return (Criteria) this;
+//        }
+
+        public Criteria andShelfTimeEqualTo(Date value) {
+            addCriterion("shelf_time =", value, "shelfTime");
+            return (Criteria) this;
         }
 
         public Criteria andIdIsNull() {

@@ -205,30 +205,68 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
+        // 启动分页插件
         PageHelper.startPage(pageNum, pageSize);
+
+        // 创建查询条件
         PmsProductExample productExample = new PmsProductExample();
         PmsProductExample.Criteria criteria = productExample.createCriteria();
+
+        // 默认条件：查询没有删除的商品
         criteria.andDeleteStatusEqualTo(0);
+
+        // 根据传入的商品发布状态进行过滤
         if (productQueryParam.getPublishStatus() != null) {
             criteria.andPublishStatusEqualTo(productQueryParam.getPublishStatus());
         }
+
+        // 根据商品审核状态进行过滤
         if (productQueryParam.getVerifyStatus() != null) {
             criteria.andVerifyStatusEqualTo(productQueryParam.getVerifyStatus());
         }
+
+        // 如果传入了关键词，进行商品名称模糊查询
         if (!StrUtil.isEmpty(productQueryParam.getKeyword())) {
             criteria.andNameLike("%" + productQueryParam.getKeyword() + "%");
         }
+
+        // 根据商品货号进行精确查询
         if (!StrUtil.isEmpty(productQueryParam.getProductSn())) {
             criteria.andProductSnEqualTo(productQueryParam.getProductSn());
         }
+
+        // 根据品牌ID进行过滤
         if (productQueryParam.getBrandId() != null) {
             criteria.andBrandIdEqualTo(productQueryParam.getBrandId());
         }
+
+        // 根据商品类别ID进行过滤
         if (productQueryParam.getProductCategoryId() != null) {
             criteria.andProductCategoryIdEqualTo(productQueryParam.getProductCategoryId());
         }
+
+        // 根据仓库进行过滤，如果传递了仓库字段
+        if (!StrUtil.isEmpty(productQueryParam.getWarehouse())) {
+            criteria.andWarehouseEqualTo(productQueryParam.getWarehouse());
+        }
+
+        // 根据上架时间进行过滤，如果传递了上架时间（只传递了年月）
+//        if (productQueryParam.getShelfTime() != null) {
+//            // 将 shelfTime 从 Date 类型转为 yyyy-MM 格式的字符串
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//            String shelfTimeStr = sdf.format(productQueryParam.getShelfTime());
+//
+//            // 使用 LIKE 查询，匹配年月
+//            criteria.andShelfTimeLike(shelfTimeStr + "%");
+//        }
+        if (productQueryParam.getShelfTime() != null) {
+            criteria.andShelfTimeEqualTo(productQueryParam.getShelfTime());
+        }
+
+        // 执行查询并返回结果
         return productMapper.selectByExample(productExample);
     }
+
 
     @Override
     public int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail) {

@@ -1083,12 +1083,13 @@ INSERT INTO `pms_member_price` VALUES (425, 26, 3, NULL, '钻石会员');
 -- ----------------------------
 DROP TABLE IF EXISTS `pms_product`;
 CREATE TABLE `pms_product`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT
   `brand_id` bigint(20) NULL DEFAULT NULL,
   `product_category_id` bigint(20) NULL DEFAULT NULL,
   `feight_template_id` bigint(20) NULL DEFAULT NULL,
   `product_attribute_category_id` bigint(20) NULL DEFAULT NULL,
   `name` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `warehouse` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `pic` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `product_sn` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '货号',
   `delete_status` int(1) NULL DEFAULT NULL COMMENT '删除状态：0->未删除；1->已删除',

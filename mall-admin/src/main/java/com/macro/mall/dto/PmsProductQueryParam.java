@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 /**
  * 商品查询参数
  * Created by macro on 2018/4/27.
@@ -23,4 +25,8 @@ public class PmsProductQueryParam {
     private Long productCategoryId;
     @ApiModelProperty("商品品牌编号")
     private Long brandId;
+    @ApiModelProperty("仓库")
+    private String warehouse;  // 新增字段：仓库
+    @ApiModelProperty("上架时间")
+    private Date shelfTime;  // 新增字段：上架时间
 }
