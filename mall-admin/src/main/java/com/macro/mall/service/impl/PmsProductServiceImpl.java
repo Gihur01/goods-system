@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -251,17 +252,29 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
 
         // 根据上架时间进行过滤，如果传递了上架时间（只传递了年月）
-//        if (productQueryParam.getShelfTime() != null) {
-//            // 将 shelfTime 从 Date 类型转为 yyyy-MM 格式的字符串
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-//            String shelfTimeStr = sdf.format(productQueryParam.getShelfTime());
-//
-//            // 使用 LIKE 查询，匹配年月
-//            criteria.andShelfTimeLike(shelfTimeStr + "%");
-//        }
         if (productQueryParam.getShelfTime() != null) {
-            criteria.andShelfTimeEqualTo(productQueryParam.getShelfTime());
+            // 将 shelfTime 从 Date 类型转为 yyyy-MM 格式的字符串
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+            String shelfTimeStr = sdf.format(productQueryParam.getShelfTime());
+
+            // 解析出该月的第一天和最后一天
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(productQueryParam.getShelfTime());
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+
+            // 获取该月的第一天
+            calendar.set(year, month, 1, 0, 0, 0);
+            Date startDate = calendar.getTime();
+
+            // 获取该月的最后一天
+            calendar.set(year, month, calendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+            Date endDate = calendar.getTime();
+
+            // 使用日期范围进行查询
+            criteria.andShelfTimeBetween(startDate, endDate);
         }
+
 
         // 执行查询并返回结果
         return productMapper.selectByExample(productExample);

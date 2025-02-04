@@ -122,10 +122,10 @@ public class PmsProductExample {
             return (Criteria) this;
         }
 
-//        public Criteria andShelfTimeLike(String value) {
-//            addCriterion("DATE_FORMAT(shelf_time, '%Y-%m') like", value + "%", "shelf_time");
-//            return (Criteria) this;
-//        }
+        public Criteria andShelfTimeBetween(Date startDate, Date endDate) {
+            addCriterion("shelf_time BETWEEN", startDate, endDate, "shelf_time");
+            return (Criteria) this;
+        }
 
         public Criteria andShelfTimeEqualTo(Date value) {
             addCriterion("shelf_time =", value, "shelfTime");

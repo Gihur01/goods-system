@@ -1,8 +1,10 @@
 package com.macro.mall.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -28,5 +30,6 @@ public class PmsProductQueryParam {
     @ApiModelProperty("仓库")
     private String warehouse;  // 新增字段：仓库
     @ApiModelProperty("上架时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date shelfTime;  // 新增字段：上架时间
 }
