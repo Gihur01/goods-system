@@ -1,7 +1,9 @@
 package com.macro.mall.model;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -123,12 +125,7 @@ public class PmsProductExample {
         }
 
         public Criteria andShelfTimeBetween(Date startDate, Date endDate) {
-            addCriterion("shelf_time BETWEEN", startDate, endDate, "shelf_time");
-            return (Criteria) this;
-        }
-
-        public Criteria andShelfTimeEqualTo(Date value) {
-            addCriterion("shelf_time =", value, "shelfTime");
+            addCriterion("shelf_time BETWEEN", startDate, endDate, "shelfTime");
             return (Criteria) this;
         }
 

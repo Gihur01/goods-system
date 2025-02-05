@@ -252,29 +252,35 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
 
         // 根据上架时间进行过滤，如果传递了上架时间（只传递了年月）
-        if (productQueryParam.getShelfTime() != null) {
-            // 将 shelfTime 从 Date 类型转为 yyyy-MM 格式的字符串
+        if (productQueryParam.getStartMonth() != null && productQueryParam.getEndMonth() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-            String shelfTimeStr = sdf.format(productQueryParam.getShelfTime());
 
-            // 解析出该月的第一天和最后一天
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(productQueryParam.getShelfTime());
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
+            // 解析开始月份
+            Calendar startCalendar = Calendar.getInstance();
+            startCalendar.setTime(productQueryParam.getStartMonth());
+            int startYear = startCalendar.get(Calendar.YEAR);
+            int startMonth = startCalendar.get(Calendar.MONTH)+1; // 注意：这里是0-11，1月是0，2月是1
 
-            // 获取该月的第一天
-            calendar.set(year, month, 1, 0, 0, 0);
-            Date startDate = calendar.getTime();
+            // 获取开始月份的第一天（00:00:00）
+            startCalendar.set(startYear, startMonth, 1, 0, 0, 0); // 这里使用原始月份
+            Date startDate = startCalendar.getTime();
 
-            // 获取该月的最后一天
-            calendar.set(year, month, calendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
-            Date endDate = calendar.getTime();
+            // 解析结束月份
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.setTime(productQueryParam.getEndMonth());
+            int endYear = endCalendar.get(Calendar.YEAR);
+            int endMonth = endCalendar.get(Calendar.MONTH)+1; // 同样是0-11
 
-            // 使用日期范围进行查询
+            // 获取结束月份的最后一天（23:59:59）
+            endCalendar.set(endYear, endMonth, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+            Date endDate = endCalendar.getTime();
+
+            System.out.println("Start Date: " + startDate);
+            System.out.println("End Date: " + endDate);
+
+            // 使用日期范围进行查询，查询在开始日期和结束日期之间的记录
             criteria.andShelfTimeBetween(startDate, endDate);
         }
-
 
         // 执行查询并返回结果
         return productMapper.selectByExample(productExample);

@@ -32,4 +32,11 @@ public class PmsProductQueryParam {
     @ApiModelProperty("上架时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date shelfTime;  // 新增字段：上架时间
+    @ApiModelProperty("开始月份")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @DateTimeFormat(pattern = "yyyy-MM")
+    private Date StartMonth;  // 新增字段：上架时间
+    @ApiModelProperty("结束月份")
+    @DateTimeFormat(pattern = "yyyy-MM")
+    private Date EndMonth;  // 新增字段：上架时间
 }
