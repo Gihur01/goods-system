@@ -9,10 +9,13 @@
     </select>
 
     <!-- 根据仓库 ID 获取指定仓库的详细信息 -->
-    <select id="getWarehouseById" resultType="com.macro.mall.model.WmsWarehouse">
-        SELECT id, name, location, create_time, status
+    <select id="getWarehousesByIds" resultType="com.macro.mall.model.WmsWarehouse">
+        SELECT id, name, location
         FROM wms_warehouse
-        WHERE id = #{warehouseId}
+        WHERE id IN
+        <foreach item="item" index="index" collection="warehouseIds" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </select>
 
     <!-- 插入仓库 -->

@@ -313,9 +313,10 @@ public class PmsProductServiceImpl implements PmsProductService {
         List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
         log.info("当前用户拥有的仓库 ID 列表: {}", warehouseIds);
 
-        // 3️⃣ 如果用户没有任何仓库权限，则返回空列表
-        if (warehouseIds == null || warehouseIds.isEmpty()) {
-            return Collections.emptyList();
+        // 3️⃣ 如果用户没有任何仓库权限，则跳过仓库权限过滤
+        boolean hasWarehousePermission = (warehouseIds != null && !warehouseIds.isEmpty());
+        if (!hasWarehousePermission) {
+            log.info("用户没有仓库权限，将跳过仓库权限过滤");
         }
 
         // 4️⃣ 启动分页插件
@@ -358,8 +359,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             criteria.andProductCategoryIdEqualTo(productQueryParam.getProductCategoryId());
         }
 
-        // 6️⃣ 根据仓库权限进行过滤
-        criteria.andWarehouseIdIn(warehouseIds); // **🔴 关键改动，确保用户只能看有权限的仓库商品**
+        // 6️⃣ 如果用户有仓库权限，则根据仓库权限进行过滤
+        if (hasWarehousePermission) {
+            criteria.andWarehouseIdIn(warehouseIds); // **🔴 关键改动，确保用户只能看有权限的仓库商品**
+        }
 
         // 根据上架时间进行过滤
         if (productQueryParam.getStartMonth() != null && productQueryParam.getEndMonth() != null) {

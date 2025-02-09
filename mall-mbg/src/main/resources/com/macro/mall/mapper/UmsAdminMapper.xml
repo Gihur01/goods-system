@@ -75,9 +75,10 @@
     id, username, password, icon, email, nick_name, note, create_time, login_time, status
   </sql>
   <select id="selectWarehouseIdsByAdminId" resultType="java.lang.Long">
-    SELECT warehouse_id
-    FROM wms_admin_warehouse_relation
-    WHERE admin_id = #{adminId}
+    SELECT w.id AS warehouse_id, w.name, w.location
+    FROM wms_admin_warehouse_relation awr
+    JOIN wms_warehouse w ON awr.warehouse_id = w.id
+    WHERE awr.admin_id = #{adminId}
   </select>
   <select id="selectByExample" parameterType="com.macro.mall.model.UmsAdminExample" resultMap="BaseResultMap">
     select

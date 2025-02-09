@@ -15,5 +15,5 @@ public interface WmsWarehouseService {
     /**
      * 根据仓库ID获取指定仓库的详细信息
      */
-    Optional<WmsWarehouse> getWarehouseById(Long warehouseId);
+    Optional<List<WmsWarehouse>> getWarehousesByIds(List<Long> warehouseIds);
 }

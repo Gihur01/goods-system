@@ -27,8 +27,8 @@ public class WmsWarehouseServiceImpl implements WmsWarehouseService {
      * 根据仓库ID获取指定仓库的详细信息
      */
     @Override
-    public Optional<WmsWarehouse> getWarehouseById(Long warehouseId) {
+    public Optional<List<WmsWarehouse>> getWarehousesByIds(List<Long> warehouseIds) {
         // 使用仓库 Repository 根据 ID 查询仓库
-        return WarehouseMapper.getWarehouseById(warehouseId);
+        return Optional.ofNullable(WarehouseMapper.getWarehousesByIds(warehouseIds));
     }
 }

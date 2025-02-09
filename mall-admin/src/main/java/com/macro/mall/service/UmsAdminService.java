@@ -5,6 +5,7 @@ import com.macro.mall.dto.UpdateAdminPasswordParam;
 import com.macro.mall.model.UmsAdmin;
 import com.macro.mall.model.UmsResource;
 import com.macro.mall.model.UmsRole;
+import com.macro.mall.model.WmsAdminWarehouseRelation;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -36,8 +36,11 @@ public class WmsWarehouseController {
      */
     @ApiOperation(value = "根据仓库ID获取仓库的详细信息")
     @GetMapping("/List")
-    public CommonResult<WmsWarehouse> getWarehouseById(@RequestParam Long warehouseId) {
-        Optional<WmsWarehouse> warehouse = wmsWarehouseService.getWarehouseById(warehouseId);
-        return warehouse.map(CommonResult::success).orElseGet(() -> CommonResult.failed("仓库不存在"));
+    public CommonResult<List<WmsWarehouse>> getWarehousesByIds(@RequestParam List<Long> warehouseIds) {
+        Optional<List<WmsWarehouse>> warehouses = wmsWarehouseService.getWarehousesByIds(warehouseIds);
+        if (warehouses.isPresent() && !warehouses.get().isEmpty()) {
+            return CommonResult.success(warehouses.get());
+        }
+        return CommonResult.failed("未找到任何仓库");
     }
 }

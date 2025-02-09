@@ -15,7 +15,7 @@ public interface WmsWarehouseMapper {
     /**
      * 根据仓库 ID 获取指定仓库的详细信息
      */
-    Optional<WmsWarehouse> getWarehouseById(@Param("warehouseId") Long warehouseId);
+    List<WmsWarehouse> getWarehousesByIds(@Param("warehouseIds") List<Long> warehouseIds);
 
     // 你可以根据需求添加更多的方法，例如：
     // 插入、更新、删除仓库

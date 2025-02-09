@@ -8,6 +8,8 @@ import com.macro.mall.dto.UmsAdminParam;
 import com.macro.mall.dto.UpdateAdminPasswordParam;
 import com.macro.mall.model.UmsAdmin;
 import com.macro.mall.model.UmsRole;
+import com.macro.mall.model.WmsAdminWarehouseRelation;
+import com.macro.mall.model.WmsWarehouse;
 import com.macro.mall.service.UmsAdminService;
 import com.macro.mall.service.UmsRoleService;
 import com.macro.mall.service.WmsWarehouseService;
@@ -25,6 +27,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -208,14 +211,31 @@ public class UmsAdminController {
         return CommonResult.success(roleList);
     }
 
-    @ApiOperation(value = "获取当前用户有权限查看的仓库ID")
+    @ApiOperation(value = "获取当前用户有权限查看的仓库信息")
     @RequestMapping(value = "/warehouses", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<List<Long>> getWarehousesByAdminId() {
-        // 调用服务层方法，获取该用户有权限的仓库ID列表
+    public CommonResult<List<WmsWarehouse>> getWarehousesByAdminId() {
+        // 1. 调用服务层方法，获取该用户有权限的仓库ID列表
         List<Long> warehouseIds = adminService.getWarehousesByAdminId();
-        return CommonResult.success(warehouseIds);
+        // 2. 如果没有仓库ID，返回所有仓库的信息
+        if (warehouseIds == null || warehouseIds.isEmpty()) {
+            // 如果没有权限的仓库，调用获取所有仓库信息的方法
+            List<WmsWarehouse> allWarehouses = wmsWarehouseService.getAllWarehouses();
+
+            // 返回所有仓库信息
+            return CommonResult.success(allWarehouses);
+        }
+        // 3. 调用服务层方法，获取这些仓库的详细信息
+        Optional<List<WmsWarehouse>> warehouseInfoOptional = wmsWarehouseService.getWarehousesByIds(warehouseIds);
+
+        // 4. 如果仓库信息为空，返回失败的响应
+        if (!warehouseInfoOptional.isPresent() || warehouseInfoOptional.get().isEmpty()) {
+            return CommonResult.failed("未找到相关仓库信息");
+        }
+        // 5. 返回查询到的仓库信息
+        return CommonResult.success(warehouseInfoOptional.get());
     }
+
 
 
 }
