@@ -33,4 +33,9 @@ public interface PmsProductMapper {
     int updateByPrimaryKeyWithBLOBs(PmsProduct record);
 
     int updateByPrimaryKey(PmsProduct record);
+
+    /**
+     * 根据仓库 ID 过滤商品列表
+     */
+    List<PmsProduct> listByWarehouseIds(@Param("warehouseIds") List<Long> warehouseIds);
 }

@@ -17,6 +17,7 @@ import com.macro.mall.security.util.JwtTokenUtil;
 import com.macro.mall.security.util.SpringUtil;
 import com.macro.mall.service.UmsAdminCacheService;
 import com.macro.mall.service.UmsAdminService;
+import com.macro.mall.service.WmsWarehouseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -34,9 +35,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 /**
  * 后台用户管理Service实现类
  * Created by macro on 2018/4/26.
@@ -56,6 +58,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     private UmsAdminRoleRelationDao adminRoleRelationDao;
     @Autowired
     private UmsAdminLoginLogMapper loginLogMapper;
+    @Autowired
+    private WmsWarehouseService wmsWarehouseService;
 
     @Override
     public UmsAdmin getAdminByUsername(String username) {
@@ -283,5 +287,18 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         UmsAdmin admin = getCacheService().getAdmin(username);
         getCacheService().delAdmin(admin.getId());
         getCacheService().delResourceList(admin.getId());
+    }
+
+    @Override
+    public List<Long> getWarehousesByAdminId() {
+        // 直接从 wms_admin_warehouse_relation 表中获取该 adminId 对应的仓库 ID 列表
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UmsAdmin admin = getAdminByUsername(username);
+        if (admin == null) {
+            return Collections.emptyList();
+        }
+        Long adminId = admin.getId();
+        return adminMapper.selectWarehouseIdsByAdminId(adminId);
     }
 }

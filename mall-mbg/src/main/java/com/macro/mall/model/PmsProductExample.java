@@ -14,15 +14,15 @@ public class PmsProductExample {
 
     protected List<Criteria> oredCriteria;
 
-    private String warehouse;
+    private String warehouseId;
 
     // Getter 和 Setter 方法
-    public String getWarehouse() {
-        return warehouse;
+    public String getWarehouseId() {
+        return warehouseId;
     }
 
-    public void setWarehouse(String warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouseId(String warehouseId) {
+        this.warehouseId = warehouseId;
     }
 
     public PmsProductExample() {
@@ -120,7 +120,7 @@ public class PmsProductExample {
         }
 
         public Criteria andWarehouseEqualTo(String value) {
-            addCriterion("warehouse =", value, "warehouse");
+            addCriterion("warehouse_id =", value, "warehouseId");
             return (Criteria) this;
         }
 
@@ -261,6 +261,11 @@ public class PmsProductExample {
 
         public Criteria andProductCategoryIdEqualTo(Long value) {
             addCriterion("product_category_id =", value, "productCategoryId");
+            return (Criteria) this;
+        }
+
+        public Criteria andWarehouseIdIn(List<Long> warehouseIds) {
+            addCriterion("warehouse_id in", warehouseIds, "warehouseId");
             return (Criteria) this;
         }
 

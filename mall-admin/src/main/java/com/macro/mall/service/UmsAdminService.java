@@ -95,4 +95,9 @@ public interface UmsAdminService {
      * @param username 用户名
      */
     void logout(String username);
+
+    /**
+     * 根据用户ID获取该用户有权限查看的仓库ID列表
+     */
+    List<Long> getWarehousesByAdminId();
 }

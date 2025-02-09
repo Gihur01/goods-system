@@ -10,24 +10,28 @@ import com.macro.mall.dto.PmsProductResult;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.service.PmsProductService;
+import com.macro.mall.service.UmsAdminService;
+import com.macro.mall.service.WmsWarehouseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 
 /**
  * 商品管理Service实现类
  * Created by macro on 2018/4/26.
  */
+@Slf4j
 @Service
 public class PmsProductServiceImpl implements PmsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PmsProductServiceImpl.class);
@@ -65,6 +69,12 @@ public class PmsProductServiceImpl implements PmsProductService {
     private PmsProductDao productDao;
     @Autowired
     private PmsProductVertifyRecordDao productVertifyRecordDao;
+    @Autowired
+    private PmsProductMapper pmsProductMapper;
+    @Autowired
+    private UmsAdminService umsAdminService;
+    @Autowired
+    private WmsWarehouseService wmsWarehouseService;
 
     @Override
     public int create(PmsProductParam productParam) {
@@ -204,12 +214,114 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     }
 
-    @Override
+//    @Override
+//    public List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
+//        // 启动分页插件
+//        PageHelper.startPage(pageNum, pageSize);
+//
+//        // 创建查询条件
+//        PmsProductExample productExample = new PmsProductExample();
+//        PmsProductExample.Criteria criteria = productExample.createCriteria();
+//
+//        // 默认条件：查询没有删除的商品
+//        criteria.andDeleteStatusEqualTo(0);
+//
+//        // 根据传入的商品发布状态进行过滤
+//        if (productQueryParam.getPublishStatus() != null) {
+//            criteria.andPublishStatusEqualTo(productQueryParam.getPublishStatus());
+//        }
+//
+//        // 根据商品审核状态进行过滤
+//        if (productQueryParam.getVerifyStatus() != null) {
+//            criteria.andVerifyStatusEqualTo(productQueryParam.getVerifyStatus());
+//        }
+//
+//        // 如果传入了关键词，进行商品名称模糊查询
+//        if (!StrUtil.isEmpty(productQueryParam.getKeyword())) {
+//            criteria.andNameLike("%" + productQueryParam.getKeyword() + "%");
+//        }
+//
+//        // 根据商品货号进行精确查询
+//        if (!StrUtil.isEmpty(productQueryParam.getProductSn())) {
+//            criteria.andProductSnEqualTo(productQueryParam.getProductSn());
+//        }
+//
+//        // 根据品牌ID进行过滤
+//        if (productQueryParam.getBrandId() != null) {
+//            criteria.andBrandIdEqualTo(productQueryParam.getBrandId());
+//        }
+//
+//        // 根据商品类别ID进行过滤
+//        if (productQueryParam.getProductCategoryId() != null) {
+//            criteria.andProductCategoryIdEqualTo(productQueryParam.getProductCategoryId());
+//        }
+//
+//        // 根据仓库进行过滤，如果传递了仓库字段
+//        if (!StrUtil.isEmpty(productQueryParam.getWarehouseId())) {
+//            criteria.andWarehouseEqualTo(productQueryParam.getWarehouseId());
+//        }
+//
+//        // 根据上架时间进行过滤，如果传递了上架时间（只传递了年月）
+//        if (productQueryParam.getStartMonth() != null && productQueryParam.getEndMonth() != null) {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//
+//            // 解析开始月份
+//            Calendar startCalendar = Calendar.getInstance();
+//            startCalendar.setTime(productQueryParam.getStartMonth());
+//            int startYear = startCalendar.get(Calendar.YEAR);
+//            int startMonth = startCalendar.get(Calendar.MONTH)+1; // 注意：这里是0-11，1月是0，2月是1
+//
+//            // 获取开始月份的第一天（00:00:00）
+//            startCalendar.set(startYear, startMonth, 1, 0, 0, 0); // 这里使用原始月份
+//            Date startDate = startCalendar.getTime();
+//
+//            // 解析结束月份
+//            Calendar endCalendar = Calendar.getInstance();
+//            endCalendar.setTime(productQueryParam.getEndMonth());
+//            int endYear = endCalendar.get(Calendar.YEAR);
+//            int endMonth = endCalendar.get(Calendar.MONTH)+1; // 同样是0-11
+//
+//            // 获取结束月份的最后一天（23:59:59）
+//            endCalendar.set(endYear, endMonth, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+//            Date endDate = endCalendar.getTime();
+//
+//            System.out.println("Start Date: " + startDate);
+//            System.out.println("End Date: " + endDate);
+//
+//            // 使用日期范围进行查询，查询在开始日期和结束日期之间的记录
+//            criteria.andShelfTimeBetween(startDate, endDate);
+//        }
+//
+//        // 执行查询并返回结果
+//        return productMapper.selectByExample(productExample);
+//    }
+
     public List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
-        // 启动分页插件
+//        // 1️⃣ 获取当前登录用户
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        log.info("当前登录用户名: {}", username);
+//
+//        UmsAdmin admin = umsAdminService.getAdminByUsername(username);
+//        if (admin == null) {
+//            log.warn("用户 {} 不存在！", username);
+//            return Collections.emptyList();
+//        }
+//        Long adminId = admin.getId();
+//        log.info("获取到用户 ID: {}", adminId);
+
+        // 2️⃣ 获取该用户有权限的仓库 ID 列表
+        List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
+        log.info("当前用户拥有的仓库 ID 列表: {}", warehouseIds);
+
+        // 3️⃣ 如果用户没有任何仓库权限，则返回空列表
+        if (warehouseIds == null || warehouseIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 4️⃣ 启动分页插件
         PageHelper.startPage(pageNum, pageSize);
 
-        // 创建查询条件
+        // 5️⃣ 创建查询条件
         PmsProductExample productExample = new PmsProductExample();
         PmsProductExample.Criteria criteria = productExample.createCriteria();
 
@@ -246,12 +358,10 @@ public class PmsProductServiceImpl implements PmsProductService {
             criteria.andProductCategoryIdEqualTo(productQueryParam.getProductCategoryId());
         }
 
-        // 根据仓库进行过滤，如果传递了仓库字段
-        if (!StrUtil.isEmpty(productQueryParam.getWarehouse())) {
-            criteria.andWarehouseEqualTo(productQueryParam.getWarehouse());
-        }
+        // 6️⃣ 根据仓库权限进行过滤
+        criteria.andWarehouseIdIn(warehouseIds); // **🔴 关键改动，确保用户只能看有权限的仓库商品**
 
-        // 根据上架时间进行过滤，如果传递了上架时间（只传递了年月）
+        // 根据上架时间进行过滤
         if (productQueryParam.getStartMonth() != null && productQueryParam.getEndMonth() != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 
@@ -259,31 +369,32 @@ public class PmsProductServiceImpl implements PmsProductService {
             Calendar startCalendar = Calendar.getInstance();
             startCalendar.setTime(productQueryParam.getStartMonth());
             int startYear = startCalendar.get(Calendar.YEAR);
-            int startMonth = startCalendar.get(Calendar.MONTH)+1; // 注意：这里是0-11，1月是0，2月是1
+            int startMonth = startCalendar.get(Calendar.MONTH) + 1;
 
             // 获取开始月份的第一天（00:00:00）
-            startCalendar.set(startYear, startMonth, 1, 0, 0, 0); // 这里使用原始月份
+            startCalendar.set(startYear, startMonth, 1, 0, 0, 0);
             Date startDate = startCalendar.getTime();
 
             // 解析结束月份
             Calendar endCalendar = Calendar.getInstance();
             endCalendar.setTime(productQueryParam.getEndMonth());
             int endYear = endCalendar.get(Calendar.YEAR);
-            int endMonth = endCalendar.get(Calendar.MONTH)+1; // 同样是0-11
+            int endMonth = endCalendar.get(Calendar.MONTH) + 1;
 
             // 获取结束月份的最后一天（23:59:59）
             endCalendar.set(endYear, endMonth, endCalendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
             Date endDate = endCalendar.getTime();
 
-            System.out.println("Start Date: " + startDate);
-            System.out.println("End Date: " + endDate);
+            log.info("筛选上架时间范围: {} - {}", startDate, endDate);
 
-            // 使用日期范围进行查询，查询在开始日期和结束日期之间的记录
             criteria.andShelfTimeBetween(startDate, endDate);
         }
 
-        // 执行查询并返回结果
-        return productMapper.selectByExample(productExample);
+        // 7️⃣ 执行查询
+        List<PmsProduct> productList = productMapper.selectByExample(productExample);
+        log.info("查询到符合条件的商品数量: {}", productList.size());
+
+        return productList;
     }
 
 
@@ -380,5 +491,36 @@ public class PmsProductServiceImpl implements PmsProductService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+//    @Override
+//    public List<PmsProduct> getProductListForCurrentUser() {
+//        // 1. 获取当前登录用户
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        log.info("当前登录用户名: {}", username);
+//
+//        // 2. 查询用户信息
+//        UmsAdmin admin = umsAdminService.getAdminByUsername(username);
+//        if (admin == null) {
+//            log.warn("用户 {} 不存在！", username);
+//            return Collections.emptyList();
+//        }
+//        Long adminId = admin.getId();
+//        log.info("获取到用户 ID: {}", adminId);
+//
+//        // 3. 获取该用户有权限的仓库 ID 列表
+//        List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId(adminId);
+//        log.info("用户 {} 拥有的仓库 ID 列表: {}", username, warehouseIds);
+//
+//        // 如果用户没有任何仓库权限，则返回空列表
+//        if (warehouseIds.isEmpty()) {
+//            return Collections.emptyList();
+//        }
+//
+//        // 查询符合条件的商品
+//        List<PmsProduct> productList = pmsProductMapper.listByWarehouseIds(warehouseIds);
+//        log.info("查询到符合条件的商品数量: {}", productList.size());
+//
+//        return productList;
+//    }
 
 }

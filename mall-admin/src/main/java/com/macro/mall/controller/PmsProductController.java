@@ -143,4 +143,12 @@ public class PmsProductController {
             return CommonResult.failed();
         }
     }
+//    /**
+//     * 获取当前用户有权限的商品列表
+//     */
+//    @GetMapping("/listForUser")
+//    public CommonResult<List<PmsProduct>> listForUser() {
+//        List<PmsProduct> productList = productService.getProductListForCurrentUser();
+//        return CommonResult.success(productList);
+//    }
 }

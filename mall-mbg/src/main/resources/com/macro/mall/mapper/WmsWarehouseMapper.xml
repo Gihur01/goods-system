@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.WmsWarehouseMapper">
+
+    <!-- 获取所有仓库的详细信息 -->
+    <select id="getAllWarehouses" resultType="com.macro.mall.model.WmsWarehouse">
+        SELECT id, name, location, create_time, status
+        FROM wms_warehouse
+    </select>
+
+    <!-- 根据仓库 ID 获取指定仓库的详细信息 -->
+    <select id="getWarehouseById" resultType="com.macro.mall.model.WmsWarehouse">
+        SELECT id, name, location, create_time, status
+        FROM wms_warehouse
+        WHERE id = #{warehouseId}
+    </select>
+
+    <!-- 插入仓库 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO wms_warehouse (name, location, create_time, status)
+        VALUES (#{name}, #{location}, #{createTime}, #{status})
+    </insert>
+
+    <!-- 更新仓库 -->
+    <update id="update">
+        UPDATE wms_warehouse
+        SET name = #{name},
+        location = #{location},
+        create_time = #{createTime},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除仓库 -->
+    <delete id="delete">
+        DELETE FROM wms_warehouse WHERE id = #{warehouseId}
+    </delete>
+
+</mapper>

@@ -27,4 +27,9 @@ public interface UmsAdminMapper {
     int updateByPrimaryKeySelective(UmsAdmin record);
 
     int updateByPrimaryKey(UmsAdmin record);
+
+    /**
+     * 根据 adminId 查询该用户有权限查看的仓库 ID 列表
+     */
+    List<Long> selectWarehouseIdsByAdminId(@Param("adminId") Long adminId);
 }

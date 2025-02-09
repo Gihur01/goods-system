@@ -10,6 +10,7 @@ import com.macro.mall.model.UmsAdmin;
 import com.macro.mall.model.UmsRole;
 import com.macro.mall.service.UmsAdminService;
 import com.macro.mall.service.UmsRoleService;
+import com.macro.mall.service.WmsWarehouseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,6 +44,9 @@ public class UmsAdminController {
     private UmsAdminService adminService;
     @Autowired
     private UmsRoleService roleService;
+    @Autowired
+    private WmsWarehouseService wmsWarehouseService;
+
 
     @ApiOperation(value = "用户注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -203,5 +207,15 @@ public class UmsAdminController {
         List<UmsRole> roleList = adminService.getRoleList(adminId);
         return CommonResult.success(roleList);
     }
+
+    @ApiOperation(value = "获取当前用户有权限查看的仓库ID")
+    @RequestMapping(value = "/warehouses", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<Long>> getWarehousesByAdminId() {
+        // 调用服务层方法，获取该用户有权限的仓库ID列表
+        List<Long> warehouseIds = adminService.getWarehousesByAdminId();
+        return CommonResult.success(warehouseIds);
+    }
+
 
 }

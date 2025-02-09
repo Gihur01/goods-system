@@ -1,14 +1,14 @@
 package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class UmsAdmin implements Serializable {
     private Long id;
-
     private String username;
-
     private String password;
 
     @ApiModelProperty(value = "头像")
@@ -32,8 +32,17 @@ public class UmsAdmin implements Serializable {
     @ApiModelProperty(value = "帐号启用状态：0->禁用；1->启用")
     private Integer status;
 
+    // 新增：用户关联的仓库列表
+    @ApiModelProperty(value = "用户有权限的仓库列表")
+    private List<Long> warehouseIds; // 存储用户有权限访问的仓库ID列表
+
+    // 新增：用户关联的仓库对象列表
+    @ApiModelProperty(value = "用户有权限访问的仓库详细信息")
+    private List<WmsWarehouse> warehouses; // 存储用户有权限访问的仓库对象列表
+
     private static final long serialVersionUID = 1L;
 
+    // Getter 和 Setter 方法
     public Long getId() {
         return id;
     }
@@ -114,6 +123,22 @@ public class UmsAdmin implements Serializable {
         this.status = status;
     }
 
+    public List<Long> getWarehouseIds() {
+        return warehouseIds;
+    }
+
+    public void setWarehouseIds(List<Long> warehouseIds) {
+        this.warehouseIds = warehouseIds;
+    }
+
+    public List<WmsWarehouse> getWarehouses() {
+        return warehouses;
+    }
+
+    public void setWarehouses(List<WmsWarehouse> warehouses) {
+        this.warehouses = warehouses;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -130,6 +155,8 @@ public class UmsAdmin implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", loginTime=").append(loginTime);
         sb.append(", status=").append(status);
+        sb.append(", warehouseIds=").append(warehouseIds);
+        sb.append(", warehouses=").append(warehouses);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

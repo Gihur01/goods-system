@@ -22,7 +22,7 @@ public class PmsProduct implements Serializable {
 
     // 新增字段
     @ApiModelProperty(value = "仓库")
-    private String warehouse;  // 仓库字段
+    private String warehouseId;  // 仓库字段
 
     @ApiModelProperty(value = "上架时间")
     private Date shelfTime;  // 上架时间字段
@@ -130,12 +130,12 @@ public class PmsProduct implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Getter 和 Setter 方法
-    public String getWarehouse() {
-        return warehouse;
+    public String getWarehouseId() {
+        return warehouseId;
     }
 
-    public void setWarehouse(String warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouseId(String warehouseId) {
+        this.warehouseId = warehouseId;
     }
 
     public Date getShelfTime() {
