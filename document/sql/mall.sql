@@ -1083,7 +1083,7 @@ INSERT INTO `pms_member_price` VALUES (425, 26, 3, NULL, '钻石会员');
 -- ----------------------------
 DROP TABLE IF EXISTS `pms_product`;
 CREATE TABLE `pms_product`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `brand_id` bigint(20) NULL DEFAULT NULL,
   `product_category_id` bigint(20) NULL DEFAULT NULL,
   `feight_template_id` bigint(20) NULL DEFAULT NULL,
