@@ -226,6 +226,18 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         return adminRoleRelationDao.getRoleList(adminId);
     }
 
+    public List<UmsRole> getCurrentUserRole() {
+        // 1️⃣ 获取当前登录用户
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UmsAdmin admin = getAdminByUsername(username);
+        if (admin == null) {
+              return Collections.emptyList();
+        }
+        Long adminId = admin.getId();
+        return adminRoleRelationDao.getRoleList(adminId);
+    }
+
     @Override
     public List<UmsResource> getResourceList(Long adminId) {
         //先从缓存中获取数据
@@ -300,5 +312,28 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         }
         Long adminId = admin.getId();
         return adminMapper.selectWarehouseIdsByAdminId(adminId);
+    }
+
+    public String getCurrentUserSalesChannelId(){
+        // 1️⃣ 获取当前登录用户
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UmsAdmin admin = getAdminByUsername(username);
+
+        Long adminId = admin.getId();
+
+        // 返回 sales_channel_id
+        return adminId != null ? adminMapper.selectSalesChannelIdById(adminId) : null;
+    }
+    public String getOrderCountryNum(){
+        // 1️⃣ 获取当前登录用户
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UmsAdmin admin = getAdminByUsername(username);
+
+        Long adminId = admin.getId();
+
+        // 返回 sales_channel_id
+        return adminId != null ? adminMapper.selectOrderCountryNumById(adminId) : null;
     }
 }

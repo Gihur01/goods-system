@@ -4,6 +4,7 @@ import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.dto.*;
 import com.macro.mall.model.OmsOrder;
+import com.macro.mall.model.OmsOrderItem;
 import com.macro.mall.service.OmsOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,13 +27,23 @@ public class OmsOrderController {
     @Autowired
     private OmsOrderService orderService;
 
-    @ApiOperation("查询订单")
+    @ApiOperation("查询订单oms_order")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<CommonPage<OmsOrder>> list(OmsOrderQueryParam queryParam,
                                                    @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                    @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         List<OmsOrder> orderList = orderService.list(queryParam, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(orderList));
+    }
+
+    @ApiOperation("查询订单商品oms_order_item")
+    @RequestMapping(value = "/listItem", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<CommonPage<OmsOrderItem>> listItem(OmsOrderItemQueryParam queryParam,
+                                                            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                                                            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        List<OmsOrderItem> orderList = orderService.listItem(queryParam, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(orderList));
     }
 

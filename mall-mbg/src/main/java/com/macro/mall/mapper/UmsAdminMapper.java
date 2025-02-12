@@ -34,4 +34,12 @@ public interface UmsAdminMapper {
      * 根据 adminId 查询该用户有权限查看的仓库 ID 列表
      */
     List<Long> selectWarehouseIdsByAdminId(@Param("adminId") Long adminId);
+    /**
+     * 根据 adminId 查询该用户的零售商ID
+     */
+    String selectSalesChannelIdById(@Param("adminId") Long adminId);
+    /**
+     * 根据 adminId 查询该用户的物流国家
+     */
+    String selectOrderCountryNumById(@Param("adminId") Long adminId);
 }

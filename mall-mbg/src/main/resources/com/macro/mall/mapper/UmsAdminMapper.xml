@@ -80,6 +80,12 @@
     JOIN wms_warehouse w ON awr.warehouse_id = w.id
     WHERE awr.admin_id = #{adminId}
   </select>
+  <select id="selectSalesChannelIdById" resultType="String">
+    SELECT sales_channel_id FROM ums_admin WHERE id = #{adminId}
+  </select>
+  <select id="selectOrderCountryNumById" resultType="String">
+    SELECT order_country_num FROM ums_admin WHERE id = #{adminId}
+  </select>
   <select id="selectByExample" parameterType="com.macro.mall.model.UmsAdminExample" resultMap="BaseResultMap">
     select
     <if test="distinct">

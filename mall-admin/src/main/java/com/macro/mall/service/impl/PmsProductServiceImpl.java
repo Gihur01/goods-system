@@ -297,18 +297,6 @@ public class PmsProductServiceImpl implements PmsProductService {
 //    }
 
     public List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
-//        // 1️⃣ 获取当前登录用户
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        log.info("当前登录用户名: {}", username);
-//
-//        UmsAdmin admin = umsAdminService.getAdminByUsername(username);
-//        if (admin == null) {
-//            log.warn("用户 {} 不存在！", username);
-//            return Collections.emptyList();
-//        }
-//        Long adminId = admin.getId();
-//        log.info("获取到用户 ID: {}", adminId);
-
         // 2️⃣ 获取该用户有权限的仓库 ID 列表
         List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
         log.info("当前用户拥有的仓库 ID 列表: {}", warehouseIds);

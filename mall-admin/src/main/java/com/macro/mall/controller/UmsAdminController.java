@@ -211,6 +211,14 @@ public class UmsAdminController {
         return CommonResult.success(roleList);
     }
 
+    @ApiOperation("获取当前用户的角色")
+    @RequestMapping(value = "/role/current", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<List<UmsRole>> getCurrentUserRole() {
+        List<UmsRole> roleList = adminService.getCurrentUserRole();
+        return CommonResult.success(roleList);
+    }
+
     @ApiOperation(value = "获取当前用户有权限查看的仓库信息")
     @RequestMapping(value = "/warehouses", method = RequestMethod.GET)
     @ResponseBody

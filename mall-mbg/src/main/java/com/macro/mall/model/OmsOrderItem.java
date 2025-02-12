@@ -9,10 +9,12 @@ public class OmsOrderItem implements Serializable {
 
     @ApiModelProperty(value = "订单id")
     private Long orderId;
-
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
-
+    @ApiModelProperty(value = "仓库编号")
+    private String warehouseId;
+    @ApiModelProperty(value = "所在国家")
+    private String location;
     private Long productId;
 
     private String productPic;
@@ -84,6 +86,22 @@ public class OmsOrderItem implements Serializable {
 
     public void setOrderSn(String orderSn) {
         this.orderSn = orderSn;
+    }
+
+    public String getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(String orderSn) {
+        this.warehouseId = warehouseId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Long getProductId() {

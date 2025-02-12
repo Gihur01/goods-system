@@ -32,6 +32,42 @@
             OR receiver_phone LIKE concat("%",#{queryParam.receiverKeyword},"%")
             )
         </if>
+        <!-- 新增条件：过滤 salesChannelId -->
+        <if test="queryParam.salesChannelId != null and queryParam.salesChannelId != ''">
+            AND sales_channel_id = #{queryParam.salesChannelId}
+        </if>
+        <!-- 新增条件：过滤 orderCountryNum -->
+        <if test="queryParam.orderCountryNum != null and queryParam.orderCountryNum != ''">
+            AND order_country_num = #{queryParam.orderCountryNum}
+        </if>
+    </select>
+    <select id="getListItem" resultMap="com.macro.mall.mapper.OmsOrderItemMapper.BaseResultMap">
+        SELECT *
+        FROM
+        oms_order_item
+        WHERE
+        delete_status = 0
+<!--        &lt;!&ndash; 新增条件：过滤 salesChannelId &ndash;&gt;-->
+        <if test="queryParam.warehouseId != null and queryParam.warehouseId != ''">
+            AND warehouse_id IN
+            <foreach collection="queryParam.warehouseId" item="warehouseId" open="(" separator="," close=")">
+                #{warehouseId}
+            </foreach>
+        </if>
+<!--        &lt;!&ndash; 新增条件：过滤 orderCountryNum &ndash;&gt;-->
+        <if test="queryParam.location != null and queryParam.location != ''">
+            AND location = #{queryParam.location}
+        </if>
+    </select>
+    <select id="getListOrder" resultMap="com.macro.mall.mapper.OmsOrderMapper.BaseResultMap">
+        SELECT *
+        FROM
+        oms_order_item
+        WHERE
+        delete_status = 0
+        <if test="queryParam.orderSn!=null and queryParam.orderSn!=''">
+            AND order_sn = #{queryParam.orderSn}
+        </if>
     </select>
     <update id="delivery">
         UPDATE oms_order

@@ -2,6 +2,7 @@ package com.macro.mall.service;
 
 import com.macro.mall.dto.*;
 import com.macro.mall.model.OmsOrder;
+import com.macro.mall.model.OmsOrderItem;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface OmsOrderService {
      * 分页查询订单
      */
     List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum);
+
+    List<OmsOrderItem> listItem(OmsOrderItemQueryParam queryParam, Integer pageSize, Integer pageNum);
 
     /**
      * 批量发货

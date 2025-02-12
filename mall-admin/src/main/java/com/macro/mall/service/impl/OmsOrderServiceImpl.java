@@ -6,13 +6,16 @@ import com.macro.mall.dao.OmsOrderOperateHistoryDao;
 import com.macro.mall.dto.*;
 import com.macro.mall.mapper.OmsOrderMapper;
 import com.macro.mall.mapper.OmsOrderOperateHistoryMapper;
-import com.macro.mall.model.OmsOrder;
-import com.macro.mall.model.OmsOrderExample;
-import com.macro.mall.model.OmsOrderOperateHistory;
+import com.macro.mall.model.*;
 import com.macro.mall.service.OmsOrderService;
+import com.macro.mall.service.UmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class OmsOrderServiceImpl implements OmsOrderService {
+    private static final Logger log = LoggerFactory.getLogger(OmsOrderService.class);
     @Autowired
     private OmsOrderMapper orderMapper;
     @Autowired
@@ -31,11 +35,45 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsOrderOperateHistoryDao orderOperateHistoryDao;
     @Autowired
     private OmsOrderOperateHistoryMapper orderOperateHistoryMapper;
+    @Autowired
+    private UmsAdminService umsAdminService;
 
     @Override
     public List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
+        List<UmsRole> UserRole = umsAdminService.getCurrentUserRole();
+        Long roleId = UserRole.get(0).getId();
+        log.info("角色ID: {}", roleId);
+        if(roleId == 6) {
+            String salesChannelId = umsAdminService.getCurrentUserSalesChannelId();
+            log.info("零售商ID: {}", salesChannelId);
+            queryParam.setSalesChannelId(salesChannelId);
+        }
+        if(roleId == 8) {
+            String orderCountryNum = umsAdminService.getOrderCountryNum();
+            log.info("物流国家: {}", orderCountryNum);
+            queryParam.setOrderCountryNum(orderCountryNum);
+        }
         PageHelper.startPage(pageNum, pageSize);
         return orderDao.getList(queryParam);
+    }
+
+    public List<OmsOrderItem> listItem(OmsOrderItemQueryParam queryParam, Integer pageSize, Integer pageNum) {
+        List<UmsRole> UserRole = umsAdminService.getCurrentUserRole();
+        Long roleId = UserRole.get(0).getId();
+        log.info("角色ID: {}", roleId);
+        if(roleId == 7) {
+            List<Long> warehouseId = umsAdminService.getWarehousesByAdminId();
+            log.info("仓库ID: {}", warehouseId);
+            queryParam.setWarehouseId(warehouseId);
+        }
+        if(roleId == 8) {
+            String location = umsAdminService.getOrderCountryNum();
+            log.info("物流国家: {}", location);
+            queryParam.setLocation(location);
+        }
+        log.info("查询参数: {}", queryParam);
+        PageHelper.startPage(pageNum, pageSize);
+        return orderDao.getListItem(queryParam);
     }
 
     @Override

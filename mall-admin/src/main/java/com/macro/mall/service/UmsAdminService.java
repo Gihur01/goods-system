@@ -71,6 +71,8 @@ public interface UmsAdminService {
      */
     List<UmsRole> getRoleList(Long adminId);
 
+    List<UmsRole> getCurrentUserRole();
+
     /**
      * 获取指定用户的可访问资源
      */
@@ -101,4 +103,12 @@ public interface UmsAdminService {
      * 根据用户ID获取该用户有权限查看的仓库ID列表
      */
     List<Long> getWarehousesByAdminId();
+    /**
+     * 获取当前用户零售商ID
+     */
+    String getCurrentUserSalesChannelId();
+    /**
+     * 获取当前用户物流国家
+     */
+    String getOrderCountryNum();
 }
