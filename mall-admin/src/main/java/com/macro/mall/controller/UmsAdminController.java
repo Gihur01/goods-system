@@ -243,7 +243,4 @@ public class UmsAdminController {
         // 5. 返回查询到的仓库信息
         return CommonResult.success(warehouseInfoOptional.get());
     }
-
-
-
 }

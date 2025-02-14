@@ -16,6 +16,8 @@ public class PmsProductExample {
 
     private String warehouseId;
 
+    private String location;
+
     // Getter 和 Setter 方法
     public String getWarehouseId() {
         return warehouseId;
@@ -23,6 +25,14 @@ public class PmsProductExample {
 
     public void setWarehouseId(String warehouseId) {
         this.warehouseId = warehouseId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public PmsProductExample() {
@@ -121,6 +131,11 @@ public class PmsProductExample {
 
         public Criteria andWarehouseEqualTo(String value) {
             addCriterion("warehouse_id =", value, "warehouseId");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocationEqualTo(String value) {
+            addCriterion("location =", value, "location");
             return (Criteria) this;
         }
 

@@ -24,6 +24,9 @@ public class PmsProduct implements Serializable {
     @ApiModelProperty(value = "仓库")
     private String warehouseId;  // 仓库字段
 
+    @ApiModelProperty(value = "国家")
+    private String location;  // 国家字段
+
     @ApiModelProperty(value = "上架时间")
     private Date shelfTime;  // 上架时间字段
 
@@ -136,6 +139,14 @@ public class PmsProduct implements Serializable {
 
     public void setWarehouseId(String warehouseId) {
         this.warehouseId = warehouseId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String warehouseId) {
+        this.location = location;
     }
 
     public Date getShelfTime() {

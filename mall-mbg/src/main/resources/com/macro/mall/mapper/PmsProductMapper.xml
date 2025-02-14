@@ -143,7 +143,7 @@
       <include refid="Example_Where_Clause" />
       <!-- 添加 warehouse 的过滤条件 -->
       <if test="warehouseId != null and warehouseId != ''">
-        and warehouse_id = #{warehouse_id}
+        and warehouse_id = #{warehouseId}
       </if>
     </if>
     <if test="orderByClause != null">

@@ -257,9 +257,7 @@ public class PmsProductServiceImpl implements PmsProductService {
 //        }
 //
 //        // 根据仓库进行过滤，如果传递了仓库字段
-//        if (!StrUtil.isEmpty(productQueryParam.getWarehouseId())) {
-//            criteria.andWarehouseEqualTo(productQueryParam.getWarehouseId());
-//        }
+
 //
 //        // 根据上架时间进行过滤，如果传递了上架时间（只传递了年月）
 //        if (productQueryParam.getStartMonth() != null && productQueryParam.getEndMonth() != null) {
@@ -350,6 +348,19 @@ public class PmsProductServiceImpl implements PmsProductService {
         // 6️⃣ 如果用户有仓库权限，则根据仓库权限进行过滤
         if (hasWarehousePermission) {
             criteria.andWarehouseIdIn(warehouseIds); // **🔴 关键改动，确保用户只能看有权限的仓库商品**
+        }
+
+        if (!StrUtil.isEmpty(productQueryParam.getWarehouseId())) {
+            criteria.andWarehouseEqualTo(productQueryParam.getWarehouseId());
+        }
+        if (!StrUtil.isEmpty(productQueryParam.getLocation())) {
+            criteria.andLocationEqualTo(productQueryParam.getLocation());
+        }
+        if (productQueryParam.getNewStatus() != null) {
+            criteria.andNewStatusEqualTo(productQueryParam.getNewStatus());
+        }
+        if (productQueryParam.getRecommandStatus() != null) {
+            criteria.andRecommandStatusEqualTo(productQueryParam.getRecommandStatus());
         }
 
         // 根据上架时间进行过滤

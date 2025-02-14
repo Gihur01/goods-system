@@ -29,6 +29,12 @@ public class PmsProductQueryParam {
     private Long brandId;
     @ApiModelProperty("仓库")
     private String warehouseId;  // 新增字段：仓库
+    @ApiModelProperty("国家")
+    private String location;
+    @ApiModelProperty("新品")
+    private Integer NewStatus;
+    @ApiModelProperty("推荐")
+    private Integer RecommandStatus;
     @ApiModelProperty("上架时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date shelfTime;  // 新增字段：上架时间
