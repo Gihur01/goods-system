@@ -461,8 +461,21 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Override
     public List<PmsProduct> list(String keyword) {
         PmsProductExample productExample = new PmsProductExample();
+        // 2️⃣ 获取该用户有权限的仓库 ID 列表
+        List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
+        log.info("当前用户拥有的仓库 ID 列表: {}", warehouseIds);
+
+        // 3️⃣ 如果用户没有任何仓库权限，则跳过仓库权限过滤
+        boolean hasWarehousePermission = (warehouseIds != null && !warehouseIds.isEmpty());
+        if (!hasWarehousePermission) {
+            log.info("用户没有仓库权限，将跳过仓库权限过滤");
+        }
         PmsProductExample.Criteria criteria = productExample.createCriteria();
         criteria.andDeleteStatusEqualTo(0);
+        // 6️⃣ 如果用户有仓库权限，则根据仓库权限进行过滤
+        if (hasWarehousePermission) {
+            criteria.andWarehouseIdIn(warehouseIds); // **🔴 关键改动，确保用户只能看有权限的仓库商品**
+        }
         if(!StrUtil.isEmpty(keyword)){
             criteria.andNameLike("%" + keyword + "%");
             productExample.or().andDeleteStatusEqualTo(0).andProductSnLike("%" + keyword + "%");
