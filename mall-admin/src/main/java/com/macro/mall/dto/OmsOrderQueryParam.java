@@ -13,6 +13,8 @@ import lombok.Setter;
 public class OmsOrderQueryParam {
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
+    @ApiModelProperty(value = "包裹单号")
+    private Integer parcelId;
     @ApiModelProperty(value = "零售商编号")
     private String sales_channel_id;
     @ApiModelProperty(value = "物流国家")

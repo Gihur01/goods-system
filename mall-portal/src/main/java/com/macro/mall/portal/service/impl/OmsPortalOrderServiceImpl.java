@@ -15,13 +15,16 @@ import com.macro.mall.portal.dao.SmsCouponHistoryDao;
 import com.macro.mall.portal.domain.*;
 import com.macro.mall.portal.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,6 +70,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private OmsOrderItemMapper orderItemMapper;
     @Autowired
     private CancelOrderSender cancelOrderSender;
+    @Autowired
+    private PmsPortalProductService productService;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder(List<Long> cartIds) {
@@ -251,6 +256,202 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return result;
     }
 
+//    @Override
+//    @Transactional
+//    public OmsOrder createOrder(OmsOrderCreateParam orderCreateParam) {
+//        log.info("Received orderCreateParam: {}", orderCreateParam);
+//
+//        // 1. 校验 orderCreateParam 是否有效
+//        if (orderCreateParam == null || orderCreateParam.getOrderItems() == null || orderCreateParam.getOrderItems().isEmpty()) {
+//            throw new IllegalArgumentException("订单参数或订单项不能为空");
+//        }
+//
+//        // 2. 创建订单对象
+//        OmsOrder omsOrder = new OmsOrder();
+//        BeanUtils.copyProperties(orderCreateParam, omsOrder);
+//
+//        // 3. 设置订单默认属性
+//        omsOrder.setCreateTime(new Date());
+//        omsOrder.setModifyTime(new Date());
+//        omsOrder.setConfirmStatus(0);
+//        omsOrder.setDeleteStatus(0);
+//        omsOrder.setMemberId(1L);
+//
+//        // 4. 插入订单到数据库
+//        try {
+//            orderMapper.insertOrder(omsOrder);
+//        } catch (Exception e) {
+//            log.error("Failed to insert order: {}", omsOrder, e);
+//            throw new RuntimeException("订单创建失败");
+//        }
+//
+//        // 5. 获取生成的订单 ID
+//        Long orderId = omsOrder.getId();
+//        if (orderId == null) {
+//            throw new RuntimeException("订单ID 生成失败");
+//        }
+//
+//        // 6. 处理订单商品
+//        List<OmsOrderItem> orderItems = orderCreateParam.getOrderItems();
+//        List<OmsOrderItem> newOrderItems = new ArrayList<>();
+//
+//        // 7. 按照 productId 查询 warehouse_id 和 location
+//        Map<String, PmsProductWarehouseInfo> warehouseInfoMap = productService.getWarehouseInfoByProductSns(
+//                orderItems.stream().map(OmsOrderItem::getProductSn).collect(Collectors.toList())
+//        );
+//
+//
+//        // 8. 组装订单商品信息，并按照 location 拆分包裹
+//        Map<String, List<OmsOrderItem>> parcelMap = new HashMap<>();
+//
+//        for (OmsOrderItem item : orderItems) {
+//            // 获取商品的仓库信息
+//            PmsProductWarehouseInfo warehouseInfo = warehouseInfoMap.get(item.getProductSn());
+//            if (warehouseInfo == null) {
+//                throw new RuntimeException("商品Sn " + item.getProductSn() + " 没有对应的仓库信息");
+//            }
+//
+//            item.setWarehouseId(warehouseInfo.getWarehouseId());
+//            item.setLocation(warehouseInfo.getLocation());
+//
+//            // 按 location 分组
+//            parcelMap.computeIfAbsent(item.getLocation(), k -> new ArrayList<>()).add(item);
+//        }
+//
+//        // 9. 遍历 parcelMap，创建包裹，并插入数据
+//        List<OmsOrderParcel> parcelList = new ArrayList<>();
+//        List<OmsOrderItem> newOrderItemList = new ArrayList<>();
+//
+//        for (Map.Entry<String, List<OmsOrderItem>> entry : parcelMap.entrySet()) {
+//            String warehouseId = entry.getKey();
+//            List<OmsOrderItem> parcelOrderItems = entry.getValue();
+//
+//            // 创建包裹
+//            OmsOrderParcel parcel = new OmsOrderParcel();
+//            parcel.setOrderId(orderId);
+//            parcel.setWarehouseId(warehouseId);
+//            parcel.setParcelStatus(0); // 默认未发货
+//            parcelList.add(parcel);
+//        }
+//
+//        // 10. 批量插入订单包裹
+//        try {
+//            orderMapper.batchInsertParcels(parcelList);
+//        } catch (Exception e) {
+//            log.error("Failed to insert parcels: {}", parcelList, e);
+//            throw new RuntimeException("订单包裹创建失败");
+//        }
+//
+//        // 11. 绑定包裹ID，将订单项拆分到对应包裹
+//        for (OmsOrderParcel parcel : parcelList) {
+//            List<OmsOrderItem> parcelOrderItems = parcelMap.get(parcel.getWarehouseId());
+//
+//            for (OmsOrderItem orderItem : parcelOrderItems) {
+//                orderItem.setParcelId(parcel.getId()); // 绑定包裹ID
+//                orderItem.setOrderId(orderId);
+//                orderItem.setDeleteStatus(0);
+//                newOrderItemList.add(orderItem);
+//            }
+//        }
+//
+//        // 12. 批量插入订单商品
+//        try {
+//            orderMapper.batchInsertOrderItems(newOrderItemList);
+//        } catch (Exception e) {
+//            log.error("Failed to insert order items: {}", newOrderItemList, e);
+//            throw new RuntimeException("订单商品创建失败");
+//        }
+//
+//        log.info("Order created successfully: {}", omsOrder);
+//        return omsOrder;
+//    }
+
+    @Override
+    @Transactional
+    public OmsOrder createOrder(OmsOrderCreateParam orderCreateParam) {
+        log.info("Received orderCreateParam: {}", orderCreateParam);
+
+        // 1. 校验订单参数
+        if (orderCreateParam == null || orderCreateParam.getOrderItems() == null || orderCreateParam.getOrderItems().isEmpty()) {
+            throw new IllegalArgumentException("订单参数或订单项不能为空");
+        }
+
+        // 2. 创建订单
+        OmsOrder omsOrder = new OmsOrder();
+        BeanUtils.copyProperties(orderCreateParam, omsOrder);
+        omsOrder.setCreateTime(new Timestamp(System.currentTimeMillis())); // 设置创建时间
+        omsOrder.setModifyTime(new Timestamp(System.currentTimeMillis())); // 设置修改时间
+        omsOrder.setConfirmStatus(0);
+        omsOrder.setDeleteStatus(0);
+        omsOrder.setMemberId(1L);
+
+        // 3. 插入订单到数据库
+        orderMapper.insertOrder(omsOrder);
+
+        // 4. 获取订单 ID
+        Long orderId = omsOrder.getId();
+        if (orderId == null) {
+            throw new RuntimeException("订单ID 生成失败");
+        }
+
+        // 5. 查询商品的仓库信息（获取 location）
+        Map<String, PmsProductWarehouseInfo> warehouseInfoMap = productService.getWarehouseInfoByProductSns(
+                orderCreateParam.getOrderItems().stream()
+                        .map(OmsOrderItem::getProductSn)
+                        .collect(Collectors.toList())
+        );
+
+        // 6. 按 location 拆分包裹
+        Map<String, List<OmsOrderItem>> parcelMap = new HashMap<>();
+
+        for (OmsOrderItem item : orderCreateParam.getOrderItems()) {
+            PmsProductWarehouseInfo warehouseInfo = warehouseInfoMap.get(item.getProductSn());
+            if (warehouseInfo == null) {
+                throw new RuntimeException("商品Sn " + item.getProductSn() + " 没有对应的仓库信息");
+            }
+
+            item.setLocation(warehouseInfo.getLocation()); // 只按 location 拆分
+
+            // 用 `location` 作为 key 进行分组
+            parcelMap.computeIfAbsent(warehouseInfo.getLocation(), k -> new ArrayList<>()).add(item);
+        }
+
+        // 7. 创建包裹
+        List<OmsOrderParcel> parcelList = new ArrayList<>();
+
+        for (String location : parcelMap.keySet()) {
+            OmsOrderParcel parcel = new OmsOrderParcel();
+            parcel.setOrderId(orderId);
+            parcel.setLocation(location); // 仅按 location 拆分包裹
+            parcel.setParcelStatus(0); // 默认未发货
+            parcel.setCreateTime(new Timestamp(System.currentTimeMillis())); // 设置 createTime
+            parcelList.add(parcel);
+        }
+
+        // 8. 批量插入订单包裹
+        orderMapper.batchInsertParcels(parcelList);
+
+        // 9. 绑定 `parcelId` 并插入订单商品
+        List<OmsOrderItem> newOrderItemList = new ArrayList<>();
+
+        for (OmsOrderParcel parcel : parcelList) {
+            List<OmsOrderItem> parcelOrderItems = parcelMap.get(parcel.getLocation());
+
+            for (OmsOrderItem orderItem : parcelOrderItems) {
+                orderItem.setParcelId(parcel.getId()); // 绑定包裹ID
+                orderItem.setOrderId(orderId);
+                orderItem.setDeleteStatus(0);
+                newOrderItemList.add(orderItem);
+            }
+        }
+
+        // 10. 批量插入订单商品
+        orderMapper.batchInsertOrderItems(newOrderItemList);
+
+        log.info("Order created successfully: {}", omsOrder);
+        return omsOrder;
+    }
+
     @Override
     public Integer paySuccess(Long orderId, Integer payType) {
         //修改订单支付状态
@@ -416,14 +617,24 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
-    public OmsOrderDetail detail(Long orderId) {
-        OmsOrder omsOrder = orderMapper.selectByPrimaryKey(orderId);
+    public OmsOrderDetail detail(String orderSn) {
+        OmsOrder omsOrder = orderMapper.selectByOrderSn(orderSn);
         OmsOrderItemExample example = new OmsOrderItemExample();
-        example.createCriteria().andOrderIdEqualTo(orderId);
+        example.createCriteria().andOrderSnEqualTo(orderSn);
         List<OmsOrderItem> orderItemList = orderItemMapper.selectByExample(example);
         OmsOrderDetail orderDetail = new OmsOrderDetail();
-        BeanUtil.copyProperties(omsOrder,orderDetail);
+//        BeanUtil.copyProperties(omsOrder,orderDetail);
+        orderDetail.setCreateTime(omsOrder.getCreateTime());
+        orderDetail.setDeleteStatus(omsOrder.getDeleteStatus());
+        orderDetail.setDeliveryCompany(omsOrder.getDeliveryCompany());
+        orderDetail.setDeliverySn(omsOrder.getDeliverySn());
+        orderDetail.setDeliveryTime(omsOrder.getDeliveryTime());
+        orderDetail.setModifyTime(omsOrder.getModifyTime());
+        orderDetail.setNote(omsOrder.getNote());
         orderDetail.setOrderItemList(orderItemList);
+        orderDetail.setOrderSn(omsOrder.getOrderSn());
+        orderDetail.setReceiveTime(omsOrder.getReceiveTime());
+        orderDetail.setStatus(omsOrder.getStatus());
         return orderDetail;
     }
 

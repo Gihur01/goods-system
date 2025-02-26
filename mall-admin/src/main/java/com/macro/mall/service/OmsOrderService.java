@@ -2,7 +2,9 @@ package com.macro.mall.service;
 
 import com.macro.mall.dto.*;
 import com.macro.mall.model.OmsOrder;
+import com.macro.mall.model.OmsOrderCreateParam;
 import com.macro.mall.model.OmsOrderItem;
+import com.macro.mall.model.OmsOrderParcel;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,6 +20,8 @@ public interface OmsOrderService {
     List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum);
 
     List<OmsOrderItem> listItem(OmsOrderItemQueryParam queryParam, Integer pageSize, Integer pageNum);
+
+    List<OmsOrderParcel> listParcel(OmsOrderParcelQueryParam queryParam, Integer pageSize, Integer pageNum);
 
     /**
      * 批量发货
@@ -58,4 +62,20 @@ public interface OmsOrderService {
      */
     @Transactional
     int updateNote(Long id, String note, Integer status);
+
+//    /**
+//     * 创建订单
+//     */
+//    @Transactional
+//    OmsOrder createOrder(OmsOrderCreateParam orderCreateParam);
+
+    boolean canCancelOrder(String orderSn);
+
+    int cancelOrder(String orderSn);
+
+    boolean canConfirmReceive(String orderSn);
+
+    int confirmReceiveOrder(String orderSn);
+
+    int getParcelSn(List<Long> ids);
 }

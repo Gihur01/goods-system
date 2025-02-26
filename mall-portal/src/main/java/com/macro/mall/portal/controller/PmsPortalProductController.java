@@ -2,6 +2,7 @@ package com.macro.mall.portal.controller;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
+import com.macro.mall.model.PmsCertification;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.portal.domain.PmsPortalProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
@@ -58,5 +59,18 @@ public class PmsPortalProductController {
     public CommonResult<PmsPortalProductDetail> detail(@PathVariable Long id) {
         PmsPortalProductDetail productDetail = portalProductService.detail(id);
         return CommonResult.success(productDetail);
+    }
+
+    @ApiOperation("根据商品SN获取商品认证资料")
+    @RequestMapping(value = "/certification/{productSn}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<PmsCertification> getCertificationByProductSn(@PathVariable String productSn) {
+        PmsCertification certification = portalProductService.getCertificationByProductSn(productSn);
+
+        if (certification == null) {
+            return CommonResult.failed("未找到该商品的认证资料");
+        }
+
+        return CommonResult.success(certification);
     }
 }

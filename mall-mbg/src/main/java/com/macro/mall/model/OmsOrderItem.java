@@ -3,6 +3,8 @@ package com.macro.mall.model;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public class OmsOrderItem implements Serializable {
     private Long id;
@@ -11,12 +13,15 @@ public class OmsOrderItem implements Serializable {
     private Long orderId;
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
+    @ApiModelProperty(value = "包裹ID")
+    private Long parcelId;
     @ApiModelProperty(value = "仓库编号")
     private String warehouseId;
     @ApiModelProperty(value = "所在国家")
     private String location;
     private Long productId;
-
+    @ApiModelProperty(value = "删除状态")
+    private Integer deleteStatus;
     private String productPic;
 
     private String productName;
@@ -30,6 +35,9 @@ public class OmsOrderItem implements Serializable {
 
     @ApiModelProperty(value = "购买数量")
     private Integer productQuantity;
+
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime; // 添加创建时间字段
 
     @ApiModelProperty(value = "商品sku编号")
     private Long productSkuId;
@@ -59,10 +67,20 @@ public class OmsOrderItem implements Serializable {
 
     private Integer giftGrowth;
 
+    private List orderItems;
+
     @ApiModelProperty(value = "商品销售属性:[{'key':'颜色','value':'颜色'},{'key':'容量','value':'4G'}]")
     private String productAttr;
 
     private static final long serialVersionUID = 1L;
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
     public Long getId() {
         return id;
@@ -88,6 +106,14 @@ public class OmsOrderItem implements Serializable {
         this.orderSn = orderSn;
     }
 
+    public Long getParcelId() {
+        return parcelId;
+    }
+
+    public void setParcelId(Long parcelId) {
+        this.orderId = parcelId;
+    }
+
     public String getWarehouseId() {
         return warehouseId;
     }
@@ -110,6 +136,14 @@ public class OmsOrderItem implements Serializable {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Integer getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(Integer deleteStatus) {
+        this.deleteStatus = deleteStatus;
     }
 
     public String getProductPic() {

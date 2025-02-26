@@ -1,10 +1,13 @@
 package com.macro.mall.portal.service;
 
+import com.macro.mall.model.PmsCertification;
 import com.macro.mall.model.PmsProduct;
+import com.macro.mall.model.PmsProductWarehouseInfo;
 import com.macro.mall.portal.domain.PmsPortalProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 前台商品管理Service
@@ -25,4 +28,8 @@ public interface PmsPortalProductService {
      * 获取前台商品详情
      */
     PmsPortalProductDetail detail(Long id);
+
+    PmsCertification getCertificationByProductSn(String productSn);
+
+    Map<String, PmsProductWarehouseInfo> getWarehouseInfoByProductSns(List<String> productSn);
 }

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品管理Service
@@ -25,6 +26,8 @@ public interface PmsProductService {
      * 根据商品ID获取商品信息（用于更新商品）
      */
     PmsProductResult getUpdateInfo(Long id);
+
+
 
     /**
      * 更新商品
@@ -69,6 +72,8 @@ public interface PmsProductService {
      * 根据商品名称或者货号模糊查询
      */
     List<PmsProduct> list(String keyword);
+
+//    Map getProductsByIds(List<Long> collect);
 
 //    List<PmsProduct> getProductListForCurrentUser();
 }

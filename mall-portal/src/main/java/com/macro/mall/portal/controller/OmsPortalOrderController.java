@@ -2,6 +2,8 @@ package com.macro.mall.portal.controller;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
+import com.macro.mall.model.OmsOrder;
+import com.macro.mall.model.OmsOrderCreateParam;
 import com.macro.mall.portal.domain.ConfirmOrderResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
@@ -45,6 +47,13 @@ public class OmsPortalOrderController {
         return CommonResult.success(result, "下单成功");
     }
 
+    @ApiOperation("创建订单oms_order")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ResponseBody
+    public OmsOrder createOrder(@RequestBody OmsOrderCreateParam creatorder) {
+        return portalOrderService.createOrder(creatorder);
+    }
+
     @ApiOperation("用户支付成功的回调")
     @RequestMapping(value = "/paySuccess", method = RequestMethod.POST)
     @ResponseBody
@@ -81,11 +90,11 @@ public class OmsPortalOrderController {
         return CommonResult.success(orderPage);
     }
 
-    @ApiOperation("根据ID获取订单详情")
-    @RequestMapping(value = "/detail/{orderId}", method = RequestMethod.GET)
+    @ApiOperation("根据orderSn获取订单详情")
+    @RequestMapping(value = "/detail/{orderSn}", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<OmsOrderDetail> detail(@PathVariable Long orderId) {
-        OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
+    public CommonResult<OmsOrderDetail> detail(@PathVariable String orderSn) {
+        OmsOrderDetail orderDetail = portalOrderService.detail(orderSn);
         return CommonResult.success(orderDetail);
     }
 

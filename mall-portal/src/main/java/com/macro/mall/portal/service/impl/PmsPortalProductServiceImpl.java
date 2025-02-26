@@ -13,8 +13,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 前台订单管理Service实现类
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
+    private static final Logger log = LoggerFactory.getLogger(PmsPortalProductServiceImpl.class);
     @Autowired
     private PmsProductMapper productMapper;
     @Autowired
@@ -127,6 +132,47 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         result.setCouponList(portalProductDao.getAvailableCouponList(product.getId(),product.getProductCategoryId()));
         return result;
     }
+
+    @Override
+    public PmsCertification getCertificationByProductSn(String productSn) {
+        // 假设认证信息存储在 PmsCertification 表中，根据 productSn 查找认证资料
+        return PmsProductMapper.selectByProductSn(productSn);
+    }
+
+    @Override
+    public Map<String, PmsProductWarehouseInfo> getWarehouseInfoByProductSns(List<String> productSns) {
+        if (productSns == null || productSns.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        // 先获取数据
+        List<PmsProduct> products = productMapper.getProductsBySns(productSns);
+
+        // 打印日志，检查是否有重复的 productSn
+        log.info("Fetched Products: {}", products.stream()
+                .map(p -> String.format("[ID: %s, SN: %s, Warehouse: %s, Location: %s]",
+                        p.getId(), p.getProductSn(), p.getWarehouseId(), p.getLocation()))
+                .collect(Collectors.joining(", ")));
+
+        // 进行数据转换，并且处理重复 productSn
+        return products.stream()
+                .collect(Collectors.toMap(
+                        PmsProduct::getProductSn,  // 使用 productSn 作为 key
+                        product -> {  // 创建 PmsProductWarehouseInfo
+                            PmsProductWarehouseInfo info = new PmsProductWarehouseInfo();
+                            info.setProductId(product.getId());
+                            info.setWarehouseId(product.getWarehouseId());
+                            info.setLocation(product.getLocation());
+                            return info;
+                        },
+                        (existing, duplicate) -> {  // 处理重复 productSn
+                            log.warn("Duplicate productSn found: {}, keeping existing value.", duplicate);
+                            return existing;  // 遇到重复时，保留已有的值
+                        }
+                ));
+    }
+
+
 
 
     /**

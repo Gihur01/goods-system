@@ -145,7 +145,7 @@ public class PmsProduct implements Serializable {
         return location;
     }
 
-    public void setLocation(String warehouseId) {
+    public void setLocation(String location) {
         this.location = location;
     }
 

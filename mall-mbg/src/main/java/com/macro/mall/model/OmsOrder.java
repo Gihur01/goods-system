@@ -4,17 +4,22 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class OmsOrder implements Serializable {
     @ApiModelProperty(value = "订单id")
     private Long id;
 
+    @ApiModelProperty(value = "会员id")
     private Long memberId;
 
     private Long couponId;
 
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
+
+    @ApiModelProperty(value = "零售商编号")
+    private String salesChannelId;
 
     @ApiModelProperty(value = "提交时间")
     private Date createTime;
@@ -136,7 +141,18 @@ public class OmsOrder implements Serializable {
     @ApiModelProperty(value = "修改时间")
     private Date modifyTime;
 
+    @ApiModelProperty(value = "订单商品项列表")
+    private List<OmsOrderItem> orderItems; // 订单包含的商品项
+
     private static final long serialVersionUID = 1L;
+
+    public List<OmsOrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OmsOrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
 
     public Long getId() {
         return id;
@@ -168,6 +184,14 @@ public class OmsOrder implements Serializable {
 
     public void setOrderSn(String orderSn) {
         this.orderSn = orderSn;
+    }
+
+    public String getSalesChannelId() {
+        return salesChannelId;
+    }
+
+    public void setSalesChannelId(String salesChannelId) {
+        this.salesChannelId = salesChannelId;
     }
 
     public Date getCreateTime() {

@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -127,6 +128,13 @@ public class PmsProductServiceImpl implements PmsProductService {
     public PmsProductResult getUpdateInfo(Long id) {
         return productDao.getUpdateInfo(id);
     }
+
+//    @Override
+//    public Map<Long, PmsProduct> getProductsByIds(List<Long> productIds) {
+//        return productMapper.getProductsByIds(productIds)
+//                .stream()
+//                .collect(Collectors.toMap(PmsProduct::getId, Function.identity()));
+//    }
 
     @Override
     public int update(Long id, PmsProductParam productParam) {
@@ -482,7 +490,6 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
         return productMapper.selectByExample(productExample);
     }
-
     /**
      * 建立和插入关系表操作
      *

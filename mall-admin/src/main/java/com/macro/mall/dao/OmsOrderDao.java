@@ -1,11 +1,9 @@
 package com.macro.mall.dao;
 
-import com.macro.mall.dto.OmsOrderDeliveryParam;
-import com.macro.mall.dto.OmsOrderDetail;
-import com.macro.mall.dto.OmsOrderItemQueryParam;
-import com.macro.mall.dto.OmsOrderQueryParam;
+import com.macro.mall.dto.*;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderItem;
+import com.macro.mall.model.OmsOrderParcel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,6 +21,10 @@ public interface OmsOrderDao {
      * 条件查询订单商品
      */
     List<OmsOrderItem> getListItem(@Param("queryParam") OmsOrderItemQueryParam queryParam);
+    /**
+     * 条件查询包裹
+     */
+    List<OmsOrderParcel> getListParcel(@Param("queryParam") OmsOrderParcelQueryParam queryParam);
 
     /**
      * 批量发货
@@ -33,4 +35,5 @@ public interface OmsOrderDao {
      * 获取订单详情
      */
     OmsOrderDetail getDetail(@Param("id") Long id);
+
 }

@@ -1,6 +1,8 @@
 package com.macro.mall.portal.service;
 
 import com.macro.mall.common.api.CommonPage;
+import com.macro.mall.model.OmsOrder;
+import com.macro.mall.model.OmsOrderCreateParam;
 import com.macro.mall.portal.domain.ConfirmOrderResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
 import com.macro.mall.portal.domain.OrderParam;
@@ -24,6 +26,12 @@ public interface OmsPortalOrderService {
      */
     @Transactional
     Map<String, Object> generateOrder(OrderParam orderParam);
+
+    /**
+     * 创建订单
+     */
+    @Transactional
+    OmsOrder createOrder(OmsOrderCreateParam orderCreateParam);
 
     /**
      * 支付成功后的回调
@@ -61,7 +69,7 @@ public interface OmsPortalOrderService {
     /**
      * 根据订单ID获取订单详情
      */
-    OmsOrderDetail detail(Long orderId);
+    OmsOrderDetail detail(String orderSn);
 
     /**
      * 用户根据订单ID删除订单

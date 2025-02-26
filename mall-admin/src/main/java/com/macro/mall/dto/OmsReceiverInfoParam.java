@@ -13,6 +13,8 @@ import lombok.Setter;
 public class OmsReceiverInfoParam {
     @ApiModelProperty(value = "订单ID")
     private Long orderId;
+    @ApiModelProperty(value = "订单编号")
+    private String orderSn;
     @ApiModelProperty(value = "收货人姓名")
     private String receiverName;
     @ApiModelProperty(value = "收货人电话")
