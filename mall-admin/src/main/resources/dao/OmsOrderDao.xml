@@ -58,6 +58,9 @@
         <if test="queryParam.location != null and queryParam.location != ''">
             AND location = #{queryParam.location}
         </if>
+        <if test="queryParam.parcelId != null and queryParam.parcelId != ''">
+            AND parcel_id = #{queryParam.parcelId}
+        </if>
     </select>
     <select id="getListParcel" resultMap="com.macro.mall.mapper.OmsOrderParcelMapper.BaseResultMap">
         SELECT *

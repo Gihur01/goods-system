@@ -6,6 +6,7 @@
     <result column="order_id" jdbcType="BIGINT" property="orderId" />
     <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="parcel_id" jdbcType="BIGINT" property="parcelId" />
     <result column="product_pic" jdbcType="VARCHAR" property="productPic" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="product_brand" jdbcType="VARCHAR" property="productBrand" />

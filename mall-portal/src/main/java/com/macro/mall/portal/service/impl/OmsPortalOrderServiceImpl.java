@@ -411,7 +411,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             }
 
             item.setLocation(warehouseInfo.getLocation()); // 只按 location 拆分
-
+            item.setWarehouseId(warehouseInfo.getWarehouseId());
             // 用 `location` 作为 key 进行分组
             parcelMap.computeIfAbsent(warehouseInfo.getLocation(), k -> new ArrayList<>()).add(item);
         }
@@ -423,6 +423,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             OmsOrderParcel parcel = new OmsOrderParcel();
             parcel.setOrderId(orderId);
             parcel.setLocation(location); // 仅按 location 拆分包裹
+            parcel.setWarehouseId(parcelMap.get(location).get(0).getWarehouseId());
             parcel.setParcelStatus(0); // 默认未发货
             parcel.setCreateTime(new Timestamp(System.currentTimeMillis())); // 设置 createTime
             parcelList.add(parcel);

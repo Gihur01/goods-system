@@ -166,6 +166,13 @@
     from oms_order
     where order_sn = #{orderSn,jdbcType=VARCHAR}
   </select>
+  <select id="getParcelsByIds" resultMap="BaseResultMap">
+    SELECT * FROM oms_order_parcel
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from oms_order
     where id = #{id,jdbcType=BIGINT}
@@ -260,6 +267,11 @@
     #{orderSn,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=INTEGER}
     )
   </insert>
+  <insert id="insertParcel" parameterType="com.macro.mall.model.OmsOrderParcel">
+    INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
+    VALUES (#{orderId}, #{location}, #{createTime}, #{parcelStatus})
+  </insert>
+
   <insert id="batchInsertOrderItems" parameterType="java.util.List">
     insert into oms_order_item (
     order_id, product_id, product_name, product_sn,
@@ -279,10 +291,10 @@
     </foreach>
   </insert>
   <insert id="batchInsertParcels">
-    INSERT INTO oms_order_parcel (order_id, location, create_time, parcel_status)
+    INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
     VALUES
     <foreach collection="parcelList" item="parcel" separator=",">
-      (#{parcel.orderId}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus})
+      (#{parcel.orderId}, #{parcel.warehouse_id}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus})
     </foreach>
   </insert>
 

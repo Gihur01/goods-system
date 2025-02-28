@@ -7,9 +7,11 @@ import com.macro.mall.dto.*;
 import com.macro.mall.mapper.OmsOrderItemMapper;
 import com.macro.mall.mapper.OmsOrderMapper;
 import com.macro.mall.mapper.OmsOrderOperateHistoryMapper;
+import com.macro.mall.mapper.WmsCenterMapper;
 import com.macro.mall.model.*;
 import com.macro.mall.service.OmsOrderService;
 import com.macro.mall.service.UmsAdminService;
+import com.macro.mall.service.WmsCenterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +43,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     private OmsOrderOperateHistoryMapper orderOperateHistoryMapper;
     @Autowired
     private UmsAdminService umsAdminService;
+    @Autowired
+    private WmsCenterMapper centerMapper;
+    @Autowired
+    private WmsCenterService centerService;
 
     @Override
     public List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
@@ -216,60 +223,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         return count;
     }
 
-//    @Override
-//    @Transactional
-//    public OmsOrder createOrder(OmsOrderCreateParam orderCreateParam) {
-//        // 输出传入的 orderCreateParam
-//        log.info("Received orderCreateParam: {}", orderCreateParam);
-//
-//        // 创建订单对象
-//        OmsOrder omsOrder = new OmsOrder();
-//
-//        // 使用 BeanUtils 复制属性，将 OmsOrderCreateParam 中的相同属性值复制到 OmsOrder
-//        BeanUtils.copyProperties(orderCreateParam, omsOrder);
-//
-//        // 输出复制到的 omsOrder
-//        log.info("Copied omsOrder: {}", omsOrder);
-//
-//        // 设置订单没有的属性
-//        omsOrder.setCreateTime(new Date());  // 设置订单创建时间
-//        omsOrder.setModifyTime(new Date());  // 设置订单修改时间
-//        omsOrder.setConfirmStatus(0);  // 默认未确认
-//        omsOrder.setDeleteStatus(0);   // 默认未删除
-//        omsOrder.setMemberId(1L);
-//        omsOrder.setSalesChannelId("3742");
-//
-//        // 插入订单到数据库
-//        orderMapper.insertOrder(omsOrder);
-//
-//        // 获取订单 ID
-//        Long orderId = omsOrder.getId();
-//
-//        // 获取订单中的商品列表
-//        List<OmsOrderItem> orderItems = orderCreateParam.getOrderItems();
-//
-//        // 遍历商品项列表，处理每一个商品项
-//        for (OmsOrderItem orderItem : orderItems) {
-//            // 创建新的商品项对象
-//            OmsOrderItem omsOrderItem = new OmsOrderItem();
-//
-//            // 复制商品属性
-//            BeanUtils.copyProperties(orderItem, omsOrderItem);
-//
-//            // 设置商品项的缺失属性
-//            omsOrderItem.setOrderId(orderId);  // 关联订单ID
-//            omsOrderItem.setDeleteStatus(0);  // 默认未删除
-//
-//            // 输出复制后的商品项信息
-//            log.info("Copied orderItem: {}", omsOrderItem);
-//
-//            // 插入订单商品项到数据库
-//            orderMapper.insertOrderItem(omsOrderItem);
-//        }
-//        // 返回已创建的订单对象
-//        return omsOrder;
-//    }
-
     public boolean canCancelOrder(String orderSn) {
         OmsOrder order = orderMapper.selectByOrderSn(orderSn);
         if (order == null) {
@@ -310,10 +263,99 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public int getParcelSn(List<Long> ids) {
-        OmsOrder record = new OmsOrder();
-        record.setDeleteStatus(1);
-        OmsOrderExample example = new OmsOrderExample();
-        example.createCriteria().andDeleteStatusEqualTo(0).andIdIn(ids);
-        return orderMapper.updateByExampleSelective(record, example);
+        if (ids == null || ids.isEmpty()) {
+            log.warn("批量获取物流单号失败，订单ID列表为空");
+            return 0;
+        }
+
+        List<OmsOrderParcel> parcels = orderMapper.getParcelsByIds(ids);
+        if (parcels == null || parcels.isEmpty()) {
+            log.warn("未找到对应的包裹信息");
+            return 0;
+        }
+
+        for (OmsOrderParcel parcel : parcels) {
+            Long orderId = parcel.getOrderId();
+            String parcelLocation = parcel.getLocation();
+
+            // 查询订单获取 order_country
+            OmsOrder order = orderMapper.getOrderById(orderId);
+            if (order == null) {
+                log.error("订单ID: {} 未找到，无法获取 order_country", orderId);
+                continue;
+            }
+            String orderCountry = order.getOrderCountry();
+
+            OmsGLSAddress finalReceiverAddress = centerService.getTransitAddressByCountry(parcel.getWarehouseId()); // 订单最终收件人地址
+
+            // 获取发货人地址（仓库地址）
+            OmsGLSAddress senderAddress = centerService.getTransitAddressByCountry(parcel.getWarehouseId());
+
+            // 如果 location 与 order_country 不一致，说明是跨国订单，需要创建两个包裹
+            if (!parcelLocation.equals(orderCountry)) {
+                log.info("订单ID: {} 需要跨国物流，原包裹发往中转仓库 {}", orderId, orderCountry);
+
+                // 查询 wms_center 获取中转仓库地址
+                OmsGLSAddress transitAddress = centerService.getTransitAddressByCountry(orderCountry);
+                if (transitAddress == null) {
+                    log.error("未找到 order_country: {} 对应的中转仓库信息", orderCountry);
+                    continue;
+                }
+
+                // **第一个包裹: 从当前仓库发往 order_country（中转仓库）**
+                callGLSApi(parcel, transitAddress, senderAddress);
+
+                // **创建新的包裹**
+                OmsOrderParcel newParcel = new OmsOrderParcel();
+                newParcel.setOrderId(orderId);
+                newParcel.setLocation(orderCountry);
+                newParcel.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                newParcel.setParcelStatus(0); // 未发货
+                orderMapper.insertParcel(newParcel);
+
+                // **第二个包裹: 从 order_country（中转仓库）发往最终客户**
+                callGLSApi(newParcel, finalReceiverAddress, transitAddress);
+            } else {
+                // **普通国内包裹，直接发到客户地址**
+                callGLSApi(parcel, finalReceiverAddress, senderAddress);
+            }
+        }
+        return parcels.size();
+    }
+
+    /**
+     * 调用 GLS API 获取 ParcelSn
+     * @param parcel 需要发货的包裹信息
+     * @param receiverAddress 收件人地址
+     * @param senderAddress 发件人地址
+     */
+    private void callGLSApi(OmsOrderParcel parcel, OmsGLSAddress receiverAddress, OmsGLSAddress senderAddress) {
+//        GLSRequest request = new GLSRequest();
+//        request.setUsername("myglsapitest@test.mygls.hu");
+//        request.setPassword("1pImY_gls.hu");
+//
+//        GLSParcel glsParcel = new GLSParcel();
+//        glsParcel.setClientNumber(12345678);
+//        glsParcel.setClientReference("order_" + parcel.getOrderId());
+//        glsParcel.setCount(1);
+//        glsParcel.setCODAmount(0);
+//        glsParcel.setContent("General Goods");
+//
+//        // 发货地址（仓库或中转站）
+//        glsParcel.setPickupAddress(senderAddress);
+//
+//        // 收货地址（中转站或最终客户）
+//        glsParcel.setDeliveryAddress(receiverAddress);
+//
+//        request.setParcelList(Collections.singletonList(glsParcel));
+//
+//        GLSResponse response = glsApiService.sendParcelRequest(request);
+//        if (response != null && response.isSuccess()) {
+//            parcel.setParcelSn(response.getParcelNumber());
+//            orderMapper.updateParcel(parcel);
+//            log.info("成功获取 GLS 物流单号: {}", response.getParcelNumber());
+//        } else {
+//            log.error("GLS API 请求失败: {}", response);
+//        }
     }
 }

@@ -18,6 +18,9 @@ public class OmsOrder implements Serializable {
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
 
+    @ApiModelProperty(value = "订单国家")
+    private String orderCountry;
+
     @ApiModelProperty(value = "零售商编号")
     private String salesChannelId;
 
@@ -184,6 +187,14 @@ public class OmsOrder implements Serializable {
 
     public void setOrderSn(String orderSn) {
         this.orderSn = orderSn;
+    }
+
+    public String getOrderCountry() {
+        return orderCountry;
+    }
+
+    public void setOrderCountry(String orderCountry) {
+        this.orderCountry = orderCountry;
     }
 
     public String getSalesChannelId() {

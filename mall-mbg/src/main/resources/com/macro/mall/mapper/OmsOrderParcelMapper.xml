@@ -5,6 +5,7 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="order_id" jdbcType="BIGINT" property="orderId" />
         <result column="warehouse_id" jdbcType="VARCHAR" property="warehouseId" />
+
         <result column="location" jdbcType="VARCHAR" property="location" />
         <result column="parcel_sn" jdbcType="VARCHAR" property="parcelSn" />
         <result column="parcel_status" jdbcType="BIGINT" property="parcelStatus" />

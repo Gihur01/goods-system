@@ -44,4 +44,10 @@ public interface OmsOrderMapper {
     void batchInsertOrderItems(List<OmsOrderItem> newOrderItems);
 
     void batchInsertParcels(List<OmsOrderParcel> parcelList);
+
+    void insertParcel(OmsOrderParcel newParcel);
+
+    List<OmsOrderParcel> getParcelsByIds(List<Long> ids);
+
+
 }

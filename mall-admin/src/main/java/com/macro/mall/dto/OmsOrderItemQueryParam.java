@@ -19,6 +19,9 @@ public class OmsOrderItemQueryParam {
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
 
+    @ApiModelProperty(value = "包裹ID")
+    private Long parcelId;
+
     @ApiModelProperty(value = "仓库编号")
     private List<Long> warehouseId;
 
@@ -44,5 +47,11 @@ public class OmsOrderItemQueryParam {
     }
     public void setLocation(String location) {
         this.location = location;
+    }
+    public Long getParcelId() {
+        return parcelId;
+    }
+    public void setParcelId(Long parcelId) {
+        this.parcelId = parcelId;
     }
 }
