@@ -6,6 +6,7 @@ import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderCreateParam;
 import com.macro.mall.portal.domain.ConfirmOrderResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
+import com.macro.mall.portal.domain.OmsReceiverInfoParam;
 import com.macro.mall.portal.domain.OrderParam;
 import com.macro.mall.portal.service.OmsPortalOrderService;
 import io.swagger.annotations.Api;
@@ -52,6 +53,17 @@ public class OmsPortalOrderController {
     @ResponseBody
     public OmsOrder createOrder(@RequestBody OmsOrderCreateParam creatorder) {
         return portalOrderService.createOrder(creatorder);
+    }
+
+    @ApiOperation("修改收货人信息")
+    @RequestMapping(value = "/update/receiverInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult updateReceiverInfo(@RequestBody OmsReceiverInfoParam receiverInfoParam) {
+        int count = portalOrderService.updateReceiverInfo(receiverInfoParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed("订单不存在或更新失败");
     }
 
     @ApiOperation("用户支付成功的回调")

@@ -272,29 +272,27 @@
     VALUES (#{orderId}, #{location}, #{createTime}, #{parcelStatus})
   </insert>
 
-  <insert id="batchInsertOrderItems" parameterType="java.util.List">
+  <insert id="batchInsertOrderItems" parameterType="com.macro.mall.model.OmsOrderItem">
     insert into oms_order_item (
-    order_id, product_id, product_name, product_sn,
-    product_price, product_quantity,
-    promotion_amount, coupon_amount,
-    integration_amount, real_amount,
-    order_sn, delete_status
+    parcel_id, product_sku_id, product_name, product_sn,
+    product_sku_code, product_price, product_quantity,
+    product_attr, product_note, delete_status
     ) values
     <foreach collection="list" item="item" separator=",">
       (
-      #{item.orderId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.productName,jdbcType=VARCHAR},
-      #{item.productSn,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, #{item.productQuantity,jdbcType=INTEGER},
-      #{item.promotionAmount,jdbcType=DECIMAL}, #{item.couponAmount,jdbcType=DECIMAL},
-      #{item.integrationAmount,jdbcType=DECIMAL}, #{item.realAmount,jdbcType=DECIMAL},
-      #{item.orderSn,jdbcType=VARCHAR}, #{item.deleteStatus,jdbcType=INTEGER}
+      #{item.parcelId,jdbcType=BIGINT}, #{item.productSkuId,jdbcType=BIGINT}, #{item.productName,jdbcType=VARCHAR},
+      #{item.productSn,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=BIGINT},
+      #{item.productPrice,jdbcType=DECIMAL}, #{item.productQuantity,jdbcType=INTEGER},
+      #{item.productAttr,jdbcType=VARCHAR}, #{item.productNote,jdbcType=VARCHAR},
+      #{item.deleteStatus,jdbcType=INTEGER}
       )
     </foreach>
   </insert>
-  <insert id="batchInsertParcels">
+  <insert id="batchInsertParcels" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
     VALUES
     <foreach collection="parcelList" item="parcel" separator=",">
-      (#{parcel.orderId}, #{parcel.warehouse_id}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus})
+      (#{parcel.orderId}, #{parcel.warehouseId}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus})
     </foreach>
   </insert>
 
@@ -992,11 +990,20 @@
       <if test="receiverPostCode != null">
         receiver_post_code = #{receiverPostCode,jdbcType=VARCHAR},
       </if>
+      <if test="receiverCountry != null">
+        receiver_country = #{receiverCountry,jdbcType=VARCHAR},
+      </if>
       <if test="receiverProvince != null">
         receiver_province = #{receiverProvince,jdbcType=VARCHAR},
       </if>
       <if test="receiverCity != null">
         receiver_city = #{receiverCity,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverStreet != null">
+        receiver_street = #{receiverStreet,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverStreetNum != null">
+        receiver_street_num = #{receiverStreetNum,jdbcType=VARCHAR},
       </if>
       <if test="receiverRegion != null">
         receiver_region = #{receiverRegion,jdbcType=VARCHAR},

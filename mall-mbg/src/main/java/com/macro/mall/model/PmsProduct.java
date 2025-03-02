@@ -22,7 +22,7 @@ public class PmsProduct implements Serializable {
 
     // 新增字段
     @ApiModelProperty(value = "仓库")
-    private String warehouseId;  // 仓库字段
+    private Long warehouseId;  // 仓库字段
 
     @ApiModelProperty(value = "国家")
     private String location;  // 国家字段
@@ -133,11 +133,11 @@ public class PmsProduct implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // Getter 和 Setter 方法
-    public String getWarehouseId() {
+    public Long getWarehouseId() {
         return warehouseId;
     }
 
-    public void setWarehouseId(String warehouseId) {
+    public void setWarehouseId(Long warehouseId) {
         this.warehouseId = warehouseId;
     }
 

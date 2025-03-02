@@ -5,6 +5,7 @@ import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderCreateParam;
 import com.macro.mall.portal.domain.ConfirmOrderResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
+import com.macro.mall.portal.domain.OmsReceiverInfoParam;
 import com.macro.mall.portal.domain.OrderParam;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,8 @@ import java.util.Map;
  * Created by macro on 2018/8/30.
  */
 public interface OmsPortalOrderService {
+    int updateReceiverInfo(OmsReceiverInfoParam receiverInfoParam);
+
     /**
      * 根据用户购物车信息生成确认单信息
      */

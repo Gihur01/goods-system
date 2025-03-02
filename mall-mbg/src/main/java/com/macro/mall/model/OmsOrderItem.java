@@ -8,7 +8,6 @@ import java.util.List;
 
 public class OmsOrderItem implements Serializable {
     private Long id;
-
     @ApiModelProperty(value = "订单id")
     private Long orderId;
     @ApiModelProperty(value = "订单编号")
@@ -16,7 +15,7 @@ public class OmsOrderItem implements Serializable {
     @ApiModelProperty(value = "包裹ID")
     private Long parcelId;
     @ApiModelProperty(value = "仓库编号")
-    private String warehouseId;
+    private Long warehouseId;
     @ApiModelProperty(value = "所在国家")
     private String location;
     private Long productId;
@@ -72,6 +71,9 @@ public class OmsOrderItem implements Serializable {
     @ApiModelProperty(value = "商品销售属性:[{'key':'颜色','value':'颜色'},{'key':'容量','value':'4G'}]")
     private String productAttr;
 
+    @ApiModelProperty(value = "商品备注")
+    private String productNote;
+
     private static final long serialVersionUID = 1L;
 
     public Date getCreateTime() {
@@ -111,14 +113,14 @@ public class OmsOrderItem implements Serializable {
     }
 
     public void setParcelId(Long parcelId) {
-        this.orderId = parcelId;
+        this.parcelId = parcelId;
     }
 
-    public String getWarehouseId() {
+    public Long getWarehouseId() {
         return warehouseId;
     }
 
-    public void setWarehouseId(String orderSn) {
+    public void setWarehouseId(Long warehouseId) {
         this.warehouseId = warehouseId;
     }
 
@@ -280,6 +282,14 @@ public class OmsOrderItem implements Serializable {
 
     public void setProductAttr(String productAttr) {
         this.productAttr = productAttr;
+    }
+
+    public String getProductNote() {
+        return productNote;
+    }
+
+    public void setProductNote(String productNote) {
+        this.productNote = productNote;
     }
 
     @Override

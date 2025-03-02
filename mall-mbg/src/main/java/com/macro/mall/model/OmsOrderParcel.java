@@ -9,13 +9,12 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class OmsOrderParcel {
-
     @ApiModelProperty(value = "包裹单id")
     private Long id;
     @ApiModelProperty(value = "订单id")
     private Long orderId;
     @ApiModelProperty(value = "仓库编号")
-    private String warehouseId;
+    private Long warehouseId;
     @ApiModelProperty(value = "所在国家")
     private String location;
     @ApiModelProperty(value = "包裹编号")
@@ -28,4 +27,11 @@ public class OmsOrderParcel {
     private Timestamp receivedTime;
     @ApiModelProperty(value = "创建时间")
     private Timestamp createTime;
+
+    public Long getWarehouseId() {
+        return warehouseId;
+    }
+    public void setWarehouseId(Long warehouseId) {
+        this.warehouseId = warehouseId;
+    }
 }

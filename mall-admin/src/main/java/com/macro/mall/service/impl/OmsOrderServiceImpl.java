@@ -286,10 +286,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             }
             String orderCountry = order.getOrderCountry();
 
-            OmsGLSAddress finalReceiverAddress = centerService.getTransitAddressByCountry(parcel.getWarehouseId()); // 订单最终收件人地址
+            OmsGLSAddress finalReceiverAddress = centerService.getTransitAddressByCountry(parcel.getLocation()); // 订单最终收件人地址
 
             // 获取发货人地址（仓库地址）
-            OmsGLSAddress senderAddress = centerService.getTransitAddressByCountry(parcel.getWarehouseId());
+            OmsGLSAddress senderAddress = centerService.getTransitAddressByCountry(parcel.getLocation());
 
             // 如果 location 与 order_country 不一致，说明是跨国订单，需要创建两个包裹
             if (!parcelLocation.equals(orderCountry)) {
