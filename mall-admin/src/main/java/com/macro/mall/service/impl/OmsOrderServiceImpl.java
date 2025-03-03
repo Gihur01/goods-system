@@ -14,14 +14,23 @@ import com.macro.mall.service.UmsAdminService;
 import com.macro.mall.service.WmsCenterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -357,5 +366,39 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 //        } else {
 //            log.error("GLS API 请求失败: {}", response);
 //        }
+    }
+
+
+    public byte[] getPrintedLabels(List<String> parcelSnList) {
+//        String url = "https://api.test.mygls.hu/ParcelService.svc/json/GetPrintedLabels";
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        // 构造请求体
+//        Map<String, Object> requestBody = new HashMap<>();
+//        requestBody.put("ParcelIdList", parcelSnList);
+//        requestBody.put("PrintPosition", 1); // 1-4 可选
+//        requestBody.put("ShowPrintDialog", false); // 不直接弹出打印对话框
+//
+//        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+//
+//        ResponseEntity<byte[]> response = restTemplate.exchange(
+//                url,
+//                HttpMethod.POST,
+//                entity,
+//                byte[].class
+//        );
+//
+//        return response.getBody();
+        try {
+            // 读取本地 PDF 文件，路径改成你自己的
+            Path pdfPath = Paths.get("C:/Users/Mr.Li/Downloads/mygls_api_20210106/CSHARP-PHP-JAVA_SOAP-REST_CLIENTS_PUBLISHED_10/JAVA/java_clients/java_clients_rest_PrintLabels.pdf");
+            return Files.readAllBytes(pdfPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // 记录异常并返回自定义错误信息
+            throw new RuntimeException("Failed to read the PDF file: " + e.getMessage());
+        }
     }
 }

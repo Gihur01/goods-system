@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,6 +75,25 @@ public class OmsOrderController {
             return CommonResult.success(count);
         }
         return CommonResult.failed();
+    }
+
+    @ApiOperation("打印包裹面单")
+    @RequestMapping(value = "/printLabel", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<byte[]> printShippingLabels(@RequestBody List<String> parcelSnList) {
+        byte[] pdfBytes = orderService.getPrintedLabels(parcelSnList);
+
+        if (pdfBytes == null || pdfBytes.length == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename("shipping-labels.pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
     @ApiOperation("批量发货")

@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 02/03/2025 18:53:29
+ Date: 03/03/2025 17:47:44
 */
 
 SET NAMES utf8mb4;
@@ -909,7 +909,7 @@ INSERT INTO `oms_order_parcel` VALUES (107, 117, 3, '英国', NULL, 0, NULL, NUL
 INSERT INTO `oms_order_parcel` VALUES (108, 118, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:47:46');
 INSERT INTO `oms_order_parcel` VALUES (109, 118, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:47:46');
 INSERT INTO `oms_order_parcel` VALUES (116, 122, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 16:00:07');
-INSERT INTO `oms_order_parcel` VALUES (117, 122, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 16:00:07');
+INSERT INTO `oms_order_parcel` VALUES (117, 122, 3, '英国', '2352', 0, NULL, NULL, '2025-03-02 16:00:07');
 
 -- ----------------------------
 -- Table structure for oms_order_return_apply
@@ -2394,7 +2394,7 @@ CREATE TABLE `ums_admin_login_log`  (
   `address` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `user_agent` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '浏览器登录类型',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 459 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '后台用户登录日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 461 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '后台用户登录日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_admin_login_log
@@ -2857,6 +2857,8 @@ INSERT INTO `ums_admin_login_log` VALUES (455, 3, '2025-02-14 15:05:52', '192.16
 INSERT INTO `ums_admin_login_log` VALUES (456, 3, '2025-02-15 11:38:12', '192.168.56.1', NULL, NULL);
 INSERT INTO `ums_admin_login_log` VALUES (457, 3, '2025-02-18 14:19:27', '192.168.56.1', NULL, NULL);
 INSERT INTO `ums_admin_login_log` VALUES (458, 3, '2025-02-24 14:53:42', '192.168.0.108', NULL, NULL);
+INSERT INTO `ums_admin_login_log` VALUES (459, 3, '2025-03-03 15:18:57', '192.168.0.108', NULL, NULL);
+INSERT INTO `ums_admin_login_log` VALUES (460, 3, '2025-03-03 17:16:19', '192.168.0.108', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ums_admin_permission_relation

@@ -133,10 +133,22 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         return result;
     }
 
+    public Integer getStockByProductSn(String productSn) {
+        PmsProduct product = productMapper.selectByProductSn(productSn);
+        if (product != null) {
+            log.info("stock:{}", product.getStock());
+            return product.getStock();
+        } else {
+            log.warn("未找到商品SN为{}的库存信息", productSn);
+            return null;
+        }
+    }
+
+
     @Override
-    public PmsCertification getCertificationByProductSn(String productSn) {
+    public PmsProduct getCertificationByProductSn(String productSn) {
         // 假设认证信息存储在 PmsCertification 表中，根据 productSn 查找认证资料
-        return PmsProductMapper.selectByProductSn(productSn);
+        return productMapper.selectByProductSn(productSn);
     }
 
     @Override
