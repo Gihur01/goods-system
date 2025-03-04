@@ -27,6 +27,8 @@ public class OmsOrderParcel {
     private Timestamp receivedTime;
     @ApiModelProperty(value = "创建时间")
     private Timestamp createTime;
+    @ApiModelProperty(value = "删除状态")
+    private Integer deleteStatus;
 
     public Long getWarehouseId() {
         return warehouseId;

@@ -64,22 +64,26 @@
     </select>
     <select id="getListParcel" resultMap="com.macro.mall.mapper.OmsOrderParcelMapper.BaseResultMap">
         SELECT *
-        FROM
-        oms_order_parcel
-        WHERE
-        parcel_status = 0
-        <!--        &lt;!&ndash; 新增条件：过滤 salesChannelId &ndash;&gt;-->
-        <if test="queryParam.warehouseId != null and queryParam.warehouseId != ''">
-            AND warehouse_id IN
-            <foreach collection="queryParam.warehouseId" item="warehouseId" open="(" separator="," close=")">
-                #{warehouseId}
-            </foreach>
-        </if>
-        <!--        &lt;!&ndash; 新增条件：过滤 orderCountryNum &ndash;&gt;-->
-        <if test="queryParam.location != null and queryParam.location != ''">
-            AND location = #{queryParam.location}
-        </if>
+        FROM oms_order_parcel
+        <where>
+            delete_status = 0
+            <if test="queryParam.parcelStatus != null and queryParam.parcelStatus != ''">
+                AND parcel_status = #{queryParam.parcelStatus}
+            </if>
+
+            <if test="queryParam.warehouseId != null and queryParam.warehouseId.size() > 0">
+                AND warehouse_id IN
+                <foreach collection="queryParam.warehouseId" item="warehouseId" open="(" separator="," close=")">
+                    #{warehouseId}
+                </foreach>
+            </if>
+
+            <if test="queryParam.location != null and queryParam.location != ''">
+                AND location = #{queryParam.location}
+            </if>
+        </where>
     </select>
+
     <select id="getListOrder" resultMap="com.macro.mall.mapper.OmsOrderMapper.BaseResultMap">
         SELECT *
         FROM

@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 03/03/2025 17:47:44
+ Date: 04/03/2025 17:27:32
 */
 
 SET NAMES utf8mb4;
@@ -809,107 +809,108 @@ CREATE TABLE `oms_order_parcel`  (
   `shipping_time` timestamp(0) NULL DEFAULT NULL COMMENT '发货时间',
   `received_time` timestamp(0) NULL DEFAULT NULL COMMENT '签收时间',
   `create_time` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `delete_status` int(1) NULL DEFAULT NULL COMMENT '删除状态',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 118 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci COMMENT = '包裹表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of oms_order_parcel
 -- ----------------------------
-INSERT INTO `oms_order_parcel` VALUES (2, 12, 1, NULL, NULL, 0, NULL, NULL, '2025-02-16 10:36:26');
-INSERT INTO `oms_order_parcel` VALUES (3, 12, 3, NULL, NULL, 0, NULL, NULL, '2025-02-17 10:36:36');
-INSERT INTO `oms_order_parcel` VALUES (4, 12, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (5, 13, 1, NULL, NULL, 0, NULL, NULL, '2025-02-18 10:36:42');
-INSERT INTO `oms_order_parcel` VALUES (6, 13, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (7, 13, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (8, 14, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (9, 14, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (10, 14, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (11, 15, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (12, 15, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (13, 15, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (14, 16, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (15, 16, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (16, 16, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (17, 27, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (18, 28, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (19, 29, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (20, 30, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (21, 31, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (22, 31, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (23, 31, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (24, 32, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (25, 32, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (26, 33, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (27, 34, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (28, 35, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (29, 36, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (30, 36, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (31, 37, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (32, 37, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (33, 38, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (34, 39, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (35, 40, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (36, 41, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (37, 41, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (38, 42, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (39, 43, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (40, 44, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (41, 45, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (42, 45, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (43, 46, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (44, 46, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (45, 47, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (46, 47, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (47, 48, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (48, 49, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (49, 50, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (50, 51, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (51, 52, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (52, 53, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (53, 54, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (54, 55, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (55, 56, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (56, 57, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (57, 58, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (58, 59, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (59, 60, 2, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (60, 60, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (61, 60, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (62, 61, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (63, 62, 2, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (64, 62, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (65, 63, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (66, 64, 2, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (67, 65, 2, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (68, 65, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (69, 66, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (70, 67, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (71, 68, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (72, 69, 2, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (73, 69, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (74, 70, 1, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (75, 71, 5, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (76, 72, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (77, 73, 4, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (78, 74, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (79, 75, 2, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (80, 76, 3, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (81, 76, 5, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (82, 83, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (83, 84, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (85, 96, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (86, 97, NULL, NULL, NULL, 0, NULL, NULL, NULL);
-INSERT INTO `oms_order_parcel` VALUES (88, 100, NULL, '中国', NULL, 0, NULL, NULL, '2025-02-26 10:49:05');
-INSERT INTO `oms_order_parcel` VALUES (102, 115, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:19:32');
-INSERT INTO `oms_order_parcel` VALUES (103, 115, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:19:32');
-INSERT INTO `oms_order_parcel` VALUES (104, 116, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:22:57');
-INSERT INTO `oms_order_parcel` VALUES (105, 116, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:22:57');
-INSERT INTO `oms_order_parcel` VALUES (106, 117, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:27:26');
-INSERT INTO `oms_order_parcel` VALUES (107, 117, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:27:26');
-INSERT INTO `oms_order_parcel` VALUES (108, 118, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:47:46');
-INSERT INTO `oms_order_parcel` VALUES (109, 118, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:47:46');
-INSERT INTO `oms_order_parcel` VALUES (116, 122, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 16:00:07');
-INSERT INTO `oms_order_parcel` VALUES (117, 122, 3, '英国', '2352', 0, NULL, NULL, '2025-03-02 16:00:07');
+INSERT INTO `oms_order_parcel` VALUES (2, 12, 1, NULL, NULL, 0, NULL, NULL, '2025-02-16 10:36:26', NULL);
+INSERT INTO `oms_order_parcel` VALUES (3, 12, 3, NULL, NULL, 0, NULL, NULL, '2025-02-17 10:36:36', NULL);
+INSERT INTO `oms_order_parcel` VALUES (4, 12, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (5, 13, 1, NULL, NULL, 0, NULL, NULL, '2025-02-18 10:36:42', NULL);
+INSERT INTO `oms_order_parcel` VALUES (6, 13, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (7, 13, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (8, 14, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (9, 14, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (10, 14, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (11, 15, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (12, 15, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (13, 15, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (14, 16, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (15, 16, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (16, 16, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (17, 27, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (18, 28, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (19, 29, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (20, 30, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (21, 31, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (22, 31, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (23, 31, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (24, 32, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (25, 32, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (26, 33, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (27, 34, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (28, 35, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (29, 36, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (30, 36, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (31, 37, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (32, 37, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (33, 38, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (34, 39, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (35, 40, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (36, 41, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (37, 41, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (38, 42, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (39, 43, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (40, 44, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (41, 45, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (42, 45, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (43, 46, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (44, 46, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (45, 47, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (46, 47, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (47, 48, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (48, 49, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (49, 50, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (50, 51, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (51, 52, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (52, 53, 1, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (53, 54, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (54, 55, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (55, 56, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (56, 57, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (57, 58, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (58, 59, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (59, 60, 2, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (60, 60, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (61, 60, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (62, 61, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (63, 62, 2, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (64, 62, 4, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (65, 63, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (66, 64, 2, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (67, 65, 2, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (68, 65, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (69, 66, 3, NULL, NULL, 0, NULL, NULL, NULL, NULL);
+INSERT INTO `oms_order_parcel` VALUES (70, 67, 1, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (71, 68, 1, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (72, 69, 2, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (73, 69, 3, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (74, 70, 1, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (75, 71, 5, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (76, 72, 4, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (77, 73, 4, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (78, 74, 3, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (79, 75, 2, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (80, 76, 3, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (81, 76, 5, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (82, 83, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (83, 84, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (85, 96, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (86, 97, NULL, NULL, NULL, 0, NULL, NULL, NULL, 0);
+INSERT INTO `oms_order_parcel` VALUES (88, 100, 1, '中国', NULL, 0, NULL, NULL, '2025-02-26 10:49:05', 0);
+INSERT INTO `oms_order_parcel` VALUES (102, 115, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:19:32', 0);
+INSERT INTO `oms_order_parcel` VALUES (103, 115, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:19:32', 0);
+INSERT INTO `oms_order_parcel` VALUES (104, 116, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:22:57', 0);
+INSERT INTO `oms_order_parcel` VALUES (105, 116, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:22:57', 0);
+INSERT INTO `oms_order_parcel` VALUES (106, 117, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:27:26', 0);
+INSERT INTO `oms_order_parcel` VALUES (107, 117, 3, '英国', NULL, 0, NULL, NULL, '2025-03-02 15:27:26', 0);
+INSERT INTO `oms_order_parcel` VALUES (108, 118, 4, '法国', NULL, 0, NULL, NULL, '2025-03-02 15:47:46', 0);
+INSERT INTO `oms_order_parcel` VALUES (109, 118, 3, '英国', NULL, 3, NULL, NULL, '2025-03-02 15:47:46', 0);
+INSERT INTO `oms_order_parcel` VALUES (116, 122, 4, '法国', NULL, 1, NULL, NULL, '2025-03-02 16:00:07', 0);
+INSERT INTO `oms_order_parcel` VALUES (117, 122, 3, '英国', '2352', 2, NULL, NULL, '2025-03-02 16:00:07', 0);
 
 -- ----------------------------
 -- Table structure for oms_order_return_apply
@@ -3734,7 +3735,7 @@ CREATE TABLE `wms_admin_warehouse_relation`  (
   INDEX `warehouse_id`(`warehouse_id`) USING BTREE,
   CONSTRAINT `wms_admin_warehouse_relation_ibfk_1` FOREIGN KEY (`admin_id`) REFERENCES `ums_admin` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `wms_admin_warehouse_relation_ibfk_2` FOREIGN KEY (`warehouse_id`) REFERENCES `wms_warehouse` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of wms_admin_warehouse_relation
@@ -3742,6 +3743,8 @@ CREATE TABLE `wms_admin_warehouse_relation`  (
 INSERT INTO `wms_admin_warehouse_relation` VALUES (1, 3, 1);
 INSERT INTO `wms_admin_warehouse_relation` VALUES (2, 3, 3);
 INSERT INTO `wms_admin_warehouse_relation` VALUES (3, 3, 4);
+INSERT INTO `wms_admin_warehouse_relation` VALUES (4, 3, 2);
+INSERT INTO `wms_admin_warehouse_relation` VALUES (5, 3, 5);
 
 -- ----------------------------
 -- Table structure for wms_center

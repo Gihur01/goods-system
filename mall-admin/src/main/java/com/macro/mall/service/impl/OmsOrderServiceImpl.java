@@ -110,6 +110,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             queryParam.setLocation(location);
         }
         log.info("查询参数: {}", queryParam);
+        log.info("ParcelStatus: {}", queryParam.getParcelStatus());
         PageHelper.startPage(pageNum, pageSize);
         return orderDao.getListParcel(queryParam);
     }
