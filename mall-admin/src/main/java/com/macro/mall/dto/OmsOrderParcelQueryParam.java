@@ -17,7 +17,7 @@ public class OmsOrderParcelQueryParam {
     private String location;
 
     @ApiModelProperty(value = "包裹状态")
-    private Integer parcelStatus;
+    private List<Integer> parcelStatus;
 
 
     // Getter 和 Setter 方法

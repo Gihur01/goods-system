@@ -67,8 +67,11 @@
         FROM oms_order_parcel
         <where>
             delete_status = 0
-            <if test="queryParam.parcelStatus != null and queryParam.parcelStatus != ''">
-                AND parcel_status = #{queryParam.parcelStatus}
+            <if test="queryParam.parcelStatus != null and queryParam.parcelStatus.size() > 0">
+                AND parcel_status IN
+                <foreach collection="queryParam.parcelStatus" item="parcelStatus" open="(" separator="," close=")">
+                    #{parcelStatus}
+                </foreach>
             </if>
 
             <if test="queryParam.warehouseId != null and queryParam.warehouseId.size() > 0">
