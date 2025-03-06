@@ -29,13 +29,6 @@ public class OmsOrderController {
     @Autowired
     private OmsOrderService orderService;
 
-//    @ApiOperation("创建订单oms_order")
-//    @RequestMapping(value = "/create", method = RequestMethod.POST)
-//    @ResponseBody
-//    public OmsOrder createOrder(@RequestBody OmsOrderCreateParam creatorder) {
-//        return orderService.createOrder(creatorder);
-//    }
-
     @ApiOperation("查询订单oms_order")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody

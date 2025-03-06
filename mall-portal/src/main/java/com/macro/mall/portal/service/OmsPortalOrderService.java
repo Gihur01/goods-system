@@ -3,10 +3,7 @@ package com.macro.mall.portal.service;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderCreateParam;
-import com.macro.mall.portal.domain.ConfirmOrderResult;
-import com.macro.mall.portal.domain.OmsOrderDetail;
-import com.macro.mall.portal.domain.OmsReceiverInfoParam;
-import com.macro.mall.portal.domain.OrderParam;
+import com.macro.mall.portal.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -72,7 +69,7 @@ public interface OmsPortalOrderService {
     /**
      * 根据订单ID获取订单详情
      */
-    OmsOrderDetail detail(String orderSn);
+    OmsOrderDeliveryDetail detail(String orderSn);
 
     /**
      * 用户根据订单ID删除订单

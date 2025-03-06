@@ -14,6 +14,8 @@ public class OmsOrderItem implements Serializable {
     private String orderSn;
     @ApiModelProperty(value = "包裹ID")
     private Long parcelId;
+    @ApiModelProperty(value = "包裹状态")
+    private int parcelStatus;
     @ApiModelProperty(value = "仓库编号")
     private Long warehouseId;
     @ApiModelProperty(value = "所在国家")
@@ -114,6 +116,14 @@ public class OmsOrderItem implements Serializable {
 
     public void setParcelId(Long parcelId) {
         this.parcelId = parcelId;
+    }
+
+    public int getParcelStatus() {
+        return parcelStatus;
+    }
+
+    public void setParcelStatus(int parcelStatus) {
+        this.parcelStatus = parcelStatus;
     }
 
     public Long getWarehouseId() {

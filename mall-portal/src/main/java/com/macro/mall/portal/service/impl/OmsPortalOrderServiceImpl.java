@@ -590,25 +590,57 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
-    public OmsOrderDetail detail(String orderSn) {
+    public OmsOrderDeliveryDetail detail(String orderSn) {
+        // 查询订单信息
         OmsOrder omsOrder = orderMapper.selectByOrderSn(orderSn);
-        OmsOrderItemExample example = new OmsOrderItemExample();
-        example.createCriteria().andOrderSnEqualTo(orderSn);
-        List<OmsOrderItem> orderItemList = orderItemMapper.selectByExample(example);
-        OmsOrderDetail orderDetail = new OmsOrderDetail();
-//        BeanUtil.copyProperties(omsOrder,orderDetail);
-        orderDetail.setCreateTime(omsOrder.getCreateTime());
-        orderDetail.setDeleteStatus(omsOrder.getDeleteStatus());
-        orderDetail.setDeliveryCompany(omsOrder.getDeliveryCompany());
-        orderDetail.setDeliverySn(omsOrder.getDeliverySn());
-        orderDetail.setDeliveryTime(omsOrder.getDeliveryTime());
-        orderDetail.setModifyTime(omsOrder.getModifyTime());
-        orderDetail.setNote(omsOrder.getNote());
-        orderDetail.setOrderItemList(orderItemList);
-        orderDetail.setOrderSn(omsOrder.getOrderSn());
-        orderDetail.setReceiveTime(omsOrder.getReceiveTime());
-        orderDetail.setStatus(omsOrder.getStatus());
-        return orderDetail;
+        if (omsOrder == null) {
+            throw new RuntimeException("订单不存在: " + orderSn);
+        }
+
+        // 查询订单的包裹信息
+        List<OmsOrderParcel> orderParcels = orderMapper.getParcelsByIds(Arrays.asList(omsOrder.getId()));
+        log.info("orderparcel:{}", orderParcels);
+
+        // 构建返回对象
+        OmsOrderDeliveryDetail deliveryDetail = new OmsOrderDeliveryDetail();
+        deliveryDetail.setOrderSn(orderSn);
+
+        // 组装包裹信息
+        List<OmsOrderDeliveryDetail.Parcel> parcelList = new ArrayList<>();
+        for (OmsOrderParcel parcel : orderParcels) {
+            OmsOrderDeliveryDetail.Parcel parcelDetail = new OmsOrderDeliveryDetail.Parcel();
+            parcelDetail.setParcelId(parcel.getId());
+
+            // 设置物流信息
+            OmsOrderDeliveryDetail.Delivery delivery = new OmsOrderDeliveryDetail.Delivery();
+            delivery.setParcelCompany(parcel.getParcelCompany());
+            delivery.setParcelSn(parcel.getParcelSn());
+            delivery.setParcelStatus(parcel.getParcelStatus());
+//            delivery.setStatusDescription(parcel.getStatusDescription());
+//            delivery.setLastOperator(parcel.getLastOperator());
+//            delivery.setLatestUpdate(parcel.getLatestUpdate().getTime()); // 假设 latestUpdate 是 Date 类型
+            delivery.setLocation(parcel.getLocation());
+            parcelDetail.setDelivery(delivery);
+
+            // 查询包裹内商品
+            List<OmsOrderItem> parcelItems = orderMapper.getItemsByParcelId(parcel.getId());
+            List<OmsOrderDeliveryDetail.Item> itemList = new ArrayList<>();
+            for (OmsOrderItem item : parcelItems) {
+                OmsOrderDeliveryDetail.Item itemDetail = new OmsOrderDeliveryDetail.Item();
+                itemDetail.setProductSn(item.getProductSn());
+                itemDetail.setProductName(item.getProductName());
+                itemDetail.setProductQuantity(item.getProductQuantity());
+                itemDetail.setProductStatus(item.getParcelStatus());
+                itemList.add(itemDetail);
+            }
+            parcelDetail.setItems(itemList);
+
+            // 添加到包裹列表
+            parcelList.add(parcelDetail);
+        }
+
+        deliveryDetail.setParcels(parcelList);
+        return deliveryDetail;
     }
 
     @Override

@@ -17,6 +17,8 @@ public class OmsOrderParcel {
     private Long warehouseId;
     @ApiModelProperty(value = "所在国家")
     private String location;
+    @ApiModelProperty(value = "物流公司")
+    private String parcelCompany;
     @ApiModelProperty(value = "包裹编号")
     private String parcelSn;
     @ApiModelProperty(value = "包裹状态")

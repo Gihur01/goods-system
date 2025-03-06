@@ -166,9 +166,8 @@
     from oms_order
     where order_sn = #{orderSn,jdbcType=VARCHAR}
   </select>
-  <select id="getParcelsByIds" resultMap="BaseResultMap">
-    SELECT * FROM oms_order_parcel
-    WHERE id IN
+  <select id="getParcelsByIds" parameterType="java.util.List" resultType="com.macro.mall.model.OmsOrderParcel">
+    SELECT * FROM oms_order_parcel WHERE id IN
     <foreach collection="ids" item="id" open="(" separator="," close=")">
       #{id}
     </foreach>
@@ -571,6 +570,9 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+  </select>
+  <select id="getItemsByParcelId" parameterType="Long" resultType="com.macro.mall.model.OmsOrderItem">
+    SELECT * FROM oms_order_item WHERE parcel_id = #{parcelId}
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update oms_order

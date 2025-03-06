@@ -4,10 +4,7 @@ import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderCreateParam;
-import com.macro.mall.portal.domain.ConfirmOrderResult;
-import com.macro.mall.portal.domain.OmsOrderDetail;
-import com.macro.mall.portal.domain.OmsReceiverInfoParam;
-import com.macro.mall.portal.domain.OrderParam;
+import com.macro.mall.portal.domain.*;
 import com.macro.mall.portal.service.OmsPortalOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -51,8 +48,13 @@ public class OmsPortalOrderController {
     @ApiOperation("创建订单oms_order")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public OmsOrder createOrder(@RequestBody OmsOrderCreateParam creatorder) {
-        return portalOrderService.createOrder(creatorder);
+    public CommonResult<OmsOrder> createOrder(@RequestBody OmsOrderCreateParam creatorder) {
+        try {
+            portalOrderService.createOrder(creatorder);
+            return CommonResult.success(null, "创建成功");
+        } catch (Exception e) {
+            return CommonResult.failed("创建订单失败");
+        }
     }
 
     @ApiOperation("修改收货人信息")
@@ -102,12 +104,16 @@ public class OmsPortalOrderController {
         return CommonResult.success(orderPage);
     }
 
-    @ApiOperation("根据orderSn获取订单详情")
-    @RequestMapping(value = "/detail/{orderSn}", method = RequestMethod.GET)
+    @ApiOperation("获取订单物流详情")
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<OmsOrderDetail> detail(@PathVariable String orderSn) {
-        OmsOrderDetail orderDetail = portalOrderService.detail(orderSn);
-        return CommonResult.success(orderDetail);
+    public CommonResult<OmsOrderDeliveryDetail> detail(@RequestParam String orderSn) {
+        OmsOrderDeliveryDetail orderDetail = portalOrderService.detail(orderSn);
+        if (orderDetail != null) {
+            return CommonResult.success(null, "查询成功");
+        } else {
+            return CommonResult.failed("订单不存在");
+        }
     }
 
     @ApiOperation("用户取消订单")

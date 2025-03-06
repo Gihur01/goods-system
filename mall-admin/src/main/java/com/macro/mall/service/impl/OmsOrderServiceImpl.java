@@ -27,10 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -96,24 +93,57 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     }
 
     public List<OmsOrderParcel> listParcel(OmsOrderParcelQueryParam queryParam, Integer pageSize, Integer pageNum) {
-        List<UmsRole> UserRole = umsAdminService.getCurrentUserRole();
-        Long roleId = UserRole.get(0).getId();
-        log.info("角色ID: {}", roleId);
-        if(roleId == 7) {
-            List<Long> warehouseId = umsAdminService.getWarehousesByAdminId();
-            log.info("仓库ID: {}", warehouseId);
-            queryParam.setWarehouseId(warehouseId);
+        List<UmsRole> userRoles = umsAdminService.getCurrentUserRole();
+        if (userRoles == null || userRoles.isEmpty()) {
+            log.warn("当前用户没有角色信息");
+            return Collections.emptyList();
         }
-        if(roleId == 8) {
+
+        Long roleId = userRoles.get(0).getId();
+        log.info("角色ID: {}", roleId);
+
+        // Java 8 兼容的 Set 初始化方式
+        Set<Long> warehouseRoles = Collections.singleton(7L);
+        Set<Long> locationRoles = Collections.singleton(8L);
+
+        // 获取当前用户有权限的仓库 ID
+        if (warehouseRoles.contains(roleId)) {
+            List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
+            log.info("用户有权限的仓库ID: {}", warehouseIds);
+
+            // 如果 queryParam 传了 warehouseId，则交叉筛选
+            if (queryParam.getWarehouseId() != null && !queryParam.getWarehouseId().isEmpty()) {
+                // 取交集：保证最终的 warehouseId 仍在用户权限范围内
+                List<Long> filteredWarehouseIds = queryParam.getWarehouseId()
+                        .stream()
+                        .filter(warehouseIds::contains)
+                        .collect(Collectors.toList());
+
+                // 交集为空时，返回空列表，避免无权限数据泄露
+                if (filteredWarehouseIds.isEmpty()) {
+                    log.warn("用户传入的仓库ID不在权限范围内，返回空列表");
+                    return Collections.emptyList();
+                }
+
+                queryParam.setWarehouseId(filteredWarehouseIds);
+            } else {
+                // 直接使用用户有权限的仓库 ID
+                queryParam.setWarehouseId(warehouseIds);
+            }
+        }
+
+        if (locationRoles.contains(roleId)) {
             String location = umsAdminService.getOrderCountryNum();
             log.info("物流国家: {}", location);
             queryParam.setLocation(location);
         }
-        log.info("查询参数: {}", queryParam);
-        log.info("ParcelStatus: {}", queryParam.getParcelStatus());
+
+        log.info("最终查询参数: {}", queryParam);
+
         PageHelper.startPage(pageNum, pageSize);
         return orderDao.getListParcel(queryParam);
     }
+
 
     @Override
     public int delivery(List<OmsOrderDeliveryParam> deliveryParamList) {

@@ -47,7 +47,8 @@ public interface OmsOrderMapper {
 
     void insertParcel(OmsOrderParcel newParcel);
 
-    List<OmsOrderParcel> getParcelsByIds(List<Long> ids);
+    List<OmsOrderParcel> getParcelsByIds(@Param("ids") List<Long> ids);
 
+    List<OmsOrderItem> getItemsByParcelId(@Param("parcelId") Long parcelId);
 
 }
