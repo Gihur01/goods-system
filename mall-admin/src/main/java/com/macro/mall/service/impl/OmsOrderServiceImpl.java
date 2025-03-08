@@ -313,8 +313,17 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             log.warn("未找到对应的包裹信息");
             return 0;
         }
+        log.info("获取的包裹信息: {}", parcels);
 
         for (OmsOrderParcel parcel : parcels) {
+            log.info("包裹信息: {}", parcel);
+            log.info("parcel.orderId: {}", parcel.getOrderId());
+
+            if (parcel.getOrderId() == null) {
+                log.error("包裹数据异常，orderId 为空，parcelId: {}", parcel.getId());
+                continue;
+            }
+
             Long orderId = parcel.getOrderId();
             String parcelLocation = parcel.getLocation();
 
@@ -350,7 +359,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 newParcel.setOrderId(orderId);
                 newParcel.setLocation(orderCountry);
                 newParcel.setCreateTime(new Timestamp(System.currentTimeMillis()));
-                newParcel.setParcelStatus(0); // 未发货
+                newParcel.setParcelStatus(1); // 未发货
                 orderMapper.insertParcel(newParcel);
 
                 // **第二个包裹: 从 order_country（中转仓库）发往最终客户**
@@ -431,5 +440,34 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             // 记录异常并返回自定义错误信息
             throw new RuntimeException("Failed to read the PDF file: " + e.getMessage());
         }
+    }
+
+
+    public List<OmsOrderItemSimple> stockup(List<Long> parcelIds) {
+        if (parcelIds == null || parcelIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 查询备货清单
+        List<OmsOrderItemSimple> packingList = orderMapper.getPackingList(parcelIds);
+
+        // 更新 item_status = 3（开始备货）
+        orderMapper.updateStatus("oms_order_item", "item_status", 3, "parcel_id", parcelIds);
+
+        return packingList;
+    }
+
+    public int completePacking(List<Long> parcelIds) {
+        if (parcelIds == null || parcelIds.isEmpty()) {
+            return 0;
+        }
+        return orderMapper.updateStatus("oms_order_item", "item_status", 4, "parcel_id", parcelIds);
+    }
+
+    public int collectParcel(List<Long> parcelIds) {
+        if (parcelIds == null || parcelIds.isEmpty()) {
+            return 0;
+        }
+        return orderMapper.updateStatus("oms_order_parcel", "parcel_status", 5, "id", parcelIds);
     }
 }

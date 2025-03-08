@@ -3,12 +3,10 @@ package com.macro.mall.controller;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.dto.*;
-import com.macro.mall.model.OmsOrder;
-import com.macro.mall.model.OmsOrderCreateParam;
-import com.macro.mall.model.OmsOrderItem;
-import com.macro.mall.model.OmsOrderParcel;
+import com.macro.mall.model.*;
 import com.macro.mall.service.OmsOrderService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +60,7 @@ public class OmsOrderController {
     @ApiOperation("批量获取包裹编号")
     @RequestMapping(value = "/update/parcel", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult getParcelSn(@RequestParam("ids") List<Long> ids) {
+    public CommonResult getParcelSn(@RequestParam("parcelId") List<Long> ids) {
         int count = orderService.getParcelSn(ids);
         if (count > 0) {
             return CommonResult.success(count);
@@ -73,8 +71,8 @@ public class OmsOrderController {
     @ApiOperation("打印包裹面单")
     @RequestMapping(value = "/printLabel", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<byte[]> printShippingLabels(@RequestBody List<String> parcelSnList) {
-        byte[] pdfBytes = orderService.getPrintedLabels(parcelSnList);
+    public ResponseEntity<byte[]> printShippingLabels(@RequestBody List<String> parcelSn) {
+        byte[] pdfBytes = orderService.getPrintedLabels(parcelSn);
 
         if (pdfBytes == null || pdfBytes.length == 0) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -87,6 +85,36 @@ public class OmsOrderController {
                 .build());
 
         return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+    }
+
+    @ApiOperation("批量备货")
+    @RequestMapping(value = "/update/stockup", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult<List<OmsOrderItemSimple>> stockup(@RequestBody List<Long> parcelIds) {
+        List<OmsOrderItemSimple> count = orderService.stockup(parcelIds);
+        return CommonResult.success(count);
+    }
+
+    @ApiOperation("备货完成")
+    @RequestMapping(value = "/update/completePacking", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult completePacking(@RequestBody List<Long> parcelIds) {
+        int count = orderService.completePacking(parcelIds);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("包裹揽收")
+    @RequestMapping(value = "/update/collectParcel", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult collectParcel(@RequestBody List<Long> parcelIds) {
+        int count = orderService.collectParcel(parcelIds);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
     }
 
     @ApiOperation("批量发货")

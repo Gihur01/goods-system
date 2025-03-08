@@ -1,11 +1,9 @@
 package com.macro.mall.mapper;
 
-import com.macro.mall.model.OmsOrder;
-import com.macro.mall.model.OmsOrderExample;
+import com.macro.mall.model.*;
+
 import java.util.List;
 
-import com.macro.mall.model.OmsOrderItem;
-import com.macro.mall.model.OmsOrderParcel;
 import org.apache.ibatis.annotations.Param;
 
 public interface OmsOrderMapper {
@@ -51,4 +49,21 @@ public interface OmsOrderMapper {
 
     List<OmsOrderItem> getItemsByParcelId(@Param("parcelId") Long parcelId);
 
+    List<OmsOrderItemSimple> getPackingList(List<Long> parcelIds);
+
+
+    /**
+     * 通用状态更新方法
+     * @param tableName       表名 (oms_order_item 或 oms_order_parcel)
+     * @param statusColumn    状态字段 (item_status 或 parcel_status)
+     * @param statusValue     更新后的状态值
+     * @param conditionColumn 条件字段 (order_id 或 parcel_id)
+     * @param ids             需要更新的 ID 列表
+     * @return 更新的行数
+     */
+    int updateStatus(@Param("tableName") String tableName,
+                     @Param("statusColumn") String statusColumn,
+                     @Param("statusValue") int statusValue,
+                     @Param("conditionColumn") String conditionColumn,
+                     @Param("ids") List<Long> ids);
 }

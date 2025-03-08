@@ -17,12 +17,6 @@
         <if test="queryParam.status!=null">
             AND `status` = #{queryParam.status}
         </if>
-        <if test="queryParam.sourceType!=null">
-            AND source_type = #{queryParam.sourceType}
-        </if>
-        <if test="queryParam.orderType!=null">
-            AND order_type = #{queryParam.orderType}
-        </if>
         <if test="queryParam.createTime!=null and queryParam.createTime!=''">
             AND create_time LIKE concat(#{queryParam.createTime},"%")
         </if>
@@ -61,6 +55,9 @@
         <if test="queryParam.parcelId != null and queryParam.parcelId != ''">
             AND parcel_id = #{queryParam.parcelId}
         </if>
+        <if test="queryParam.productCode != null and queryParam.productCode != ''">
+            AND product_code = #{queryParam.productCode}
+        </if>
     </select>
     <select id="getListParcel" resultMap="com.macro.mall.mapper.OmsOrderParcelMapper.BaseResultMap">
         SELECT *
@@ -73,20 +70,20 @@
                     #{parcelStatus}
                 </foreach>
             </if>
-
             <if test="queryParam.warehouseId != null and queryParam.warehouseId.size() > 0">
                 AND warehouse_id IN
                 <foreach collection="queryParam.warehouseId" item="warehouseId" open="(" separator="," close=")">
                     #{warehouseId}
                 </foreach>
             </if>
-
             <if test="queryParam.location != null and queryParam.location != ''">
                 AND location = #{queryParam.location}
             </if>
+            <if test="queryParam.parcelSn != null and queryParam.parcelSn != ''">
+                AND parcel_sn = #{queryParam.parcelSn}
+            </if>
         </where>
     </select>
-
     <select id="getListOrder" resultMap="com.macro.mall.mapper.OmsOrderMapper.BaseResultMap">
         SELECT *
         FROM

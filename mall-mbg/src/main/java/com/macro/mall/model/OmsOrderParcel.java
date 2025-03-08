@@ -32,10 +32,17 @@ public class OmsOrderParcel {
     @ApiModelProperty(value = "删除状态")
     private Integer deleteStatus;
 
+    public Long getOrderId() {
+        return orderId;
+    }
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
     public Long getWarehouseId() {
         return warehouseId;
     }
     public void setWarehouseId(Long warehouseId) {
         this.warehouseId = warehouseId;
     }
+
 }

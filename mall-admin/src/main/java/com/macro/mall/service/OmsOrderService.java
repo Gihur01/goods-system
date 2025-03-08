@@ -1,10 +1,7 @@
 package com.macro.mall.service;
 
 import com.macro.mall.dto.*;
-import com.macro.mall.model.OmsOrder;
-import com.macro.mall.model.OmsOrderCreateParam;
-import com.macro.mall.model.OmsOrderItem;
-import com.macro.mall.model.OmsOrderParcel;
+import com.macro.mall.model.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -80,4 +77,11 @@ public interface OmsOrderService {
      * 批量打印包裹面单
      */
     byte[] getPrintedLabels(List<String> parcelSnList);
+
+
+    List<OmsOrderItemSimple> stockup(List<Long> parcelIds);
+
+    int completePacking(List<Long> parcelIds);
+
+    int collectParcel(List<Long> parcelIds);
 }
