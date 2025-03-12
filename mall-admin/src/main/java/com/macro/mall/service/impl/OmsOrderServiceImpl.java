@@ -316,8 +316,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         log.info("获取的包裹信息: {}", parcels);
 
         for (OmsOrderParcel parcel : parcels) {
-            log.info("包裹信息: {}", parcel);
-            log.info("parcel.orderId: {}", parcel.getOrderId());
 
             if (parcel.getOrderId() == null) {
                 log.error("包裹数据异常，orderId 为空，parcelId: {}", parcel.getId());
@@ -325,7 +323,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             }
 
             Long orderId = parcel.getOrderId();
+            log.info("parcel.orderId: {}", parcel.getOrderId());
             String parcelLocation = parcel.getLocation();
+            log.info("parcel.getLocation: {}", parcel.getLocation());
 
             // 查询订单获取 order_country
             OmsOrder order = orderMapper.getOrderById(orderId);
@@ -333,12 +333,22 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 log.error("订单ID: {} 未找到，无法获取 order_country", orderId);
                 continue;
             }
-            String orderCountry = order.getOrderCountry();
+            String orderCountry = order.getReceiverCountry();
+            log.info("orderCountry: {}", order.getReceiverCountry());
 
-            OmsGLSAddress finalReceiverAddress = centerService.getTransitAddressByCountry(parcel.getLocation()); // 订单最终收件人地址
+            OmsGLSAddress finalReceiverAddress = new OmsGLSAddress();
+            finalReceiverAddress.setName(order.getReceiverName());
+            finalReceiverAddress.setStreet(order.getReceiverStreet());
+            finalReceiverAddress.setHouseNumber(order.getReceiverStreetNum());
+            finalReceiverAddress.setHouseNumberInfo(order.getReceiverDetailAddress());
+            finalReceiverAddress.setCity(order.getReceiverCity());
+            finalReceiverAddress.setZipCode(order.getReceiverPostCode());
+            finalReceiverAddress.setCountryIsoCode(order.getReceiverCountry());
+            finalReceiverAddress.setContactName(order.getReceiverName());
 
             // 获取发货人地址（仓库地址）
             OmsGLSAddress senderAddress = centerService.getTransitAddressByCountry(parcel.getLocation());
+            log.info("senderCountry: {}", senderAddress.getCountryIsoCode());
 
             // 如果 location 与 order_country 不一致，说明是跨国订单，需要创建两个包裹
             if (!parcelLocation.equals(orderCountry)) {
@@ -352,21 +362,24 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 }
 
                 // **第一个包裹: 从当前仓库发往 order_country（中转仓库）**
-                callGLSApi(parcel, transitAddress, senderAddress);
+                callGLSApi(parcel.getId(), transitAddress, senderAddress);
 
                 // **创建新的包裹**
                 OmsOrderParcel newParcel = new OmsOrderParcel();
                 newParcel.setOrderId(orderId);
+                newParcel.setWarehouseId(parcel.getWarehouseId());
                 newParcel.setLocation(orderCountry);
+                newParcel.setParcelSn("");
                 newParcel.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 newParcel.setParcelStatus(1); // 未发货
                 orderMapper.insertParcel(newParcel);
+                log.info("New Parcel ID: {}", newParcel.getId());
 
                 // **第二个包裹: 从 order_country（中转仓库）发往最终客户**
-                callGLSApi(newParcel, finalReceiverAddress, transitAddress);
+                callGLSApi(newParcel.getId(), finalReceiverAddress, transitAddress);
             } else {
                 // **普通国内包裹，直接发到客户地址**
-                callGLSApi(parcel, finalReceiverAddress, senderAddress);
+                callGLSApi(parcel.getId(), finalReceiverAddress, senderAddress);
             }
         }
         return parcels.size();
@@ -374,38 +387,19 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     /**
      * 调用 GLS API 获取 ParcelSn
-     * @param parcel 需要发货的包裹信息
+     * @param parcelId 需要发货的包裹id
      * @param receiverAddress 收件人地址
      * @param senderAddress 发件人地址
      */
-    private void callGLSApi(OmsOrderParcel parcel, OmsGLSAddress receiverAddress, OmsGLSAddress senderAddress) {
-//        GLSRequest request = new GLSRequest();
-//        request.setUsername("myglsapitest@test.mygls.hu");
-//        request.setPassword("1pImY_gls.hu");
-//
-//        GLSParcel glsParcel = new GLSParcel();
-//        glsParcel.setClientNumber(12345678);
-//        glsParcel.setClientReference("order_" + parcel.getOrderId());
-//        glsParcel.setCount(1);
-//        glsParcel.setCODAmount(0);
-//        glsParcel.setContent("General Goods");
-//
-//        // 发货地址（仓库或中转站）
-//        glsParcel.setPickupAddress(senderAddress);
-//
-//        // 收货地址（中转站或最终客户）
-//        glsParcel.setDeliveryAddress(receiverAddress);
-//
-//        request.setParcelList(Collections.singletonList(glsParcel));
-//
-//        GLSResponse response = glsApiService.sendParcelRequest(request);
-//        if (response != null && response.isSuccess()) {
-//            parcel.setParcelSn(response.getParcelNumber());
-//            orderMapper.updateParcel(parcel);
-//            log.info("成功获取 GLS 物流单号: {}", response.getParcelNumber());
-//        } else {
-//            log.error("GLS API 请求失败: {}", response);
-//        }
+    private void callGLSApi(Long parcelId, OmsGLSAddress receiverAddress, OmsGLSAddress senderAddress) {
+        // 生成 parcelSn
+        String parcelSn = receiverAddress.getCountryIsoCode() + senderAddress.getCountryIsoCode();
+
+        // 记录日志
+        log.info("ParcelSn: {}", parcelSn);
+
+        // 更新数据库中的 parcel_sn
+        orderMapper.updateParcelSn(parcelId, parcelSn);
     }
 
 

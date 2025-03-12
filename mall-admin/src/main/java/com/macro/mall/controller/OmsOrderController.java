@@ -71,7 +71,7 @@ public class OmsOrderController {
     @ApiOperation("打印包裹面单")
     @RequestMapping(value = "/printLabel", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<byte[]> printShippingLabels(@RequestBody List<String> parcelSn) {
+    public ResponseEntity<byte[]> printShippingLabels(@RequestParam List<String> parcelSn) {
         byte[] pdfBytes = orderService.getPrintedLabels(parcelSn);
 
         if (pdfBytes == null || pdfBytes.length == 0) {
@@ -90,7 +90,7 @@ public class OmsOrderController {
     @ApiOperation("批量备货")
     @RequestMapping(value = "/update/stockup", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult<List<OmsOrderItemSimple>> stockup(@RequestBody List<Long> parcelIds) {
+    public CommonResult<List<OmsOrderItemSimple>> stockup(@RequestParam List<Long> parcelIds) {
         List<OmsOrderItemSimple> count = orderService.stockup(parcelIds);
         return CommonResult.success(count);
     }
@@ -98,7 +98,7 @@ public class OmsOrderController {
     @ApiOperation("备货完成")
     @RequestMapping(value = "/update/completePacking", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult completePacking(@RequestBody List<Long> parcelIds) {
+    public CommonResult completePacking(@RequestParam List<Long> parcelIds) {
         int count = orderService.completePacking(parcelIds);
         if (count > 0) {
             return CommonResult.success(count);
@@ -109,7 +109,7 @@ public class OmsOrderController {
     @ApiOperation("包裹揽收")
     @RequestMapping(value = "/update/collectParcel", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult collectParcel(@RequestBody List<Long> parcelIds) {
+    public CommonResult collectParcel(@RequestParam List<Long> parcelIds) {
         int count = orderService.collectParcel(parcelIds);
         if (count > 0) {
             return CommonResult.success(count);
@@ -120,7 +120,7 @@ public class OmsOrderController {
     @ApiOperation("批量发货")
     @RequestMapping(value = "/update/delivery", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult delivery(@RequestBody List<OmsOrderDeliveryParam> deliveryParamList) {
+    public CommonResult delivery(@RequestParam List<OmsOrderDeliveryParam> deliveryParamList) {
         int count = orderService.delivery(deliveryParamList);
         if (count > 0) {
             return CommonResult.success(count);
@@ -205,7 +205,7 @@ public class OmsOrderController {
     @ApiOperation("修改收货人信息")
     @RequestMapping(value = "/update/receiverInfo", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult updateReceiverInfo(@RequestBody OmsReceiverInfoParam receiverInfoParam) {
+    public CommonResult updateReceiverInfo(@RequestParam OmsReceiverInfoParam receiverInfoParam) {
         int count = orderService.updateReceiverInfo(receiverInfoParam);
         if (count > 0) {
             return CommonResult.success(count);
@@ -216,7 +216,7 @@ public class OmsOrderController {
     @ApiOperation("修改订单费用信息")
     @RequestMapping(value = "/update/moneyInfo", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult updateReceiverInfo(@RequestBody OmsMoneyInfoParam moneyInfoParam) {
+    public CommonResult updateReceiverInfo(@RequestParam OmsMoneyInfoParam moneyInfoParam) {
         int count = orderService.updateMoneyInfo(moneyInfoParam);
         if (count > 0) {
             return CommonResult.success(count);

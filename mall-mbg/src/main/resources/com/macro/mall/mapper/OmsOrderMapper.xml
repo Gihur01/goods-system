@@ -33,6 +33,7 @@
     <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
     <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone" />
     <result column="receiver_post_code" jdbcType="VARCHAR" property="receiverPostCode" />
+    <result column="receiver_country" jdbcType="VARCHAR" property="receiverCountry" />
     <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince" />
     <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity" />
     <result column="receiver_region" jdbcType="VARCHAR" property="receiverRegion" />
@@ -54,7 +55,7 @@
     <result column="location" jdbcType="VARCHAR" property="location" />
     <result column="parcel_company" jdbcType="VARCHAR" property="parcelCompany" />
     <result column="parcel_sn" jdbcType="VARCHAR" property="parcelSn" />
-    <result column="parcel_status" jdbcType="INTEGER" property="productStatus" />
+    <result column="parcel_status" jdbcType="INTEGER" property="parcelStatus" />
   </resultMap>
   <resultMap id="BaseItemResultMap" type="com.macro.mall.model.OmsOrderItem">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -178,7 +179,7 @@
   <select id="getOrderById" parameterType="com.macro.mall.model.OmsOrder" resultMap="BaseResultMap">
     select *
     from oms_order
-    WHERE id = #{orderId}
+    WHERE id = #{id}
   </select>
   <select id="getParcelsByIds" parameterType="java.util.List" resultType="com.macro.mall.model.OmsOrderParcel" resultMap="BaseParcelResultMap">
     SELECT * FROM oms_order_parcel WHERE id IN
@@ -296,9 +297,9 @@
     #{orderSn,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=INTEGER}
     )
   </insert>
-  <insert id="insertParcel" parameterType="com.macro.mall.model.OmsOrderParcel">
+  <insert id="insertParcel" parameterType="com.macro.mall.model.OmsOrderParcel" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
-    VALUES (#{orderId}, #{location}, #{createTime}, #{parcelStatus})
+    VALUES (#{orderId}, #{warehouseId}, #{location}, #{createTime}, #{parcelStatus})
   </insert>
 
   <insert id="batchInsertOrderItems" parameterType="com.macro.mall.model.OmsOrderItem">
@@ -1125,5 +1126,8 @@
     <foreach item="id" collection="ids" open="(" separator="," close=")">
       #{id}
     </foreach>
+  </update>
+  <update id="updateParcelSn" parameterType="com.macro.mall.model.OmsOrderParcel">
+    UPDATE oms_order_parcel SET parcel_sn = #{parcelSn} WHERE id = #{parcelId}
   </update>
 </mapper>

@@ -44,5 +44,17 @@ public class OmsOrderParcel {
     public void setWarehouseId(Long warehouseId) {
         this.warehouseId = warehouseId;
     }
+    public String getParcelSn() {
+        return parcelSn;
+    }
+    public void setParcelSn(String parcelSn) {
+        this.parcelSn = parcelSn;
+    }
+    public Integer getParcelStatus() {
+        return parcelStatus;
+    }
+    public void setParcelStatus(Integer parcelStatus) {
+        this.parcelStatus = parcelStatus;
+    }
 
 }
