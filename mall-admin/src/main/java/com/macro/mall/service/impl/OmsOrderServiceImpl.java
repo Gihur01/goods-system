@@ -317,6 +317,12 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
         for (OmsOrderParcel parcel : parcels) {
 
+            // 仅当 parcelStatus 为 1 (未发货) 时才处理
+            if (parcel.getParcelStatus() != 1) {
+                log.info("包裹ID: {} 状态为 {}，跳过该包裹", parcel.getId(), parcel.getParcelStatus());
+                continue;  // 跳过状态不是 1 的包裹
+            }
+
             if (parcel.getOrderId() == null) {
                 log.error("包裹数据异常，orderId 为空，parcelId: {}", parcel.getId());
                 continue;
@@ -369,7 +375,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 newParcel.setOrderId(orderId);
                 newParcel.setWarehouseId(parcel.getWarehouseId());
                 newParcel.setLocation(orderCountry);
-                newParcel.setParcelSn("");
                 newParcel.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 newParcel.setParcelStatus(1); // 未发货
                 orderMapper.insertParcel(newParcel);
@@ -399,7 +404,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         log.info("ParcelSn: {}", parcelSn);
 
         // 更新数据库中的 parcel_sn
-        orderMapper.updateParcelSn(parcelId, parcelSn);
+        orderMapper.updateParcelSn(parcelId, parcelSn, 2);
     }
 
 

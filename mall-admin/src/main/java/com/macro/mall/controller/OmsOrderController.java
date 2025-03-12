@@ -205,7 +205,7 @@ public class OmsOrderController {
     @ApiOperation("修改收货人信息")
     @RequestMapping(value = "/update/receiverInfo", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult updateReceiverInfo(@RequestParam OmsReceiverInfoParam receiverInfoParam) {
+    public CommonResult updateReceiverInfo(OmsReceiverInfoParam receiverInfoParam) {
         int count = orderService.updateReceiverInfo(receiverInfoParam);
         if (count > 0) {
             return CommonResult.success(count);
@@ -216,7 +216,7 @@ public class OmsOrderController {
     @ApiOperation("修改订单费用信息")
     @RequestMapping(value = "/update/moneyInfo", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult updateReceiverInfo(@RequestParam OmsMoneyInfoParam moneyInfoParam) {
+    public CommonResult updateReceiverInfo(OmsMoneyInfoParam moneyInfoParam) {
         int count = orderService.updateMoneyInfo(moneyInfoParam);
         if (count > 0) {
             return CommonResult.success(count);

@@ -67,5 +67,5 @@ public interface OmsOrderMapper {
                      @Param("conditionColumn") String conditionColumn,
                      @Param("ids") List<Long> ids);
 
-    void updateParcelSn(Long parcelId, String parcelSn);
+    void updateParcelSn(Long parcelId, String parcelSn, int parcelStatus);
 }

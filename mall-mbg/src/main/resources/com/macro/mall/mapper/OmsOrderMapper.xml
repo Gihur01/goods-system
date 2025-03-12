@@ -1128,6 +1128,8 @@
     </foreach>
   </update>
   <update id="updateParcelSn" parameterType="com.macro.mall.model.OmsOrderParcel">
-    UPDATE oms_order_parcel SET parcel_sn = #{parcelSn} WHERE id = #{parcelId}
+    UPDATE oms_order_parcel
+    SET parcel_sn = #{parcelSn}, parcel_status = #{parcelStatus}
+    WHERE id = #{parcelId}
   </update>
 </mapper>
