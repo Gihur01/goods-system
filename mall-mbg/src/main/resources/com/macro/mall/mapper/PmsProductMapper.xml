@@ -28,6 +28,7 @@
     <result column="low_stock" jdbcType="INTEGER" property="lowStock" />
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="weight" jdbcType="DECIMAL" property="weight" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="preview_status" jdbcType="INTEGER" property="previewStatus" />
     <result column="service_ids" jdbcType="VARCHAR" property="serviceIds" />
     <result column="keywords" jdbcType="VARCHAR" property="keywords" />
@@ -107,7 +108,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, brand_id, product_category_id, feight_template_id, product_attribute_category_id, 
-    name, warehouse_id, shelf_time, pic, product_sn, delete_status, publish_status, new_status, recommand_status,
+    name, warehouse_id, shelf_time, pic, product_sn, product_code, delete_status, publish_status, new_status, recommand_status,
     verify_status, sort, sale, price, promotion_price, gift_growth, gift_point, use_point_limit, 
     sub_title, original_price, stock, low_stock, unit, weight, preview_status, service_ids, 
     keywords, note, album_pics, detail_title, promotion_start_time, promotion_end_time, 

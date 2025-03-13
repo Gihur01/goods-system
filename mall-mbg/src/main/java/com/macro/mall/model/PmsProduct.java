@@ -325,6 +325,14 @@ public class PmsProduct implements Serializable {
         this.unit = unit;
     }
 
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
     public BigDecimal getWeight() {
         return weight;
     }
@@ -493,6 +501,7 @@ public class PmsProduct implements Serializable {
         sb.append(", lowStock=").append(lowStock);
         sb.append(", unit=").append(unit);
         sb.append(", weight=").append(weight);
+        sb.append(", productCode=").append(productCode);
         sb.append(", previewStatus=").append(previewStatus);
         sb.append(", serviceIds=").append(serviceIds);
         sb.append(", keywords=").append(keywords);

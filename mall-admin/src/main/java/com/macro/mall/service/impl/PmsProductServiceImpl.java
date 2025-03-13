@@ -318,6 +318,10 @@ public class PmsProductServiceImpl implements PmsProductService {
         List<PmsProduct> productList = productMapper.selectByExample(productExample);
         log.info("查询到符合条件的商品数量: {}", productList.size());
 
+        for (PmsProduct product : productList) {
+            log.info("商品ID: {}, 商品名称: {}, 商品编码: {}", product.getId(), product.getName(), product.getProductCode());
+        }
+
         return productList;
     }
 
