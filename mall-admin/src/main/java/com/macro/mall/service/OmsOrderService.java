@@ -79,7 +79,7 @@ public interface OmsOrderService {
     byte[] getPrintedLabels(List<String> parcelSnList);
 
 
-    List<OmsOrderItemSimple> stockup(List<Long> parcelIds);
+    List<OmsOrderItemSimple> stockup(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
 
     int completePacking(List<Long> parcelIds);
 

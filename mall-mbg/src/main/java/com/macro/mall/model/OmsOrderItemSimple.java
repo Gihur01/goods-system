@@ -8,8 +8,8 @@ import java.util.List;
 
 public class OmsOrderItemSimple {
 
-    @ApiModelProperty(value = "SKU ID")
-    private Long productSkuId;
+    @ApiModelProperty(value = "商品货号")
+    private long parcelId;
 
     @ApiModelProperty(value = "商品名称")
     private String productName;
@@ -36,12 +36,12 @@ public class OmsOrderItemSimple {
     private BigDecimal realAmount;
 
     // Getter 和 Setter 方法
-    public Long getProductSkuId() {
-        return productSkuId;
+    public Long getParcelId() {
+        return parcelId;
     }
 
-    public void setProductSkuId(Long productSkuId) {
-        this.productSkuId = productSkuId;
+    public void setParcelId(Long parcelId) {
+        this.parcelId = parcelId;
     }
 
     public String getProductName() {

@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 13/03/2025 20:37:30
+ Date: 14/03/2025 13:35:15
 */
 
 SET NAMES utf8mb4;
@@ -942,19 +942,19 @@ INSERT INTO `oms_order_parcel` VALUES (108, 118, 4, '法国', 'GLS', NULL, 5, NU
 INSERT INTO `oms_order_parcel` VALUES (109, 118, 3, '英国', 'GLS', NULL, 5, NULL, NULL, '2025-03-02 15:47:46', 0);
 INSERT INTO `oms_order_parcel` VALUES (116, 122, 4, '法国', 'GLS', NULL, 5, NULL, NULL, '2025-03-02 16:00:07', 0);
 INSERT INTO `oms_order_parcel` VALUES (117, 122, 3, '英国', 'GLS', '2352', 5, NULL, NULL, '2025-03-02 16:00:07', 0);
-INSERT INTO `oms_order_parcel` VALUES (118, 123, 4, '法国', 'GLS', NULL, 0, NULL, NULL, '2025-03-05 16:51:47', NULL);
-INSERT INTO `oms_order_parcel` VALUES (119, 123, 3, '英国', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 16:51:47', NULL);
-INSERT INTO `oms_order_parcel` VALUES (120, 124, 4, '法国', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 16:55:04', NULL);
-INSERT INTO `oms_order_parcel` VALUES (121, 124, 3, '英国', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 16:55:04', NULL);
-INSERT INTO `oms_order_parcel` VALUES (122, 125, 4, 'FR', 'GLS', 'GBFR', 5, NULL, NULL, '2025-03-05 16:59:21', NULL);
-INSERT INTO `oms_order_parcel` VALUES (123, 125, 3, 'GB', 'GLS', 'GBGB', 5, NULL, NULL, '2025-03-05 16:59:21', NULL);
-INSERT INTO `oms_order_parcel` VALUES (124, 126, 4, 'FR', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 17:03:07', NULL);
-INSERT INTO `oms_order_parcel` VALUES (125, 126, 3, 'GB', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 17:03:07', NULL);
-INSERT INTO `oms_order_parcel` VALUES (126, 127, 4, 'FR', NULL, 'FRFR', 0, NULL, NULL, '2025-03-07 14:06:08', NULL);
-INSERT INTO `oms_order_parcel` VALUES (127, 127, 3, 'GB', NULL, 'FRGB', 5, NULL, NULL, '2025-03-07 14:06:08', NULL);
-INSERT INTO `oms_order_parcel` VALUES (142, 125, 4, 'GB', NULL, 'GBGB', 1, NULL, NULL, '2025-03-12 15:38:21', NULL);
-INSERT INTO `oms_order_parcel` VALUES (143, 127, 3, 'FR', NULL, 'FRFR', 1, NULL, NULL, '2025-03-12 15:38:21', NULL);
-INSERT INTO `oms_order_parcel` VALUES (144, 100, 1, 'FR', NULL, 'FRFR', 2, NULL, NULL, '2025-03-12 16:28:42', NULL);
+INSERT INTO `oms_order_parcel` VALUES (118, 123, 4, '法国', 'GLS', NULL, 0, NULL, NULL, '2025-03-05 16:51:47', 0);
+INSERT INTO `oms_order_parcel` VALUES (119, 123, 3, '英国', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 16:51:47', 0);
+INSERT INTO `oms_order_parcel` VALUES (120, 124, 4, '法国', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 16:55:04', 0);
+INSERT INTO `oms_order_parcel` VALUES (121, 124, 3, '英国', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 16:55:04', 0);
+INSERT INTO `oms_order_parcel` VALUES (122, 125, 4, 'FR', 'GLS', 'GBFR', 5, NULL, NULL, '2025-03-05 16:59:21', 0);
+INSERT INTO `oms_order_parcel` VALUES (123, 125, 3, 'GB', 'GLS', 'GBGB', 5, NULL, NULL, '2025-03-05 16:59:21', 0);
+INSERT INTO `oms_order_parcel` VALUES (124, 126, 4, 'FR', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 17:03:07', 0);
+INSERT INTO `oms_order_parcel` VALUES (125, 126, 3, 'GB', 'GLS', NULL, 5, NULL, NULL, '2025-03-05 17:03:07', 0);
+INSERT INTO `oms_order_parcel` VALUES (126, 127, 4, 'FR', NULL, 'FRFR', 0, NULL, NULL, '2025-03-07 14:06:08', 0);
+INSERT INTO `oms_order_parcel` VALUES (127, 127, 3, 'GB', NULL, 'FRGB', 5, NULL, NULL, '2025-03-07 14:06:08', 0);
+INSERT INTO `oms_order_parcel` VALUES (142, 125, 4, 'GB', NULL, 'GBGB', 1, NULL, NULL, '2025-03-12 15:38:21', 0);
+INSERT INTO `oms_order_parcel` VALUES (143, 127, 3, 'FR', NULL, 'FRFR', 1, NULL, NULL, '2025-03-12 15:38:21', 0);
+INSERT INTO `oms_order_parcel` VALUES (144, 100, 1, 'FR', NULL, 'FRFR', 2, NULL, NULL, '2025-03-12 16:28:42', 0);
 
 -- ----------------------------
 -- Table structure for oms_order_return_apply

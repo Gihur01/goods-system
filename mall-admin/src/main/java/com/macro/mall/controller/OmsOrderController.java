@@ -90,8 +90,11 @@ public class OmsOrderController {
     @ApiOperation("批量备货")
     @RequestMapping(value = "/update/stockup", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult<List<OmsOrderItemSimple>> stockup(@RequestParam List<Long> parcelIds) {
-        List<OmsOrderItemSimple> count = orderService.stockup(parcelIds);
+    public CommonResult<List<OmsOrderItemSimple>> stockup(
+            @RequestParam(value = "parcelIds", required = false) List<Long> parcelIds,
+            OmsOrderParcelQueryParam queryParam) {
+
+        List<OmsOrderItemSimple> count = orderService.stockup(parcelIds, queryParam);
         return CommonResult.success(count);
     }
 
