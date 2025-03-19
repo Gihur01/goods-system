@@ -3,168 +3,113 @@ package com.macro.mall.model;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 public class OmsOrder implements Serializable {
     @ApiModelProperty(value = "订单id")
     private Long id;
-
     @ApiModelProperty(value = "会员id")
     private Long memberId;
-
-    private Long couponId;
-
-    @ApiModelProperty(value = "订单编号")
-    private String orderSn;
-
-    @ApiModelProperty(value = "订单国家")
-    private String orderCountry;
-
-    @ApiModelProperty(value = "零售商编号")
-    private String salesChannelId;
-
-    @ApiModelProperty(value = "提交时间")
-    private Date createTime;
-
     @ApiModelProperty(value = "用户帐号")
     private String memberUsername;
-
-    @ApiModelProperty(value = "订单总金额")
-    private BigDecimal totalAmount;
-
-    @ApiModelProperty(value = "应付金额（实际支付金额）")
-    private BigDecimal payAmount;
-
-    @ApiModelProperty(value = "运费金额")
-    private BigDecimal freightAmount;
-
-    @ApiModelProperty(value = "促销优化金额（促销价、满减、阶梯价）")
-    private BigDecimal promotionAmount;
-
-    @ApiModelProperty(value = "积分抵扣金额")
-    private BigDecimal integrationAmount;
-
-    @ApiModelProperty(value = "优惠券抵扣金额")
-    private BigDecimal couponAmount;
-
-    @ApiModelProperty(value = "管理员后台调整订单使用的折扣金额")
-    private BigDecimal discountAmount;
-
-    @ApiModelProperty(value = "支付方式：0->未支付；1->支付宝；2->微信")
-    private Integer payType;
-
-    @ApiModelProperty(value = "订单来源：0->PC订单；1->app订单")
-    private Integer sourceType;
-
-    @ApiModelProperty(value = "订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单")
-    private Integer status;
-
+    @ApiModelProperty(value = "订单编号")
+    private String orderSn;
+    @ApiModelProperty(value = "订单来源")
+    private String orderChannelCode;
     @ApiModelProperty(value = "订单类型：0->正常订单；1->秒杀订单")
     private Integer orderType;
-
+    @ApiModelProperty(value = "订单国家")
+    private String orderCountry;
+    @ApiModelProperty(value = "订单来源：0->PC订单；1->app订单")
+    private Integer sourceType;
+    @ApiModelProperty(value = "零售商编号")
+    private String salesChannelId;
+    @ApiModelProperty(value = "订单总金额")
+    private BigDecimal totalAmount;
+    @ApiModelProperty(value = "应付金额（实际支付金额）")
+    private BigDecimal payAmount;
+    @ApiModelProperty(value = "运费金额")
+    private BigDecimal freightAmount;
+    @ApiModelProperty(value = "促销优化金额（促销价、满减、阶梯价）")
+    private BigDecimal promotionAmount;
+    @ApiModelProperty(value = "积分抵扣金额")
+    private BigDecimal integrationAmount;
+    @ApiModelProperty(value = "优惠券抵扣金额")
+    private BigDecimal couponAmount;
+    @ApiModelProperty(value = "管理员后台调整订单使用的折扣金额")
+    private BigDecimal discountAmount;
+    @ApiModelProperty(value = "支付方式：0->未支付；1->支付宝；2->微信")
+    private Integer payType;
+    @ApiModelProperty(value = "支付时间")
+    private LocalDateTime paymentTime;
     @ApiModelProperty(value = "物流公司(配送方式)")
     private String deliveryCompany;
-
     @ApiModelProperty(value = "物流单号")
     private String deliverySn;
-
-    @ApiModelProperty(value = "自动确认时间（天）")
-    private Integer autoConfirmDay;
-
-    @ApiModelProperty(value = "可以获得的积分")
-    private Integer integration;
-
-    @ApiModelProperty(value = "可以活动的成长值")
-    private Integer growth;
-
-    @ApiModelProperty(value = "活动信息")
-    private String promotionInfo;
-
+    @ApiModelProperty(value = "发货时间")
+    private LocalDateTime deliveryTime;
     @ApiModelProperty(value = "发票类型：0->不开发票；1->电子发票；2->纸质发票")
     private Integer billType;
-
     @ApiModelProperty(value = "发票抬头")
     private String billHeader;
-
     @ApiModelProperty(value = "发票内容")
     private String billContent;
-
     @ApiModelProperty(value = "收票人电话")
     private String billReceiverPhone;
-
     @ApiModelProperty(value = "收票人邮箱")
     private String billReceiverEmail;
-
     @ApiModelProperty(value = "收货人姓名")
     private String receiverName;
-
     @ApiModelProperty(value = "收货人电话")
     private String receiverPhone;
-
     @ApiModelProperty(value = "收货人邮编")
     private String receiverPostCode;
-
     @ApiModelProperty(value = "国家")
     private String receiverCountry;
-
     @ApiModelProperty(value = "省份/直辖市")
     private String receiverProvince;
-
     @ApiModelProperty(value = "城市")
     private String receiverCity;
-
     @ApiModelProperty(value = "区")
     private String receiverRegion;
-
     @ApiModelProperty(value = "街道")
     private String receiverStreet;
-
     @ApiModelProperty(value = "街道号")
     private String receiverStreetNum;
-
     @ApiModelProperty(value = "详细地址")
     private String receiverDetailAddress;
-
+    @ApiModelProperty(value = "优惠券ID")
+    private Long couponId;
+    @ApiModelProperty(value = "活动信息")
+    private String promotionInfo;
+    @ApiModelProperty(value = "自动确认时间（天）")
+    private Integer autoConfirmDay;
+    @ApiModelProperty(value = "下单时使用的积分")
+    private Integer useIntegration;
+    @ApiModelProperty(value = "可以获得的积分")
+    private Integer integration;
+    @ApiModelProperty(value = "可以活动的成长值")
+    private Integer growth;
+    @ApiModelProperty(value = "提交时间")
+    private LocalDateTime createTime;
+    @ApiModelProperty(value = "修改时间")
+    private LocalDateTime modifyTime;
+    @ApiModelProperty(value = "订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单")
+    private Integer status;
+    @ApiModelProperty(value = "确认收货状态：0->未确认；1->已确认")
+    private Integer confirmStatus;
+    @ApiModelProperty(value = "删除状态：0->未删除；1->已删除")
+    private Integer deleteStatus;
+    @ApiModelProperty(value = "确认收货时间")
+    private LocalDateTime receiveTime;
+    @ApiModelProperty(value = "评价时间")
+    private LocalDateTime commentTime;
     @ApiModelProperty(value = "订单备注")
     private String note;
 
-    @ApiModelProperty(value = "确认收货状态：0->未确认；1->已确认")
-    private Integer confirmStatus;
-
-    @ApiModelProperty(value = "删除状态：0->未删除；1->已删除")
-    private Integer deleteStatus;
-
-    @ApiModelProperty(value = "下单时使用的积分")
-    private Integer useIntegration;
-
-    @ApiModelProperty(value = "支付时间")
-    private Date paymentTime;
-
-    @ApiModelProperty(value = "发货时间")
-    private Date deliveryTime;
-
-    @ApiModelProperty(value = "确认收货时间")
-    private Date receiveTime;
-
-    @ApiModelProperty(value = "评价时间")
-    private Date commentTime;
-
-    @ApiModelProperty(value = "修改时间")
-    private Date modifyTime;
-
-    @ApiModelProperty(value = "订单商品项列表")
-    private List<OmsOrderItem> orderItems; // 订单包含的商品项
-
     private static final long serialVersionUID = 1L;
-
-    public List<OmsOrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OmsOrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
 
     public Long getId() {
         return id;
@@ -198,6 +143,14 @@ public class OmsOrder implements Serializable {
         this.orderSn = orderSn;
     }
 
+    public String getOrderChannelCode() {
+        return orderChannelCode;
+    }
+
+    public void setOrderChannelCode(String orderChannelCode) {
+        this.orderChannelCode = orderChannelCode;
+    }
+
     public String getOrderCountry() {
         return orderCountry;
     }
@@ -214,11 +167,11 @@ public class OmsOrder implements Serializable {
         this.salesChannelId = salesChannelId;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
@@ -518,43 +471,43 @@ public class OmsOrder implements Serializable {
         this.useIntegration = useIntegration;
     }
 
-    public Date getPaymentTime() {
+    public LocalDateTime getPaymentTime() {
         return paymentTime;
     }
 
-    public void setPaymentTime(Date paymentTime) {
+    public void setPaymentTime(LocalDateTime paymentTime) {
         this.paymentTime = paymentTime;
     }
 
-    public Date getDeliveryTime() {
+    public LocalDateTime getDeliveryTime() {
         return deliveryTime;
     }
 
-    public void setDeliveryTime(Date deliveryTime) {
+    public void setDeliveryTime(LocalDateTime deliveryTime) {
         this.deliveryTime = deliveryTime;
     }
 
-    public Date getReceiveTime() {
+    public LocalDateTime getReceiveTime() {
         return receiveTime;
     }
 
-    public void setReceiveTime(Date receiveTime) {
+    public void setReceiveTime(LocalDateTime receiveTime) {
         this.receiveTime = receiveTime;
     }
 
-    public Date getCommentTime() {
+    public LocalDateTime getCommentTime() {
         return commentTime;
     }
 
-    public void setCommentTime(Date commentTime) {
+    public void setCommentTime(LocalDateTime commentTime) {
         this.commentTime = commentTime;
     }
 
-    public Date getModifyTime() {
+    public LocalDateTime getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
+    public void setModifyTime(LocalDateTime modifyTime) {
         this.modifyTime = modifyTime;
     }
 
@@ -568,6 +521,7 @@ public class OmsOrder implements Serializable {
         sb.append(", memberId=").append(memberId);
         sb.append(", couponId=").append(couponId);
         sb.append(", orderSn=").append(orderSn);
+        sb.append(", orderChannelCode=").append(orderChannelCode);
         sb.append(", createTime=").append(createTime);
         sb.append(", memberUsername=").append(memberUsername);
         sb.append(", totalAmount=").append(totalAmount);

@@ -81,7 +81,7 @@ public interface OmsOrderService {
 
     List<OmsOrderItemSimple> stockup(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
 
-    int completePacking(List<Long> parcelIds);
+    int completePacking(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
 
-    int collectParcel(List<Long> parcelIds);
+    int collectParcel(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
 }

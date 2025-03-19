@@ -159,21 +159,21 @@
     from pms_product
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <resultMap id="PmsProductMap" type="com.macro.mall.model.PmsProduct">
-    <id column="id" property="id"/>
-    <result column="product_sn" property="productSn"/>
-    <result column="warehouse_id" property="warehouseId"/>
-    <result column="location" property="location"/>
+  <resultMap id="PmsProductMap" type="com.macro.mall.model.PmsProductWarehouseInfo">
+    <id column="id" jdbcType="BIGINT" property="id"/>
+    <result column="warehouse_id" jdbcType="BIGINT" property="warehouseId"/>
+    <result column="location" jdbcType="VARCHAR" property="location"/>
   </resultMap>
 
-  <select id="getProductsBySns" resultMap="PmsProductMap">
-    SELECT id, product_sn, warehouse_id, location
+  <select id="getWarehouseInfoByProductIds" resultMap="PmsProductMap">
+    SELECT id, warehouse_id, location
     FROM pms_product
-    WHERE product_sn IN
-    <foreach collection="list" item="productSn" open="(" separator="," close=")">
-      #{productSn}
+    WHERE id IN
+    <foreach collection="list" item="productId" open="(" separator="," close=")">
+      #{productId}
     </foreach>
   </select>
+
   <select id="selectByProductSn" resultMap="PmsProductMap">
     SELECT *
     FROM pms_product

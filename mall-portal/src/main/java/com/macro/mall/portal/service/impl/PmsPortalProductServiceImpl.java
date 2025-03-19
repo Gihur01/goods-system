@@ -152,40 +152,19 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     }
 
     @Override
-    public Map<String, PmsProductWarehouseInfo> getWarehouseInfoByProductSns(List<String> productSns) {
-        if (productSns == null || productSns.isEmpty()) {
+    public Map<Long, PmsProductWarehouseInfo> getWarehouseInfoByProductIds(List<Long> productIds) {
+        if (productIds == null || productIds.isEmpty()) {
+            log.info("productIds == null || productIds.isEmpty()");
             return Collections.emptyMap();
         }
+        log.info("WarehouseInfoByProductIds");
+        // 调用 Mapper 查询仓库信息
+        List<PmsProductWarehouseInfo> warehouseInfoList = productMapper.getWarehouseInfoByProductIds(productIds);
 
-        // 先获取数据
-        List<PmsProduct> products = productMapper.getProductsBySns(productSns);
-
-        // 打印日志，检查是否有重复的 productSn
-        log.info("Fetched Products: {}", products.stream()
-                .map(p -> String.format("[ID: %s, SN: %s, Warehouse: %s, Location: %s]",
-                        p.getId(), p.getProductSn(), p.getWarehouseId(), p.getLocation()))
-                .collect(Collectors.joining(", ")));
-
-        // 进行数据转换，并且处理重复 productSn
-        return products.stream()
-                .collect(Collectors.toMap(
-                        PmsProduct::getProductSn,  // 使用 productSn 作为 key
-                        product -> {  // 创建 PmsProductWarehouseInfo
-                            PmsProductWarehouseInfo info = new PmsProductWarehouseInfo();
-                            info.setProductId(product.getId());
-                            info.setWarehouseId(product.getWarehouseId());
-                            info.setLocation(product.getLocation());
-                            return info;
-                        },
-                        (existing, duplicate) -> {  // 处理重复 productSn
-                            log.warn("Duplicate productSn found: {}, keeping existing value.", duplicate);
-                            return existing;  // 遇到重复时，保留已有的值
-                        }
-                ));
+        // 转换为 Map 方便按 productId 查询
+        return warehouseInfoList.stream()
+                .collect(Collectors.toMap(PmsProductWarehouseInfo::getProductId, warehouseInfo -> warehouseInfo));
     }
-
-
-
 
     /**
      * 初始对象转化为节点对象

@@ -8,42 +8,26 @@ import java.util.List;
 
 public class OmsOrderItemSimple {
 
-    @ApiModelProperty(value = "商品货号")
-    private long parcelId;
-
-    @ApiModelProperty(value = "商品名称")
+    // 商品名称
     private String productName;
 
-    @ApiModelProperty(value = "商品货号")
+    // 商品编号
     private String productSn;
 
-    @ApiModelProperty(value = "SKU编码")
-    private String productSkuCode;
+    // 商品编码
+    private String productCode;
 
-    @ApiModelProperty(value = "销售价格")
-    private BigDecimal productPrice;
-
-    @ApiModelProperty(value = "购买数量")
+    // 商品数量
     private Integer productQuantity;
 
-    @ApiModelProperty(value = "商品销售属性:[{'key':'颜色','value':'颜色'},{'key':'容量','value':'4G'}]")
+    // 商品销售属性
     private String productAttr;
 
-    @ApiModelProperty(value = "商品备注")
+    // 商品备注
     private String productNote;
 
-    @ApiModelProperty(value = "实付金额")
-    private BigDecimal realAmount;
 
     // Getter 和 Setter 方法
-    public Long getParcelId() {
-        return parcelId;
-    }
-
-    public void setParcelId(Long parcelId) {
-        this.parcelId = parcelId;
-    }
-
     public String getProductName() {
         return productName;
     }
@@ -60,20 +44,12 @@ public class OmsOrderItemSimple {
         this.productSn = productSn;
     }
 
-    public String getProductSkuCode() {
-        return productSkuCode;
+    public String getProductCode() {
+        return productCode;
     }
 
-    public void setProductSkuCode(String productSkuCode) {
-        this.productSkuCode = productSkuCode;
-    }
-
-    public BigDecimal getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(BigDecimal productPrice) {
-        this.productPrice = productPrice;
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     public Integer getProductQuantity() {
@@ -100,11 +76,15 @@ public class OmsOrderItemSimple {
         this.productNote = productNote;
     }
 
-    public BigDecimal getRealAmount() {
-        return realAmount;
-    }
-
-    public void setRealAmount(BigDecimal realAmount) {
-        this.realAmount = realAmount;
+    @Override
+    public String toString() {
+        return "OmsOrderItemSimple{" +
+                "productName='" + productName + '\'' +
+                ", productSn='" + productSn + '\'' +
+                ", productCode='" + productCode + '\'' +
+                ", productQuantity=" + productQuantity +
+                ", productAttr='" + productAttr + '\'' +
+                ", productNote='" + productNote + '\'' +
+                '}';
     }
 }

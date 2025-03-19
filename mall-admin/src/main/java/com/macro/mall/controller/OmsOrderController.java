@@ -101,8 +101,9 @@ public class OmsOrderController {
     @ApiOperation("备货完成")
     @RequestMapping(value = "/update/completePacking", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult completePacking(@RequestParam List<Long> parcelIds) {
-        int count = orderService.completePacking(parcelIds);
+    public CommonResult completePacking(@RequestParam(value = "parcelIds", required = false) List<Long> parcelIds,
+                                        OmsOrderParcelQueryParam queryParam) {
+        int count = orderService.completePacking(parcelIds, queryParam);
         if (count > 0) {
             return CommonResult.success(count);
         }
@@ -112,19 +113,9 @@ public class OmsOrderController {
     @ApiOperation("包裹揽收")
     @RequestMapping(value = "/update/collectParcel", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult collectParcel(@RequestParam List<Long> parcelIds) {
-        int count = orderService.collectParcel(parcelIds);
-        if (count > 0) {
-            return CommonResult.success(count);
-        }
-        return CommonResult.failed();
-    }
-
-    @ApiOperation("批量发货")
-    @RequestMapping(value = "/update/delivery", method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResult delivery(@RequestParam List<OmsOrderDeliveryParam> deliveryParamList) {
-        int count = orderService.delivery(deliveryParamList);
+    public CommonResult collectParcel(@RequestParam(value = "parcelIds", required = false) List<Long> parcelIds,
+                                      OmsOrderParcelQueryParam queryParam) {
+        int count = orderService.collectParcel(parcelIds, queryParam);
         if (count > 0) {
             return CommonResult.success(count);
         }

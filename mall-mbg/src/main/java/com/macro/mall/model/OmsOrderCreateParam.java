@@ -1,4 +1,5 @@
 package com.macro.mall.model;
+import java.time.LocalDateTime;
 import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -8,11 +9,14 @@ public class OmsOrderCreateParam {
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
 
+    @ApiModelProperty(value = "订单来源")
+    private String orderChannelCode;
+
     @ApiModelProperty(value = "应付金额（实际支付金额）")
     private BigDecimal payAmount;
 
     @ApiModelProperty(value = "支付时间")
-    private Date paymentTime;
+    private LocalDateTime paymentTime;
 
     @ApiModelProperty(value = "运费金额")
     private BigDecimal freightAmount;
@@ -27,7 +31,7 @@ public class OmsOrderCreateParam {
     private OmsOrderReceiverAddress receiverAddress;
 
     @ApiModelProperty("订单商品列表")
-    private List<OmsOrderItemSimple> orderItems;
+    private List<OmsOrderItemCreate> orderItems;
 
     // Getter 和 Setter 方法
 
@@ -39,6 +43,14 @@ public class OmsOrderCreateParam {
         this.orderSn = orderSn;
     }
 
+    public String getOrderChannelCode() {
+        return orderChannelCode;
+    }
+
+    public void setOrderChannelCode(String orderChannelCode) {
+        this.orderChannelCode = orderChannelCode;
+    }
+
     public BigDecimal getPayAmount() {
         return payAmount;
     }
@@ -47,11 +59,11 @@ public class OmsOrderCreateParam {
         this.payAmount = payAmount;
     }
 
-    public Date getPaymentTime() {
+    public LocalDateTime getPaymentTime() {
         return paymentTime;
     }
 
-    public void setPaymentTime(Date paymentTime) {
+    public void setPaymentTime(LocalDateTime paymentTime) {
         this.paymentTime = paymentTime;
     }
 
@@ -87,11 +99,11 @@ public class OmsOrderCreateParam {
         this.receiverAddress = receiverAddress;
     }
 
-    public List<OmsOrderItemSimple> getOrderItems() {
+    public List<OmsOrderItemCreate> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OmsOrderItemSimple> orderItems) {
+    public void setOrderItems(List<OmsOrderItemCreate> orderItems) {
         this.orderItems = orderItems;
     }
 

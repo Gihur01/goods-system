@@ -6,6 +6,9 @@ import com.macro.mall.model.PmsProductExample;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import com.macro.mall.model.PmsProductWarehouseInfo;
 import org.apache.ibatis.annotations.Param;
 
 public interface PmsProductMapper {
@@ -45,5 +48,5 @@ public interface PmsProductMapper {
      */
     List<PmsProduct> listByWarehouseIds(@Param("warehouseIds") List<Long> warehouseIds);
 
-    List<PmsProduct> getProductsBySns(List<String> productSn);
+    List<PmsProductWarehouseInfo> getWarehouseInfoByProductIds(List<Long> productIds);
 }

@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -210,7 +211,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         order.setReceiverProvince(receiverInfoParam.getReceiverProvince());
         order.setReceiverCity(receiverInfoParam.getReceiverCity());
         order.setReceiverRegion(receiverInfoParam.getReceiverRegion());
-        order.setModifyTime(new Date());
+        order.setModifyTime(LocalDateTime.now());
         if(receiverInfoParam.getOrderId() != null) {
             int count = orderMapper.updateByPrimaryKeySelective(order);
         }
@@ -233,7 +234,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         order.setId(moneyInfoParam.getOrderId());
         order.setFreightAmount(moneyInfoParam.getFreightAmount());
         order.setDiscountAmount(moneyInfoParam.getDiscountAmount());
-        order.setModifyTime(new Date());
+        order.setModifyTime(LocalDateTime.now());
         int count = orderMapper.updateByPrimaryKeySelective(order);
         //插入操作记录
         OmsOrderOperateHistory history = new OmsOrderOperateHistory();
@@ -251,7 +252,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         OmsOrder order = new OmsOrder();
         order.setId(id);
         order.setNote(note);
-        order.setModifyTime(new Date());
+        order.setModifyTime(LocalDateTime.now());
         int count = orderMapper.updateByPrimaryKeySelective(order);
         OmsOrderOperateHistory history = new OmsOrderOperateHistory();
         history.setOrderId(id);
@@ -521,22 +522,147 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 }
             }
         }
-
         return packingList != null ? packingList : Collections.emptyList();
-
     }
 
-    public int completePacking(List<Long> parcelIds) {
-        if (parcelIds == null || parcelIds.isEmpty()) {
-            return 0;
+    public int completePacking(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam) {
+        if (parcelIds != null && !parcelIds.isEmpty()) {
+            return orderMapper.updateStatus("oms_order_item", "item_status", 4, "parcel_id", parcelIds);
+        } else {
+            List<UmsRole> userRoles = umsAdminService.getCurrentUserRole();
+            if (userRoles == null || userRoles.isEmpty()) {
+                log.warn("当前用户没有角色信息");
+                return 0;
+            }
+
+            Long roleId = userRoles.get(0).getId();
+            log.info("角色ID: {}", roleId);
+
+            // Java 8 兼容的 Set 初始化方式
+            Set<Long> warehouseRoles = Collections.singleton(7L);
+            Set<Long> locationRoles = Collections.singleton(8L);
+
+            // 获取当前用户有权限的仓库 ID
+            if (warehouseRoles.contains(roleId)) {
+                List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
+                log.info("用户有权限的仓库ID: {}", warehouseIds);
+
+                // 如果 queryParam 传了 warehouseId，则交叉筛选
+                if (queryParam.getWarehouseId() != null && !queryParam.getWarehouseId().isEmpty()) {
+                    // 取交集：保证最终的 warehouseId 仍在用户权限范围内
+                    List<Long> filteredWarehouseIds = queryParam.getWarehouseId()
+                            .stream()
+                            .filter(warehouseIds::contains)
+                            .collect(Collectors.toList());
+
+                    // 交集为空时，返回空列表，避免无权限数据泄露
+                    if (filteredWarehouseIds.isEmpty()) {
+                        log.warn("用户传入的仓库ID不在权限范围内，返回空列表");
+                        return 0;
+                    }
+
+                    queryParam.setWarehouseId(filteredWarehouseIds);
+                } else {
+                    // 直接使用用户有权限的仓库 ID
+                    queryParam.setWarehouseId(warehouseIds);
+                }
+            }
+
+            if (locationRoles.contains(roleId)) {
+                String location = umsAdminService.getOrderCountryNum();
+                log.info("物流国家: {}", location);
+                queryParam.setLocation(location);
+            }
+
+            log.info("最终查询参数: {}", queryParam);
+
+            log.info("3. 根据 queryParam 查询符合条件的包裹");
+            List<OmsOrderParcel> parcelList = orderDao.getListParcel(queryParam);
+
+            log.info("4. 提取 parcelIds");
+            List<Long> parcelIdsFromQuery = parcelList.stream()
+                    .map(OmsOrderParcel::getId)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            if (!parcelIdsFromQuery.isEmpty()) {
+                log.info("5. 根据查询到的 parcelIds 更新状态");
+                return orderMapper.updateStatus("oms_order_item", "item_status", 4, "parcel_id", parcelIdsFromQuery);
+            }
         }
-        return orderMapper.updateStatus("oms_order_item", "item_status", 4, "parcel_id", parcelIds);
+        log.warn("没有找到需要更新的包裹");
+        return 0;
     }
 
-    public int collectParcel(List<Long> parcelIds) {
-        if (parcelIds == null || parcelIds.isEmpty()) {
-            return 0;
+    public int collectParcel(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam) {
+        if (parcelIds != null && !parcelIds.isEmpty()) {
+            return orderMapper.updateStatus("oms_order_parcel", "parcel_status", 5, "id", parcelIds);
+        } else {
+            List<UmsRole> userRoles = umsAdminService.getCurrentUserRole();
+            if (userRoles == null || userRoles.isEmpty()) {
+                log.warn("当前用户没有角色信息");
+                return 0;
+            }
+
+            Long roleId = userRoles.get(0).getId();
+            log.info("角色ID: {}", roleId);
+
+            // Java 8 兼容的 Set 初始化方式
+            Set<Long> warehouseRoles = Collections.singleton(7L);
+            Set<Long> locationRoles = Collections.singleton(8L);
+
+            // 获取当前用户有权限的仓库 ID
+            if (warehouseRoles.contains(roleId)) {
+                List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
+                log.info("用户有权限的仓库ID: {}", warehouseIds);
+
+                // 如果 queryParam 传了 warehouseId，则交叉筛选
+                if (queryParam.getWarehouseId() != null && !queryParam.getWarehouseId().isEmpty()) {
+                    // 取交集：保证最终的 warehouseId 仍在用户权限范围内
+                    List<Long> filteredWarehouseIds = queryParam.getWarehouseId()
+                            .stream()
+                            .filter(warehouseIds::contains)
+                            .collect(Collectors.toList());
+
+                    // 交集为空时，返回空列表，避免无权限数据泄露
+                    if (filteredWarehouseIds.isEmpty()) {
+                        log.warn("用户传入的仓库ID不在权限范围内，返回空列表");
+                        return 0;
+                    }
+
+                    queryParam.setWarehouseId(filteredWarehouseIds);
+                } else {
+                    // 直接使用用户有权限的仓库 ID
+                    queryParam.setWarehouseId(warehouseIds);
+                }
+            }
+
+            if (locationRoles.contains(roleId)) {
+                String location = umsAdminService.getOrderCountryNum();
+                log.info("物流国家: {}", location);
+                queryParam.setLocation(location);
+            }
+
+            log.info("最终查询参数: {}", queryParam);
+
+            log.info("3. 根据 queryParam 查询符合条件的包裹");
+            List<OmsOrderParcel> parcelList = orderDao.getListParcel(queryParam);
+
+            log.info("4. 提取 parcelIds");
+            List<Long> parcelIdsFromQuery = parcelList.stream()
+                    .map(OmsOrderParcel::getId)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            if (!parcelIdsFromQuery.isEmpty()) {
+                log.info("5. 根据查询到的 parcelIds 更新状态");
+                return orderMapper.updateStatus("oms_order_parcel", "parcel_status", 5, "id", parcelIdsFromQuery);
+            }
         }
-        return orderMapper.updateStatus("oms_order_parcel", "parcel_status", 5, "id", parcelIds);
+        log.warn("没有找到需要更新的包裹");
+        return 0;
+
     }
 }

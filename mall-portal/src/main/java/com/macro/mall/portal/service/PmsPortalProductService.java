@@ -31,7 +31,7 @@ public interface PmsPortalProductService {
 
     PmsProduct getCertificationByProductSn(String productSn);
 
-    Map<String, PmsProductWarehouseInfo> getWarehouseInfoByProductSns(List<String> productSn);
-
     Integer getStockByProductSn(String productSn);
+
+    Map<Long, PmsProductWarehouseInfo> getWarehouseInfoByProductIds(List<Long> productIds);
 }
