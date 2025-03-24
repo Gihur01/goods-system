@@ -1,0 +1,35 @@
+API Name: searchTrack
+Timestamp: 20250323_173251
+
+=== Original Request ===
+{
+  "Verify" : {
+    "Clientid" : "David",
+    "Token" : "w1FBC42XNTjQ1C4y65sA"
+  },
+  "Datas" : [ {
+    "CountryCode" : null,
+    "Weight" : null,
+    "GoodsType" : null,
+    "PostCode" : null,
+    "TrackNumber" : "01805114342845"
+  } ]
+}
+
+=== Modified Request ===
+{
+  "Verify" : {
+    "Clientid" : "BetaLogisz",
+    "Token" : "RFRESA==eV9dlEHB9uG8bIwv2p0g"
+  },
+  "Datas" : [ {
+    "CountryCode" : null,
+    "Weight" : null,
+    "GoodsType" : null,
+    "PostCode" : null,
+    "TrackNumber" : "01805114342845"
+  } ]
+}
+
+=== Response ===
+{"statusCode":"success","returnDatas":[{"statusCode":"error","trackNumber":"01805114342845","message":"单号系统中不存在！"}]}

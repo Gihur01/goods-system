@@ -1,0 +1,23 @@
+API Name: cancelDelivery
+Timestamp: 20250324_143409
+
+=== Original Request ===
+{
+  "Verify" : {
+    "Clientid" : "David",
+    "Token" : "w1FBC42XNTjQ1C4y65sA"
+  },
+  "CorpBillid" : "EYT5032303309SZ"
+}
+
+=== Modified Request ===
+{
+  "Verify" : {
+    "Clientid" : "BetaLogisz",
+    "Token" : "RFRESA==eV9dlEHB9uG8bIwv2p0g"
+  },
+  "CorpBillid" : "EYT5032303309SZ"
+}
+
+=== Response ===
+{"statusCode":"error","corpBillid":"EYT5032303309SZ","message":"订单号：EYT5032303309SZ，所设置的[DPD德国0180-BetaLogisztika]接口不支持取消发货！"}

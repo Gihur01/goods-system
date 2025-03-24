@@ -296,25 +296,45 @@
 
   <insert id="batchInsertOrderItems" parameterType="com.macro.mall.model.OmsOrderItem">
     insert into oms_order_item (
-    parcel_id, product_sku_id, product_name, product_sn,
-    product_sku_code, product_price, product_quantity,
-    product_attr, product_note, delete_status
+    parcel_id, item_status, warehouse_id, location, product_id, product_pic,
+    product_sku_id, product_name, product_sn, product_code, product_price,
+    product_quantity, product_attr, product_note, promotion_name, promotion_amount,
+    coupon_amount, integration_amount, real_amount, gift_integration, gift_growth,
+    delete_status
     ) values
     <foreach collection="list" item="item" separator=",">
       (
-      #{item.parcelId,jdbcType=BIGINT}, #{item.productSkuId,jdbcType=BIGINT}, #{item.productName,jdbcType=VARCHAR},
-      #{item.productSn,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=BIGINT},
-      #{item.productPrice,jdbcType=DECIMAL}, #{item.productQuantity,jdbcType=INTEGER},
-      #{item.productAttr,jdbcType=VARCHAR}, #{item.productNote,jdbcType=VARCHAR},
+      #{item.parcelId,jdbcType=BIGINT},
+      #{item.itemStatus,jdbcType=INTEGER},
+      #{item.warehouseId,jdbcType=BIGINT},
+      #{item.location,jdbcType=VARCHAR},
+      #{item.productId,jdbcType=BIGINT},
+      #{item.productPic,jdbcType=VARCHAR},
+      #{item.productSkuId,jdbcType=BIGINT},
+      #{item.productName,jdbcType=VARCHAR},
+      #{item.productSn,jdbcType=VARCHAR},
+      #{item.productCode,jdbcType=VARCHAR},
+      #{item.productPrice,jdbcType=DECIMAL},
+      #{item.productQuantity,jdbcType=INTEGER},
+      #{item.productAttr,jdbcType=VARCHAR},
+      #{item.productNote,jdbcType=VARCHAR},
+      #{item.promotionName,jdbcType=VARCHAR},
+      #{item.promotionAmount,jdbcType=DECIMAL},
+      #{item.couponAmount,jdbcType=DECIMAL},
+      #{item.integrationAmount,jdbcType=DECIMAL},
+      #{item.realAmount,jdbcType=DECIMAL},
+      #{item.giftIntegration,jdbcType=INTEGER},
+      #{item.giftGrowth,jdbcType=INTEGER},
       #{item.deleteStatus,jdbcType=INTEGER}
       )
     </foreach>
   </insert>
+
   <insert id="batchInsertParcels" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
+    INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status, delete_status)
     VALUES
     <foreach collection="parcelList" item="parcel" separator=",">
-      (#{parcel.orderId}, #{parcel.warehouseId}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus})
+      (#{parcel.orderId}, #{parcel.warehouseId}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus}, #{parcel.deleteStatus})
     </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.macro.mall.model.OmsOrder">

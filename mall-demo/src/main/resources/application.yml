@@ -31,3 +31,9 @@ logging:
 host:
   mall:
    admin: http://localhost:8080
+
+k5:
+  Verify:
+    Clientid: BetaLogisz
+    Token: RFRESA==eV9dlEHB9uG8bIwv2p0g
+  url: http://dtdh.kingtrans.net/PostInterfaceService?method=

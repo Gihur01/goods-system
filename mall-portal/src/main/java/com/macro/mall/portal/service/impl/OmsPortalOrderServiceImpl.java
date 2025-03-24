@@ -95,6 +95,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         BeanUtils.copyProperties(orderCreateParam, omsOrder);
         omsOrder.setOrderSn(orderCreateParam.getOrderSn());
         omsOrder.setOrderChannelCode(orderCreateParam.getOrderChannelCode());
+        omsOrder.setOrderCountry(orderCreateParam.getReceiverAddress().getCountry());
         omsOrder.setPayAmount(orderCreateParam.getPayAmount());
         omsOrder.setPaymentTime(orderCreateParam.getPaymentTime());
         omsOrder.setFreightAmount(orderCreateParam.getFreightAmount());
@@ -162,6 +163,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             parcel.setLocation(location);
             parcel.setParcelStatus(0);
             parcel.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            parcel.setDeleteStatus(0);
             parcelList.add(parcel);
         }
         log.info("Created parcels: {}", parcelList);
@@ -181,8 +183,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 orderItem.setParcelId(parcel.getId());
                 for (OmsOrderItemCreate itemSimple : orderCreateParam.getOrderItems()) {
                     // 根据商品信息设置相应的字段
-                    if (orderItem.getProductSn().equals(itemSimple.getProductSn())) { // 假设根据 productSn 来匹配商品
+                    if (orderItem.getProductId().equals(itemSimple.getProductId())) { // 假设根据 ProductId 来匹配商品
                         orderItem.setProductId(itemSimple.getProductId());
+                        orderItem.setItemStatus(0);
                         orderItem.setProductName(itemSimple.getProductName());
                         orderItem.setProductSn(itemSimple.getProductSn());
                         orderItem.setProductCode(itemSimple.getProductCode());

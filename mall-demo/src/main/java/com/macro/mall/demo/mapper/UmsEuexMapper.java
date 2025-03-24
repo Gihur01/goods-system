@@ -1,10 +1,11 @@
 package com.macro.mall.demo.mapper;
 
-import com.macro.mall.demo.dto.Verify;
+import com.macro.mall.demo.model.UmsEuex;
+import com.macro.mall.demo.model.request.Verify;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UmsEuexMapper {
-    int validateAuth(@Param("verify")Verify verify);
+    UmsEuex findByClientIdAndToken(@Param("verify") Verify verify);
 }

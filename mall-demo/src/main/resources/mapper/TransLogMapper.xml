@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.macro.mall.demo.mapper.TransLogMapper">
+    <insert id="insert" parameterType="com.macro.mall.demo.model.TransLog">
+        INSERT INTO eu_express_trans_log (request_user, request_api, request_time, request_status, response_message)
+        VALUES (#{requestUser}, #{requestApi}, NOW(), #{requestStatus}, #{responseMessage})
+    </insert>
+</mapper>

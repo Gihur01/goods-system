@@ -1,0 +1,279 @@
+API Name: createOrder
+Timestamp: 20250323_154640
+
+=== Original Request ===
+{
+  "Verify" : {
+    "Clientid" : "David",
+    "Token" : "w1FBC42XNTjQ1C4y65sA"
+  },
+  "OrderType" : "4",
+  "OrderDatas" : [ {
+    "CorpBillid" : null,
+    "CustomerNumber" : "test0315005",
+    "TradeNo" : null,
+    "TrackNumber" : null,
+    "Labelbillid" : null,
+    "ChannelCode" : "DPD_BetaLo",
+    "CountryCode" : "US",
+    "HouseCode" : null,
+    "TotalWeight" : 2.2,
+    "TotalValue" : 28.0,
+    "Number" : 3,
+    "Collamt" : null,
+    "Collccycode" : null,
+    "PackageType" : "O",
+    "ProductTypeid" : "666",
+    "Battery" : null,
+    "GoodsType" : "WPX",
+    "Note" : "",
+    "VatNumber" : null,
+    "VatCorpName" : null,
+    "VatCorpAddress" : null,
+    "EoriNumber" : null,
+    "FBAWarehouseCode" : null,
+    "Salesplatform" : null,
+    "TariffType" : null,
+    "Insurance" : null,
+    "FeePayData" : {
+      "FeePayType" : "PP",
+      "FeePayAccountNumber" : "",
+      "FeePayCountryCode" : "",
+      "FeePayPostCode" : ""
+    },
+    "TaxPayData" : {
+      "TaxPayType" : "CC",
+      "TaxPayAccountNumber" : "",
+      "TaxPayCountryCode" : "",
+      "TaxPayPostCode" : ""
+    },
+    "FeeInfo" : {
+      "OrderAmt" : "10",
+      "Mfees" : "5",
+      "OtherAmt" : "4",
+      "OtherNote" : "upsinvoicenote",
+      "IsPaperLess" : "1",
+      "ExportType" : "sale",
+      "TermsOfShipment" : "CFR"
+    },
+    "Recipient" : {
+      "Name" : "test",
+      "Company" : "Shuang peng",
+      "Addres1" : "1234567890123456789012345678901234567890",
+      "Addres2" : "123456789",
+      "HouseNum" : null,
+      "Tel" : "13538000000",
+      "Mobile" : "13538000000",
+      "Province" : "TX",
+      "City" : "CLEBURNE",
+      "Post" : "76031",
+      "Email" : "",
+      "Fax" : null,
+      "Contaxno" : "123456"
+    },
+    "Sender" : {
+      "Name" : "smith",
+      "Company" : "XXXX Co.,Ltd.",
+      "Country" : "HK",
+      "Addres" : "ROOM 17/5XXXX CTR",
+      "Mobile" : "17395850000",
+      "Tel" : "17395850000",
+      "Post" : "0",
+      "Province" : "HK",
+      "City" : "HONGKONG",
+      "Town" : "HONGKONG",
+      "Email" : null,
+      "Fax" : null
+    },
+    "OrderItems" : [ {
+      "Sku" : null,
+      "Cnname" : "",
+      "Enname" : "hair curler",
+      "Price" : 7.0,
+      "SingleWeight" : 0.778,
+      "Num" : 2,
+      "Money" : "USD",
+      "Unit" : "PCS",
+      "ProductLink" : null,
+      "PackageNo" : null,
+      "Texture" : "caizhi",
+      "Application" : "",
+      "CustomsCode" : "123456",
+      "TransactionUrl" : null,
+      "PeihuoInfo" : null,
+      "Origin" : "CN"
+    }, {
+      "Sku" : null,
+      "Cnname" : "",
+      "Enname" : "hair curler",
+      "Price" : 7.0,
+      "SingleWeight" : 0.778,
+      "Num" : 2,
+      "Money" : "USD",
+      "Unit" : "PCS",
+      "ProductLink" : null,
+      "PackageNo" : null,
+      "Texture" : "caizhi",
+      "Application" : "",
+      "CustomsCode" : "123456",
+      "TransactionUrl" : null,
+      "PeihuoInfo" : null,
+      "Origin" : "CN"
+    } ],
+    "Volumes" : [ {
+      "Weight" : "1",
+      "Number" : "2",
+      "Length" : "1",
+      "Width" : "1",
+      "Height" : "1",
+      "Value" : "10"
+    }, {
+      "Weight" : "1",
+      "Number" : "1",
+      "Length" : "1",
+      "Width" : "1",
+      "Height" : "1",
+      "Value" : "10"
+    } ]
+  } ]
+}
+
+=== Modified Request ===
+{
+  "Verify" : {
+    "Clientid" : "BetaLogisz",
+    "Token" : "RFRESA==eV9dlEHB9uG8bIwv2p0g"
+  },
+  "OrderType" : "4",
+  "OrderDatas" : [ {
+    "CorpBillid" : null,
+    "CustomerNumber" : "test0315005",
+    "TradeNo" : null,
+    "TrackNumber" : null,
+    "Labelbillid" : null,
+    "ChannelCode" : "DPD_BetaLo",
+    "CountryCode" : "US",
+    "HouseCode" : null,
+    "TotalWeight" : 2.2,
+    "TotalValue" : 28.0,
+    "Number" : 3,
+    "Collamt" : null,
+    "Collccycode" : null,
+    "PackageType" : "O",
+    "ProductTypeid" : "666",
+    "Battery" : null,
+    "GoodsType" : "WPX",
+    "Note" : "",
+    "VatNumber" : null,
+    "VatCorpName" : null,
+    "VatCorpAddress" : null,
+    "EoriNumber" : null,
+    "FBAWarehouseCode" : null,
+    "Salesplatform" : null,
+    "TariffType" : null,
+    "Insurance" : null,
+    "FeePayData" : {
+      "FeePayType" : "PP",
+      "FeePayAccountNumber" : "",
+      "FeePayCountryCode" : "",
+      "FeePayPostCode" : ""
+    },
+    "TaxPayData" : {
+      "TaxPayType" : "CC",
+      "TaxPayAccountNumber" : "",
+      "TaxPayCountryCode" : "",
+      "TaxPayPostCode" : ""
+    },
+    "FeeInfo" : {
+      "OrderAmt" : "10",
+      "Mfees" : "5",
+      "OtherAmt" : "4",
+      "OtherNote" : "upsinvoicenote",
+      "IsPaperLess" : "1",
+      "ExportType" : "sale",
+      "TermsOfShipment" : "CFR"
+    },
+    "Recipient" : {
+      "Name" : "test",
+      "Company" : "Shuang peng",
+      "Addres1" : "1234567890123456789012345678901234567890",
+      "Addres2" : "123456789",
+      "HouseNum" : null,
+      "Tel" : "13538000000",
+      "Mobile" : "13538000000",
+      "Province" : "TX",
+      "City" : "CLEBURNE",
+      "Post" : "76031",
+      "Email" : "",
+      "Fax" : null,
+      "Contaxno" : "123456"
+    },
+    "Sender" : {
+      "Name" : "smith",
+      "Company" : "XXXX Co.,Ltd.",
+      "Country" : "HK",
+      "Addres" : "ROOM 17/5XXXX CTR",
+      "Mobile" : "17395850000",
+      "Tel" : "17395850000",
+      "Post" : "0",
+      "Province" : "HK",
+      "City" : "HONGKONG",
+      "Town" : "HONGKONG",
+      "Email" : null,
+      "Fax" : null
+    },
+    "OrderItems" : [ {
+      "Sku" : null,
+      "Cnname" : "",
+      "Enname" : "hair curler",
+      "Price" : 7.0,
+      "SingleWeight" : 0.778,
+      "Num" : 2,
+      "Money" : "USD",
+      "Unit" : "PCS",
+      "ProductLink" : null,
+      "PackageNo" : null,
+      "Texture" : "caizhi",
+      "Application" : "",
+      "CustomsCode" : "123456",
+      "TransactionUrl" : null,
+      "PeihuoInfo" : null,
+      "Origin" : "CN"
+    }, {
+      "Sku" : null,
+      "Cnname" : "",
+      "Enname" : "hair curler",
+      "Price" : 7.0,
+      "SingleWeight" : 0.778,
+      "Num" : 2,
+      "Money" : "USD",
+      "Unit" : "PCS",
+      "ProductLink" : null,
+      "PackageNo" : null,
+      "Texture" : "caizhi",
+      "Application" : "",
+      "CustomsCode" : "123456",
+      "TransactionUrl" : null,
+      "PeihuoInfo" : null,
+      "Origin" : "CN"
+    } ],
+    "Volumes" : [ {
+      "Weight" : "1",
+      "Number" : "2",
+      "Length" : "1",
+      "Width" : "1",
+      "Height" : "1",
+      "Value" : "10"
+    }, {
+      "Weight" : "1",
+      "Number" : "1",
+      "Length" : "1",
+      "Width" : "1",
+      "Height" : "1",
+      "Value" : "10"
+    } ]
+  } ]
+}
+
+=== Response ===
+{"statusCode":"success","returnDatas":[{"statusCode":"error","customerNumber":"test0315005","childTrackingNumber":"","shipmentid":"","labelBillid":"","totalAmt":"","ccycode":"","ifPianYuan":"1","message":" 订单【EYT5032303307SZ】 制单失败：此渠道【美国】没有服务，不能走该渠道<br>"}]}

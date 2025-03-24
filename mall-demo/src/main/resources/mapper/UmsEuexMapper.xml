@@ -4,11 +4,10 @@
 
 <mapper namespace="com.macro.mall.demo.mapper.UmsEuexMapper">
 
-    <!-- 这里的 id 必须与 UmsEuexMapper.java 中的方法名一致 -->
-    <select id="validateAuth" resultType="int">
-        SELECT COUNT(*)
-        FROM ums_euex
+    <select id="findByClientIdAndToken" resultType="com.macro.mall.demo.model.UmsEuex">
+        SELECT * FROM ums_euex
         WHERE client_id = #{verify.clientId} AND token = #{verify.token}
+        LIMIT 1
     </select>
 
 </mapper>
