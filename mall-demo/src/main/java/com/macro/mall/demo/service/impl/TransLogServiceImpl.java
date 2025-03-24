@@ -38,10 +38,10 @@ public class TransLogServiceImpl implements TransLogService {
         try {
             // 生成带时间戳的文件名
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String fileName = "logs/" + apiName + "_" + timestamp + ".log";
+            String fileName = "Logs/" + apiName + "_" + timestamp + ".log";
 
             // 确保 logs 目录存在
-            File logDir = new File("logs");
+            File logDir = new File("Logs");
             if (!logDir.exists()) {
                 logDir.mkdirs();
             }
