@@ -40,9 +40,9 @@ public class PrintServiceImpl implements PrintService {
     private RestTemplate restTemplate;
 
     @Override
-    public String printAddressLabel(PrintAddressRequest request) throws Exception {
-        log.info("Clientid:{}", request.getVerify().getClientId());
-        log.info("Token:{}", request.getVerify().getToken());
+    public byte[] printAddressLabel(PrintAddressRequest request) throws Exception {
+        log.info("ClientId: {}", request.getVerify().getClientId());
+        log.info("Token: {}", request.getVerify().getToken());
 
         // 验证 client_id 和 token
         UmsEuex umsEuex = umsEuexMapper.findByClientIdAndToken(request.getVerify());
@@ -50,16 +50,14 @@ public class PrintServiceImpl implements PrintService {
             throw new Exception("Invalid ClientId or Token");
         }
 
-        // 创建 ObjectMapper
+        // 记录修改前的请求
         ObjectMapper objectMapper = new ObjectMapper();
-
-        // **记录修改前的 JSON 数据**
-        PrintAddressRequest originalRequest = objectMapper.readValue(objectMapper.writeValueAsString(request), PrintAddressRequest.class);
+        PrintAddressRequest originalRequest = objectMapper.readValue(
+                objectMapper.writeValueAsString(request), PrintAddressRequest.class);
 
         log.info("替换为我们的 client_id 和 token");
-        String clientId = request.getVerify().getClientId();
 
-        // 替换为我们的 client_id 和 token
+        // 替换 client_id 和 token
         request.getVerify().setClientId(k5Clientid);
         request.getVerify().setToken(k5Token);
 
@@ -67,7 +65,7 @@ public class PrintServiceImpl implements PrintService {
         String responseJson = restTemplate.postForObject(k5url + "printOrderLabel", request, String.class);
         log.info("第三方 API 响应: {}", responseJson);
 
-        // 解析返回的 JSON
+        // 解析 JSON，获取 PDF URL
         JsonNode responseNode = objectMapper.readTree(responseJson);
         String pdfUrl = responseNode.get("url").asText();
 
@@ -75,22 +73,18 @@ public class PrintServiceImpl implements PrintService {
             throw new Exception("PDF URL is empty in response");
         }
 
-        // 下载 PDF
+        // 下载 PDF 文件
         byte[] pdfBytes = downloadFile(pdfUrl);
-
-        // 重新发布 PDF（上传到你的服务器）
-        String newPdfUrl = uploadFile(pdfBytes, "printLabel.pdf");
-
-        // 修改 JSON 返回值，把 url 改成新发布的地址
-        ((ObjectNode) responseNode).put("url", newPdfUrl);
-        String modifiedResponse = objectMapper.writeValueAsString(responseNode);
+        if (pdfBytes == null || pdfBytes.length == 0) {
+            throw new Exception("Failed to download PDF file");
+        }
 
         // 记录日志
-        transLogService.saveToFile("printOrderLabel", originalRequest, request, modifiedResponse);
-        String statusCode = transLogService.extractStatusCode(modifiedResponse);
-        transLogService.logRequest(clientId, "/printOrderLabel", modifiedResponse, statusCode);
+        transLogService.saveToFile("printOrderLabel", originalRequest, request, responseJson);
+        String statusCode = transLogService.extractStatusCode(responseJson);
+        transLogService.logRequest(request.getVerify().getClientId(), "/printOrderLabel", responseJson, statusCode);
 
-        return modifiedResponse;
+        return pdfBytes;
     }
 
     @Override

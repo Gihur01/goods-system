@@ -5,7 +5,9 @@ import com.macro.mall.demo.model.request.PrintInvoiceRequest;
 import com.macro.mall.demo.model.request.PrintSupportedRequest;
 
 public interface PrintService {
-    String printAddressLabel(PrintAddressRequest request) throws Exception;
+
+    byte[] printAddressLabel(PrintAddressRequest request) throws Exception;
     String getSupportedPapers(PrintSupportedRequest request) throws Exception;
     String printInvoice(PrintInvoiceRequest request) throws Exception;
+
 }

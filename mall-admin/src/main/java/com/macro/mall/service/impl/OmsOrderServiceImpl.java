@@ -1,6 +1,7 @@
 package com.macro.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.common.exception.Asserts;
 import com.macro.mall.dao.OmsOrderDao;
 import com.macro.mall.dao.OmsOrderOperateHistoryDao;
 import com.macro.mall.dto.*;
@@ -444,17 +445,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
 
     public List<OmsOrderItemSimple> stockup(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam) {
-        List<OmsOrderItemSimple> packingList = null;
+        List<OmsOrderItemSimple> packingList = new ArrayList<>();
 
-        if (parcelIds != null && !parcelIds.isEmpty()) {
-            log.info("1. 按 parcelIds 查询备货清单");
-            packingList = orderMapper.getPackingList(parcelIds);
-
-            if (!packingList.isEmpty()) {
-                log.info("2. 更新 item_status = 3（开始备货）");
-                orderMapper.updateStatus("oms_order_item", "item_status", 3, "parcel_id", parcelIds);
-            }
-        } else {
+        if (parcelIds == null || parcelIds.isEmpty()) {
+            // 获取当前用户角色信息
             List<UmsRole> userRoles = umsAdminService.getCurrentUserRole();
             if (userRoles == null || userRoles.isEmpty()) {
                 log.warn("当前用户没有角色信息");
@@ -464,32 +458,26 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             Long roleId = userRoles.get(0).getId();
             log.info("角色ID: {}", roleId);
 
-            // Java 8 兼容的 Set 初始化方式
             Set<Long> warehouseRoles = Collections.singleton(7L);
             Set<Long> locationRoles = Collections.singleton(8L);
 
-            // 获取当前用户有权限的仓库 ID
+            // 如果用户有仓库权限，则筛选仓库
             if (warehouseRoles.contains(roleId)) {
                 List<Long> warehouseIds = umsAdminService.getWarehousesByAdminId();
                 log.info("用户有权限的仓库ID: {}", warehouseIds);
 
-                // 如果 queryParam 传了 warehouseId，则交叉筛选
                 if (queryParam.getWarehouseId() != null && !queryParam.getWarehouseId().isEmpty()) {
-                    // 取交集：保证最终的 warehouseId 仍在用户权限范围内
                     List<Long> filteredWarehouseIds = queryParam.getWarehouseId()
                             .stream()
                             .filter(warehouseIds::contains)
                             .collect(Collectors.toList());
 
-                    // 交集为空时，返回空列表，避免无权限数据泄露
                     if (filteredWarehouseIds.isEmpty()) {
                         log.warn("用户传入的仓库ID不在权限范围内，返回空列表");
                         return Collections.emptyList();
                     }
-
                     queryParam.setWarehouseId(filteredWarehouseIds);
                 } else {
-                    // 直接使用用户有权限的仓库 ID
                     queryParam.setWarehouseId(warehouseIds);
                 }
             }
@@ -501,28 +489,65 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             }
 
             log.info("最终查询参数: {}", queryParam);
-
             log.info("3. 根据 queryParam 查询符合条件的包裹");
             List<OmsOrderParcel> parcelList = orderDao.getListParcel(queryParam);
 
             log.info("4. 提取 parcelIds");
-            List<Long> parcelIdsFromQuery = parcelList.stream()
+            parcelIds = parcelList.stream()
                     .map(OmsOrderParcel::getId)
                     .filter(Objects::nonNull)
                     .distinct()
                     .collect(Collectors.toList());
+        }
 
-            if (!parcelIdsFromQuery.isEmpty()) {
-                log.info("5. 根据查询到的 parcelIds 查询商品清单");
-                packingList = orderMapper.getPackingList(parcelIdsFromQuery);
+        if (parcelIds.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-                if (!packingList.isEmpty()) {
-                    log.info("6. 更新 item_status = 3（开始备货）");
-                    orderMapper.updateStatus("oms_order_item", "item_status", 3, "parcel_id", parcelIdsFromQuery);
-                }
+        log.info("5. 根据 parcelIds 查询备货清单");
+        packingList = orderMapper.getPackingList(parcelIds);
+
+        if (packingList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        log.info("6. 检查 item_status 是否可更新");
+
+        // 查询当前状态
+        Map<Long, Map<String, Object>> rawStatusMap = orderMapper.getItemStatuses(parcelIds);
+        log.info("查询到的 item_status Map: {}", rawStatusMap);
+        Map<Long, Integer> currentStatusMap = rawStatusMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> (Integer) entry.getValue().get("item_status")
+                ));
+
+        int newStatus = 3; // 目标状态（开始备货）
+        for (Map.Entry<Long, Integer> entry : currentStatusMap.entrySet()) {
+            Long parcelId = entry.getKey();
+            Integer currentStatus = entry.getValue();
+
+            if (currentStatus == null || currentStatus >= newStatus) {
+                String errorMessage = "状态更新失败：包裹 " + parcelId + " 当前状态为 " + currentStatus + "，无法更新到 " + newStatus;
+                log.error(errorMessage);
+
+                // 抛出 ApiException 异常
+                Asserts.fail(errorMessage);  // 使用 Asserts 类来抛出 ApiException
             }
         }
-        return packingList != null ? packingList : Collections.emptyList();
+
+        log.info("7. 更新 item_status = {}", newStatus);
+        int updatedRows = orderMapper.updateStatus("oms_order_item", "item_status", newStatus, "parcel_id", parcelIds);
+
+        if (updatedRows != parcelIds.size()) {
+            String errorMessage ="状态更新失败：部分包裹未能成功更新";
+            log.error(errorMessage);
+
+            // 抛出 ApiException 异常
+            Asserts.fail(errorMessage);  // 使用 Asserts 类来抛出 ApiException
+        }
+
+        return packingList;
     }
 
     public int completePacking(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam) {
@@ -586,12 +611,41 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                     .distinct()
                     .collect(Collectors.toList());
 
+            log.info("5. 检查 item_status 是否可更新");
+
+            // 查询当前状态
+            Map<Long, Map<String, Object>> rawStatusMap = orderMapper.getItemStatuses(parcelIdsFromQuery);
+            log.info("查询到的 item_status Map: {}", rawStatusMap);
+            Map<Long, Integer> currentStatusMap = rawStatusMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> (Integer) entry.getValue().get("item_status")
+                    ));
+
+            int newStatus = 4; // 目标状态（开始备货）
+            for (Map.Entry<Long, Integer> entry : currentStatusMap.entrySet()) {
+                Long parcelId = entry.getKey();
+                Integer currentStatus = entry.getValue();
+
+                if (currentStatus == null || currentStatus >= newStatus) {
+                    String errorMessage = "状态更新失败：包裹 " + parcelId + " 当前状态为 " + currentStatus + "，无法更新到 " + newStatus;
+                    log.error(errorMessage);
+
+                    // 抛出 ApiException 异常
+                    Asserts.fail(errorMessage);  // 使用 Asserts 类来抛出 ApiException
+                }
+            }
+
             if (!parcelIdsFromQuery.isEmpty()) {
-                log.info("5. 根据查询到的 parcelIds 更新状态");
-                return orderMapper.updateStatus("oms_order_item", "item_status", 4, "parcel_id", parcelIdsFromQuery);
+                log.info("6. 根据查询到的 parcelIds 更新状态");
+                return orderMapper.updateStatus("oms_order_item", "item_status", newStatus, "parcel_id", parcelIdsFromQuery);
             }
         }
-        log.warn("没有找到需要更新的包裹");
+        String errorMessage = "状态更新失败：包裹 ";
+        log.error(errorMessage);
+
+        // 抛出 ApiException 异常
+        Asserts.fail(errorMessage);  // 使用 Asserts 类来抛出 ApiException
         return 0;
     }
 
@@ -656,9 +710,33 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                     .distinct()
                     .collect(Collectors.toList());
 
+            log.info("5. 检查 parcel_status 是否可更新");
+
+            // 查询当前状态
+            Map<Long, Map<String, Object>> rawStatusMap = orderMapper.getParcelStatuses(parcelIdsFromQuery);
+            log.info("查询到的 parcel_status Map: {}", rawStatusMap);
+            Map<Long, Integer> currentStatusMap = rawStatusMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            entry -> (Integer) entry.getValue().get("parcel_status")
+                    ));
+
+            int targetStatus = 5; // 目标状态（开始备货）
+            for (Map.Entry<Long, Integer> entry : currentStatusMap.entrySet()) {
+                Long parcelId = entry.getKey();
+                Integer currentStatus = entry.getValue();
+
+                // 如果当前状态已经是目标状态或更高，抛出异常
+                if (currentStatus == null || currentStatus >= targetStatus) {
+                    String errorMessage = "状态更新失败：包裹 " + parcelId + " 当前状态为 " + currentStatus + "，无法更新到 " + targetStatus;
+                    log.error(errorMessage);
+                    Asserts.fail(errorMessage);  // 抛出异常
+                }
+            }
+
             if (!parcelIdsFromQuery.isEmpty()) {
                 log.info("5. 根据查询到的 parcelIds 更新状态");
-                return orderMapper.updateStatus("oms_order_parcel", "parcel_status", 5, "id", parcelIdsFromQuery);
+                return orderMapper.updateStatus("oms_order_parcel", "parcel_status", targetStatus, "id", parcelIdsFromQuery);
             }
         }
         log.warn("没有找到需要更新的包裹");

@@ -8,8 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +25,23 @@ public class PrintController {
     @RequestMapping(value = "/address-label", method = RequestMethod.POST)
     public ResponseEntity<?> printAddressLabel(@RequestBody PrintAddressRequest request) {
         try {
-            // 调用服务层处理请求
-            String response = printService.printAddressLabel(request);
-            return ResponseEntity.ok(response);
+            // 调用服务层处理请求，返回 PDF 字节流
+            byte[] pdfBytes = printService.printAddressLabel(request);
+
+            // 返回 PDF 文件流
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(ContentDisposition.attachment()
+                    .filename("address_label.pdf")
+                    .build());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfBytes);
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
-                    body("Error in printAddressLabel: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error in printAddressLabel: " + e.getMessage());
         }
     }
 

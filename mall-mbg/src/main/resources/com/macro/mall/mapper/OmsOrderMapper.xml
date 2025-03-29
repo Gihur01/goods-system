@@ -614,6 +614,29 @@
   <select id="getItemsByParcelId" parameterType="Long" resultType="com.macro.mall.model.OmsOrderItem">
     SELECT * FROM oms_order_item WHERE parcel_id = #{parcelId}
   </select>
+
+  <select id="getItemStatuses" resultType="java.util.Map">
+    SELECT
+    parcel_id as parcelId,
+    item_status
+    FROM oms_order_item
+    WHERE parcel_id IN
+    <foreach collection="parcelIds" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
+  <select id="getParcelStatuses" resultType="java.util.Map">
+    SELECT
+    id as parcelId,
+    parcel_status
+    FROM oms_order_parcel
+    WHERE id IN
+    <foreach collection="parcelIds" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
   <update id="updateByExampleSelective" parameterType="map">
     update oms_order
     <set>

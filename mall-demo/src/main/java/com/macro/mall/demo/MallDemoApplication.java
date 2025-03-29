@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.macro.mall.demo.mapper")
 public class MallDemoApplication{
 	public static void main(String[] args) {
-
 		SpringApplication.run(MallDemoApplication.class, args);
 	}
 }

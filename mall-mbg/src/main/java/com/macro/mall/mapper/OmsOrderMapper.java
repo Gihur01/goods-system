@@ -3,7 +3,9 @@ package com.macro.mall.mapper;
 import com.macro.mall.model.*;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 public interface OmsOrderMapper {
@@ -69,4 +71,9 @@ public interface OmsOrderMapper {
 
     void updateParcelSn(Long parcelId, String parcelSn, int parcelStatus);
 
+    @MapKey("parcelId")
+    Map<Long, Map<String, Object>> getItemStatuses(@Param("parcelIds") List<Long> parcelIds);
+
+    @MapKey("parcelId")
+    Map<Long, Map<String, Object>> getParcelStatuses(@Param("parcelIds")  List<Long> parcelIds);
 }

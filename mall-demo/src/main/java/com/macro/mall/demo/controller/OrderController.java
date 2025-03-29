@@ -38,27 +38,27 @@ public class OrderController {
         }
     }
 
-    @ApiOperation("修改订单（支持快件/仓储/快递制单）")
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ResponseEntity<?> updateOrder(@RequestBody OrderUpdateRequest request) {
-        try {
-            String response = orderService.updateOrder(request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error in updating order: " + e.getMessage());
-        }
-    }
+//    @ApiOperation("修改订单（支持快件/仓储/快递制单）")
+//    @RequestMapping(value = "/update", method = RequestMethod.POST)
+//    public ResponseEntity<?> updateOrder(@RequestBody OrderUpdateRequest request) {
+//        try {
+//            String response = orderService.updateOrder(request);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Error in updating order: " + e.getMessage());
+//        }
+//    }
 
-    @ApiOperation("删除订单（支持快件/仓储/快递制单）")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteOrder(@RequestBody OrderDeleteRequest request) {
-        try {
-            String response = orderService.deleteOrder(request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error in deleting order: " + e.getMessage());
-        }
-    }
+//    @ApiOperation("删除订单（支持快件/仓储/快递制单）")
+//    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+//    public ResponseEntity<?> deleteOrder(@RequestBody OrderDeleteRequest request) {
+//        try {
+//            String response = orderService.deleteOrder(request);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body("Error in deleting order: " + e.getMessage());
+//        }
+//    }
 }

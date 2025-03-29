@@ -21,18 +21,18 @@ public class ShippingController {
     @Autowired
     private ShippingService shippingService;
 
-    @ApiOperation("取消发货")
-    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
-    public ResponseEntity<?> cancelShipping(@RequestBody ShippingCancelRequest request) {
-        try {
-            // 调用服务层处理请求
-            String response = shippingService.cancelShipping(request);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
-                    body("Error in cancelShipping: " + e.getMessage());
-        }
-    }
+//    @ApiOperation("取消发货")
+//    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+//    public ResponseEntity<?> cancelShipping(@RequestBody ShippingCancelRequest request) {
+//        try {
+//            // 调用服务层处理请求
+//            String response = shippingService.cancelShipping(request);
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+//                    body("Error in cancelShipping: " + e.getMessage());
+//        }
+//    }
 
     @ApiOperation("根据公司单号提取转单号")
     @RequestMapping(value = "/transfer-number", method = RequestMethod.POST)
