@@ -11,7 +11,7 @@
  Target Server Version : 50744
  File Encoding         : 65001
 
- Date: 30/03/2025 15:25:51
+ Date: 30/03/2025 15:53:34
 */
 
 SET NAMES utf8mb4;
@@ -346,7 +346,7 @@ CREATE TABLE `logistics_records`  (
   `receive_time` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '收件时间',
   `waybill_number` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '运单号',
   `customer_order_number` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '客户单号',
-  `fw_tracking_number` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '转运单号',
+  `fw_tracking_number` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '转运单号',
   `container_number` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '柜号',
   `status` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'Pending' COMMENT '状态',
   `logistics_channel` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '物流渠道名称',
@@ -382,25 +382,21 @@ CREATE TABLE `logistics_records`  (
   `cc_companyno` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '清关公司',
   `fw_logistics_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '货运物流单号',
   `create_time` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `waybill_number`(`waybill_number`) USING BTREE,
-  UNIQUE INDEX `customer_order_number`(`customer_order_number`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '物流记录主表' ROW_FORMAT = Dynamic;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '物流记录主表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of logistics_records
 -- ----------------------------
 INSERT INTO `logistics_records` VALUES (2, '2023-05-10', '14:30', 'WH123456789', 'CUST001', 'FW123456789', 'CNTR001', 'In Transit', 'Sea Freight', 'Shanghai', '2023-05-11', 'Los Angeles', '2023-06-20', '90001', 'USA', 'Amazon', 'FBA', 'No', '10', '100', '500', '550', '2.5', '550', '550', 'DDP', 'Commercial', 'LCL', 'Electronics', 'Fragile items', 'Consumer electronics', '5000', NULL, 'BL001', 'Departed Shanghai Port', '2023-05-15 08:00:00', 'Commercial invoice, packing list', 'AC001', 'CC001', 'FWLOG001', '2023-05-10 14:30:00');
-INSERT INTO `logistics_records` VALUES (3, '2023-05-12', '10:15', 'WH987654321', 'CUST002', 'FW987654321', 'CNTR002', 'Pending', 'Air Freight', 'Shenzhen', '2023-05-13', 'London', '2023-05-15', 'EC1A', 'UK', 'eBay', 'Seller Warehouse', 'Yes', '5', '25', '120', '130', '1.2', '130', '130', 'DDU', 'Personal', 'FCL', 'Clothing', 'Summer collection', 'Fashion apparel', '1500', NULL, 'BL002', 'Ready for pickup', '2023-05-12 16:20:00', 'Packing list', 'AC002', 'CC002', 'FWLOG002', '2023-05-12 10:15:00');
+INSERT INTO `logistics_records` VALUES (3, NULL, NULL, 'WH987654321', 'CUST002', 'FW987654321', NULL, 'Shipped', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Yes', '5', '25', '120', '130', '1.2', '130', '130', 'DDU', 'Personal', 'FCL', 'Clothing', 'Summer collection', 'Fashion apparel', '1500', NULL, 'BL002', 'Ready for pickup', '2025-03-30 15:47:01', 'Packing list', 'AC002', 'CC002', 'FWLOG002', '2023-05-12 10:15:00');
 INSERT INTO `logistics_records` VALUES (4, '2023-05-15', '09:45', 'WH456123789', 'CUST003', 'FW456123789', 'CNTR003', 'Delivered', 'Express', 'Hong Kong', '2023-05-15', 'Sydney', '2023-05-18', '2000', 'Australia', 'Shopify', '3PL Warehouse', 'No', '3', '15', '45', '50', '0.8', '50', '50', 'DAP', 'Commercial', 'LCL', 'Cosmetics', 'Liquid items', 'Beauty products', '800', NULL, 'BL003', 'Delivered to customer', '2023-05-18 14:10:00', 'Commercial invoice, MSDS', 'AC003', 'CC003', 'FWLOG003', '2023-05-15 09:45:00');
 INSERT INTO `logistics_records` VALUES (5, '2023-05-18', '16:20', 'WH789123456', 'CUST004', 'FW789123456', 'CNTR004', 'Customs Hold', 'Rail Freight', 'Chengdu', '2023-05-19', 'Hamburg', '2023-06-10', '20095', 'Germany', 'AliExpress', 'Seller Warehouse', 'No', '8', '40', '300', '320', '3.0', '320', '320', 'DDP', 'Commercial', 'FCL', 'Furniture', 'Flat pack', 'Home furniture', '3500', 'Customs Inspection', 'BL004', 'Customs inspection required', '2023-06-11 09:30:00', 'Commercial invoice, packing list, certificate of origin', 'AC004', 'CC004', 'FWLOG004', '2023-05-18 16:20:00');
-INSERT INTO `logistics_records` VALUES (6, '2023-05-20', '11:30', 'WH321654987', 'CUST005', 'FW321654987', 'CNTR005', 'At Port', 'Sea Freight', 'Ningbo', '2023-05-21', 'Rotterdam', '2023-06-25', '3011', 'Netherlands', 'Amazon', 'FBA', 'No', '12', '120', '600', '650', '4.0', '650', '650', 'DDP', 'Commercial', 'LCL', 'Toys', 'Christmas collection', 'Children toys', '4200', NULL, 'BL005', 'Arrived at destination port', '2023-06-25 07:45:00', 'Commercial invoice, packing list, test reports', 'AC005', 'CC005', 'FWLOG005', '2023-05-20 11:30:00');
-INSERT INTO `logistics_records` VALUES (7, '2023-05-22', '13:45', 'WH654987321', 'CUST006', 'FW654987321', 'CNTR006', 'In Transit', 'Air Freight', 'Guangzhou', '2023-05-23', 'Paris', '2023-05-24', '75001', 'France', 'Walmart', '3PL Warehouse', 'Yes', '6', '30', '150', '160', '1.5', '160', '160', 'DDU', 'Commercial', 'FCL', 'Jewelry', 'High value items', 'Fashion accessories', '7500', NULL, 'BL006', 'In transit to destination', '2023-05-23 18:20:00', 'Commercial invoice, packing list, valuation certificate', 'AC006', 'CC006', 'FWLOG006', '2023-05-22 13:45:00');
 INSERT INTO `logistics_records` VALUES (8, '2023-05-25', '15:10', 'WH987321654', 'CUST007', 'FW987321654', 'CNTR007', 'Pending', 'Sea Freight', 'Qingdao', '2023-05-26', 'Vancouver', '2023-06-30', 'V6B', 'Canada', 'Shopify', 'Seller Warehouse', 'No', '7', '35', '350', '380', '3.5', '380', '380', 'DAP', 'Personal', 'LCL', 'Sports Equipment', 'Oversized items', 'Fitness gear', '2800', NULL, 'BL007', 'Waiting for customs clearance', '2023-05-25 15:10:00', 'Packing list', 'AC007', 'CC007', 'FWLOG007', '2023-05-25 15:10:00');
-INSERT INTO `logistics_records` VALUES (9, '2023-05-28', '10:00', 'WH147258369', 'CUST008', 'FW147258369', 'CNTR008', 'Delivered', 'Express', 'Xiamen', '2023-05-28', 'Tokyo', '2023-05-30', '100-0001', 'Japan', 'Rakuten', 'FBA', 'No', '2', '10', '25', '30', '0.5', '30', '30', 'DDP', 'Commercial', 'FCL', 'Books', 'Educational materials', 'Textbooks', '1200', NULL, 'BL008', 'Successfully delivered', '2023-05-30 16:45:00', 'Commercial invoice', 'AC008', 'CC008', 'FWLOG008', '2023-05-28 10:00:00');
 INSERT INTO `logistics_records` VALUES (10, '2023-05-30', '14:50', 'WH369258147', 'CUST009', 'FW369258147', 'CNTR009', 'In Transit', 'Rail Freight', 'Chongqing', '2023-05-31', 'Warsaw', '2023-06-15', '00-001', 'Poland', 'Alibaba', '3PL Warehouse', 'Yes', '9', '45', '400', '420', '4.2', '420', '420', 'DDU', 'Commercial', 'LCL', 'Automotive Parts', 'Heavy items', 'Car accessories', '3800', NULL, 'BL009', 'Crossing border', '2023-06-01 12:30:00', 'Commercial invoice, packing list, technical specifications', 'AC009', 'CC009', 'FWLOG009', '2023-05-30 14:50:00');
 INSERT INTO `logistics_records` VALUES (11, '2023-06-01', '09:20', 'WH258369147', 'CUST010', 'FW258369147', 'CNTR010', 'At Warehouse', 'Sea Freight', 'Dalian', '2023-06-02', 'Melbourne', '2023-07-10', '3000', 'Australia', 'Amazon', 'FBA', 'No', '15', '150', '700', '750', '5.0', '750', '750', 'DDP', 'Commercial', 'FCL', 'Home Appliances', 'Fragile items', 'Kitchen appliances', '6500', NULL, 'BL010', 'Received at origin warehouse', '2023-06-01 12:45:00', 'Commercial invoice, packing list, warranty cards', 'AC010', 'CC010', 'FWLOG010', '2023-06-01 09:20:00');
 INSERT INTO `logistics_records` VALUES (12, '2025-03-29', '2025-03-29 10:00', 'WB123456789', 'ORD12345', 'FW789123', 'CN123456', 'In transit', 'Air Freight', 'Port of Los Angeles', '2025-03-28 14:30', 'Port of Shanghai', '2025-03-30', '100000', 'China', 'Amazon', 'Warehouse A', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-30 15:20:14', NULL, NULL, NULL, NULL, '2025-03-30 15:20:14');
+INSERT INTO `logistics_records` VALUES (16, NULL, NULL, 'WB123456789', 'CO123456789', 'FW987654321', NULL, 'Shipped', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-30 15:52:39', NULL, NULL, NULL, NULL, '2025-03-30 15:52:39');
 
 -- ----------------------------
 -- Table structure for oms_cart_item
