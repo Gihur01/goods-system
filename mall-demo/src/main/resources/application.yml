@@ -5,9 +5,9 @@ spring:
   application:
     name: mall-demo
   datasource:
-    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: jdbc:mysql://localhost:3306/aitranstore?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
-    password: root
+    password: Test1234!
   thymeleaf:
     mode: HTML5
     encoding: utf-8
@@ -31,3 +31,9 @@ logging:
 host:
   mall:
    admin: http://localhost:8080
+
+k5:
+  Verify:
+    Clientid: BetaLogisz
+    Token: RFRESA==eV9dlEHB9uG8bIwv2p0g
+  url: http://dtdh.kingtrans.net/PostInterfaceService?method=

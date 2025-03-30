@@ -1,0 +1,6 @@
+API Name: /createOrder
+Timestamp: 20250323_012543
+Request:
+OrderCreateRequest(verify=Verify(clientId=BetaLogisz, token=RFRESA==eV9dlEHB9uG8bIwv2p0g), OrderType=null, OrderDatas=null)
+Response:
+{"statusCode":"error","message":"订单类型 [OrderType] 字段值传入有误，正确值有[1:快件订单,2:快递制单,3:仓储订单,4:快递制单-及时返回单号]。"}

@@ -10,6 +10,9 @@ public class OmsOrderOperateHistory implements Serializable {
     @ApiModelProperty(value = "订单id")
     private Long orderId;
 
+    @ApiModelProperty(value = "订单编号")
+    private String orderSn;
+
     @ApiModelProperty(value = "操作人：用户；系统；后台管理员")
     private String operateMan;
 
@@ -38,6 +41,14 @@ public class OmsOrderOperateHistory implements Serializable {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getOrderSn() {
+        return orderSn;
+    }
+
+    public void setOrderSn(String orderSn) {
+        this.orderSn = orderSn;
     }
 
     public String getOperateMan() {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.macro.mall.demo.mapper.UmsEuexMapper">
+
+    <select id="findByClientIdAndToken" resultType="com.macro.mall.demo.model.UmsEuex">
+        SELECT * FROM ums_euex
+        WHERE client_id = #{verify.clientId} AND token = #{verify.token}
+        LIMIT 1
+    </select>
+
+</mapper>

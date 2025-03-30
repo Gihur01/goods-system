@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.macro.mall.mapper.WmsCenterMapper">
-
+    <resultMap id="BaseResultMap" type="com.macro.mall.model.WmsCenter">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+        <result column="center_name" jdbcType="VARCHAR" property="centerName" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="post_code" jdbcType="VARCHAR" property="postCode" />
+        <result column="province" jdbcType="VARCHAR" property="province" />
+        <result column="city" jdbcType="VARCHAR" property="city" />
+        <result column="region" jdbcType="VARCHAR" property="region" />
+        <result column="street" jdbcType="VARCHAR" property="street" />
+        <result column="street_num" jdbcType="VARCHAR" property="streetNum" />
+        <result column="detail_address" jdbcType="VARCHAR" property="detailAddress" />
+    </resultMap>
     <!-- 获取包裹信息 -->
-    <select id="getCenterByCountry" resultType="com.macro.mall.model.WmsCenter">
+    <select id="getCenterByCountry" parameterType="com.macro.mall.model.WmsCenter" resultMap="BaseResultMap">
         SELECT * FROM wms_center
-        WHERE country_name = #{orderCountry}
+        WHERE country_code = #{countryCode}
     </select>
 
 </mapper>

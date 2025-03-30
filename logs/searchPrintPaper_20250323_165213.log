@@ -1,0 +1,23 @@
+API Name: searchPrintPaper
+Timestamp: 20250323_165213
+
+=== Original Request ===
+{
+  "Verify" : {
+    "Clientid" : "David",
+    "Token" : "w1FBC42XNTjQ1C4y65sA"
+  },
+  "ChannelCode" : "DHL_FBA_Be"
+}
+
+=== Modified Request ===
+{
+  "Verify" : {
+    "Clientid" : "BetaLogisz",
+    "Token" : "RFRESA==eV9dlEHB9uG8bIwv2p0g"
+  },
+  "ChannelCode" : "DHL_FBA_Be"
+}
+
+=== Response ===
+{"statusCode":"error","message":"查询失败，渠道代码：DHL_FBA_Be，没有设置标签打印格式，请联系物流商设置！"}

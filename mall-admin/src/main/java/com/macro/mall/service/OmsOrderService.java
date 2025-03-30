@@ -1,10 +1,7 @@
 package com.macro.mall.service;
 
 import com.macro.mall.dto.*;
-import com.macro.mall.model.OmsOrder;
-import com.macro.mall.model.OmsOrderCreateParam;
-import com.macro.mall.model.OmsOrderItem;
-import com.macro.mall.model.OmsOrderParcel;
+import com.macro.mall.model.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -63,11 +60,6 @@ public interface OmsOrderService {
     @Transactional
     int updateNote(Long id, String note, Integer status);
 
-//    /**
-//     * 创建订单
-//     */
-//    @Transactional
-//    OmsOrder createOrder(OmsOrderCreateParam orderCreateParam);
 
     boolean canCancelOrder(String orderSn);
 
@@ -77,5 +69,19 @@ public interface OmsOrderService {
 
     int confirmReceiveOrder(String orderSn);
 
+    /**
+     * 批量获取包裹编号
+     */
     int getParcelSn(List<Long> ids);
+    /**
+     * 批量打印包裹面单
+     */
+    byte[] getPrintedLabels(List<String> parcelSnList);
+
+
+    List<OmsOrderItemSimple> stockup(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
+
+    int completePacking(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
+
+    int collectParcel(List<Long> parcelIds, OmsOrderParcelQueryParam queryParam);
 }

@@ -10,30 +10,14 @@ import java.util.List;
 @Setter
 public class OmsOrderItemQueryParam {
 
-    @ApiModelProperty(value = "订单商品项ID")
-    private Long id;
-
-    @ApiModelProperty(value = "订单ID")
-    private Long orderId;
-
-    @ApiModelProperty(value = "订单编号")
-    private String orderSn;
-
     @ApiModelProperty(value = "包裹ID")
     private Long parcelId;
-
     @ApiModelProperty(value = "仓库编号")
     private List<Long> warehouseId;
-
     @ApiModelProperty(value = "所在国家")
     private String location;
-
-    @ApiModelProperty(value = "商品ID")
-    private Long productId;
-
-    @ApiModelProperty(value = "商品名称")
-    private String productName;
-
+    @ApiModelProperty(value = "商品货号")
+    private String productCode;
 
     // Getter 和 Setter 方法
     public List<Long> getWarehouseId() {

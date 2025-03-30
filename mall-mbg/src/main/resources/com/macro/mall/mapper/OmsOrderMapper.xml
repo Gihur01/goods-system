@@ -33,6 +33,7 @@
     <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
     <result column="receiver_phone" jdbcType="VARCHAR" property="receiverPhone" />
     <result column="receiver_post_code" jdbcType="VARCHAR" property="receiverPostCode" />
+    <result column="receiver_country" jdbcType="VARCHAR" property="receiverCountry" />
     <result column="receiver_province" jdbcType="VARCHAR" property="receiverProvince" />
     <result column="receiver_city" jdbcType="VARCHAR" property="receiverCity" />
     <result column="receiver_region" jdbcType="VARCHAR" property="receiverRegion" />
@@ -46,6 +47,15 @@
     <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
     <result column="comment_time" jdbcType="TIMESTAMP" property="commentTime" />
     <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <resultMap id="BaseParcelResultMap" type="com.macro.mall.model.OmsOrderParcel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="warehouse_id" jdbcType="BIGINT" property="warehouseId" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="parcel_company" jdbcType="VARCHAR" property="parcelCompany" />
+    <result column="parcel_sn" jdbcType="VARCHAR" property="parcelSn" />
+    <result column="parcel_status" jdbcType="INTEGER" property="parcelStatus" />
   </resultMap>
   <resultMap id="BaseItemResultMap" type="com.macro.mall.model.OmsOrderItem">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -166,13 +176,33 @@
     from oms_order
     where order_sn = #{orderSn,jdbcType=VARCHAR}
   </select>
-  <select id="getParcelsByIds" resultMap="BaseResultMap">
-    SELECT * FROM oms_order_parcel
-    WHERE id IN
+  <select id="getOrderById" parameterType="com.macro.mall.model.OmsOrder" resultMap="BaseResultMap">
+    select *
+    from oms_order
+    WHERE id = #{id}
+  </select>
+  <select id="getParcelsByIds" parameterType="java.util.List" resultType="com.macro.mall.model.OmsOrderParcel" resultMap="BaseParcelResultMap">
+    SELECT * FROM oms_order_parcel WHERE id IN
     <foreach collection="ids" item="id" open="(" separator="," close=")">
       #{id}
     </foreach>
   </select>
+  <select id="getPackingList" parameterType="java.util.List" resultType="com.macro.mall.model.OmsOrderItemSimple">
+    SELECT
+    item.product_name AS productName,             <!-- 商品名称 -->
+    item.product_sn AS productSn,                 <!-- 商品货号 -->
+    item.product_code AS productCode,            <!-- SKU编码 -->
+    SUM(item.product_quantity) AS productQuantity,        <!-- 汇总商品数量 -->
+    item.product_note AS productNote             <!-- 商品备注 -->
+    FROM oms_order_item item
+    WHERE item.parcel_id IN
+    <foreach item="id" collection="parcelIds" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+    GROUP BY item.product_sn, item.product_code, item.product_note, item.product_name
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from oms_order
     where id = #{id,jdbcType=BIGINT}
@@ -223,30 +253,22 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into oms_order (
-    member_id, coupon_id, sales_channel_id, order_sn, create_time, member_username, total_amount,
-    pay_amount, freight_amount, promotion_amount, integration_amount, coupon_amount,
-    discount_amount, pay_type, source_type, status, order_type, delivery_company,
-    delivery_sn, auto_confirm_day, integration, growth, promotion_info, bill_type,
-    bill_header, bill_content, bill_receiver_phone, bill_receiver_email, receiver_name,
-    receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region,
-    receiver_detail_address, note, confirm_status, delete_status, use_integration,
-    payment_time, delivery_time, receive_time, comment_time, modify_time
+    order_sn, order_channel_code, pay_amount, payment_time,
+    freight_amount, note, member_username, receiver_name,
+    receiver_phone, receiver_post_code, receiver_country, receiver_city,
+    receiver_street, receiver_street_num, receiver_detail_address,
+    create_time, modify_time, status, confirm_status, delete_status
     ) values (
-    #{memberId,jdbcType=BIGINT}, #{couponId,jdbcType=BIGINT}, #{salesChannelId,jdbcType=BIGINT}, #{orderSn,jdbcType=VARCHAR},
-    #{createTime,jdbcType=TIMESTAMP}, #{memberUsername,jdbcType=VARCHAR}, #{totalAmount,jdbcType=DECIMAL},
-    #{payAmount,jdbcType=DECIMAL}, #{freightAmount,jdbcType=DECIMAL}, #{promotionAmount,jdbcType=DECIMAL},
-    #{integrationAmount,jdbcType=DECIMAL}, #{couponAmount,jdbcType=DECIMAL}, #{discountAmount,jdbcType=DECIMAL},
-    #{payType,jdbcType=INTEGER}, #{sourceType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
-    #{orderType,jdbcType=INTEGER}, #{deliveryCompany,jdbcType=VARCHAR}, #{deliverySn,jdbcType=VARCHAR},
-    #{autoConfirmDay,jdbcType=INTEGER}, #{integration,jdbcType=INTEGER}, #{growth,jdbcType=INTEGER},
-    #{promotionInfo,jdbcType=VARCHAR}, #{billType,jdbcType=INTEGER}, #{billHeader,jdbcType=VARCHAR},
-    #{billContent,jdbcType=VARCHAR}, #{billReceiverPhone,jdbcType=VARCHAR}, #{billReceiverEmail,jdbcType=VARCHAR},
-    #{receiverName,jdbcType=VARCHAR}, #{receiverPhone,jdbcType=VARCHAR}, #{receiverPostCode,jdbcType=VARCHAR},
-    #{receiverProvince,jdbcType=VARCHAR}, #{receiverCity,jdbcType=VARCHAR}, #{receiverRegion,jdbcType=VARCHAR},
-    #{receiverDetailAddress,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{confirmStatus,jdbcType=INTEGER},
-    #{deleteStatus,jdbcType=INTEGER}, #{useIntegration,jdbcType=INTEGER}, #{paymentTime,jdbcType=TIMESTAMP},
-    #{deliveryTime,jdbcType=TIMESTAMP}, #{receiveTime,jdbcType=TIMESTAMP}, #{commentTime,jdbcType=TIMESTAMP},
-    #{modifyTime,jdbcType=TIMESTAMP}
+    #{orderSn,jdbcType=VARCHAR}, #{orderChannelCode,jdbcType=VARCHAR},
+    #{payAmount,jdbcType=DECIMAL}, #{paymentTime,jdbcType=TIMESTAMP},
+    #{freightAmount,jdbcType=DECIMAL}, #{note,jdbcType=VARCHAR},
+    #{memberUsername,jdbcType=VARCHAR}, #{receiverName,jdbcType=VARCHAR},
+    #{receiverPhone,jdbcType=VARCHAR}, #{receiverPostCode,jdbcType=VARCHAR},
+    #{receiverCountry,jdbcType=VARCHAR}, #{receiverCity,jdbcType=VARCHAR},
+    #{receiverStreet,jdbcType=VARCHAR}, #{receiverStreetNum,jdbcType=VARCHAR},
+    #{receiverDetailAddress,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{modifyTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},
+    #{confirmStatus,jdbcType=INTEGER},#{deleteStatus,jdbcType=INTEGER}
     )
   </insert>
   <insert id="insertOrderItem" parameterType="com.macro.mall.model.OmsOrderItem">
@@ -267,39 +289,54 @@
     #{orderSn,jdbcType=VARCHAR}, #{deleteStatus,jdbcType=INTEGER}
     )
   </insert>
-  <insert id="insertParcel" parameterType="com.macro.mall.model.OmsOrderParcel">
+  <insert id="insertParcel" parameterType="com.macro.mall.model.OmsOrderParcel" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
-    VALUES (#{orderId}, #{location}, #{createTime}, #{parcelStatus})
+    VALUES (#{orderId}, #{warehouseId}, #{location}, #{createTime}, #{parcelStatus})
   </insert>
 
-  <insert id="batchInsertOrderItems" parameterType="java.util.List">
+  <insert id="batchInsertOrderItems" parameterType="com.macro.mall.model.OmsOrderItem">
     insert into oms_order_item (
-    order_id, product_id, product_name, product_sn,
-    product_price, product_quantity,
-    promotion_amount, coupon_amount,
-    integration_amount, real_amount,
-    order_sn, delete_status
+    parcel_id, item_status, warehouse_id, location, product_id, product_pic,
+    product_sku_id, product_name, product_sn, product_code, product_price,
+    product_quantity, product_attr, product_note, promotion_name, promotion_amount,
+    coupon_amount, integration_amount, real_amount, gift_integration, gift_growth,
+    delete_status
     ) values
     <foreach collection="list" item="item" separator=",">
       (
-      #{item.orderId,jdbcType=BIGINT}, #{item.productId,jdbcType=BIGINT}, #{item.productName,jdbcType=VARCHAR},
-      #{item.productSn,jdbcType=VARCHAR}, #{item.productPrice,jdbcType=DECIMAL}, #{item.productQuantity,jdbcType=INTEGER},
-      #{item.promotionAmount,jdbcType=DECIMAL}, #{item.couponAmount,jdbcType=DECIMAL},
-      #{item.integrationAmount,jdbcType=DECIMAL}, #{item.realAmount,jdbcType=DECIMAL},
-      #{item.orderSn,jdbcType=VARCHAR}, #{item.deleteStatus,jdbcType=INTEGER}
+      #{item.parcelId,jdbcType=BIGINT},
+      #{item.itemStatus,jdbcType=INTEGER},
+      #{item.warehouseId,jdbcType=BIGINT},
+      #{item.location,jdbcType=VARCHAR},
+      #{item.productId,jdbcType=BIGINT},
+      #{item.productPic,jdbcType=VARCHAR},
+      #{item.productSkuId,jdbcType=BIGINT},
+      #{item.productName,jdbcType=VARCHAR},
+      #{item.productSn,jdbcType=VARCHAR},
+      #{item.productCode,jdbcType=VARCHAR},
+      #{item.productPrice,jdbcType=DECIMAL},
+      #{item.productQuantity,jdbcType=INTEGER},
+      #{item.productAttr,jdbcType=VARCHAR},
+      #{item.productNote,jdbcType=VARCHAR},
+      #{item.promotionName,jdbcType=VARCHAR},
+      #{item.promotionAmount,jdbcType=DECIMAL},
+      #{item.couponAmount,jdbcType=DECIMAL},
+      #{item.integrationAmount,jdbcType=DECIMAL},
+      #{item.realAmount,jdbcType=DECIMAL},
+      #{item.giftIntegration,jdbcType=INTEGER},
+      #{item.giftGrowth,jdbcType=INTEGER},
+      #{item.deleteStatus,jdbcType=INTEGER}
       )
     </foreach>
   </insert>
-  <insert id="batchInsertParcels">
-    INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status)
+
+  <insert id="batchInsertParcels" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO oms_order_parcel (order_id, warehouse_id, location, create_time, parcel_status, delete_status)
     VALUES
     <foreach collection="parcelList" item="parcel" separator=",">
-      (#{parcel.orderId}, #{parcel.warehouse_id}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus})
+      (#{parcel.orderId}, #{parcel.warehouseId}, #{parcel.location}, #{parcel.createTime}, #{parcel.parcelStatus}, #{parcel.deleteStatus})
     </foreach>
   </insert>
-
-
-
   <insert id="insertSelective" parameterType="com.macro.mall.model.OmsOrder">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
@@ -574,6 +611,32 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="getItemsByParcelId" parameterType="Long" resultType="com.macro.mall.model.OmsOrderItem">
+    SELECT * FROM oms_order_item WHERE parcel_id = #{parcelId}
+  </select>
+
+  <select id="getItemStatuses" resultType="java.util.Map">
+    SELECT
+    parcel_id as parcelId,
+    item_status
+    FROM oms_order_item
+    WHERE parcel_id IN
+    <foreach collection="parcelIds" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
+  <select id="getParcelStatuses" resultType="java.util.Map">
+    SELECT
+    id as parcelId,
+    parcel_status
+    FROM oms_order_parcel
+    WHERE id IN
+    <foreach collection="parcelIds" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </select>
+
   <update id="updateByExampleSelective" parameterType="map">
     update oms_order
     <set>
@@ -992,11 +1055,20 @@
       <if test="receiverPostCode != null">
         receiver_post_code = #{receiverPostCode,jdbcType=VARCHAR},
       </if>
+      <if test="receiverCountry != null">
+        receiver_country = #{receiverCountry,jdbcType=VARCHAR},
+      </if>
       <if test="receiverProvince != null">
         receiver_province = #{receiverProvince,jdbcType=VARCHAR},
       </if>
       <if test="receiverCity != null">
         receiver_city = #{receiverCity,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverStreet != null">
+        receiver_street = #{receiverStreet,jdbcType=VARCHAR},
+      </if>
+      <if test="receiverStreetNum != null">
+        receiver_street_num = #{receiverStreetNum,jdbcType=VARCHAR},
       </if>
       <if test="receiverRegion != null">
         receiver_region = #{receiverRegion,jdbcType=VARCHAR},
@@ -1080,5 +1152,19 @@
       comment_time = #{commentTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateStatus">
+    UPDATE ${tableName}
+    SET ${statusColumn} = #{statusValue}
+    WHERE ${conditionColumn} IN
+    <foreach item="id" collection="ids" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+  <update id="updateParcelSn" parameterType="com.macro.mall.model.OmsOrderParcel">
+    UPDATE oms_order_parcel
+    SET parcel_sn = #{parcelSn}, parcel_status = #{parcelStatus}
+    WHERE id = #{parcelId}
   </update>
 </mapper>

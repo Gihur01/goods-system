@@ -6,6 +6,9 @@ import com.macro.mall.model.PmsProductExample;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import com.macro.mall.model.PmsProductWarehouseInfo;
 import org.apache.ibatis.annotations.Param;
 
 public interface PmsProductMapper {
@@ -23,9 +26,7 @@ public interface PmsProductMapper {
 
     List<PmsProduct> selectByExample(PmsProductExample example);
 
-    static PmsCertification selectByProductSn(String productSn) {
-        return null;
-    }
+    PmsProduct selectByProductSn(String productSn);
 
     PmsProduct selectByPrimaryKey(Long id);
 
@@ -41,10 +42,11 @@ public interface PmsProductMapper {
 
     int updateByPrimaryKey(PmsProduct record);
 
+
     /**
      * 根据仓库 ID 过滤商品列表
      */
     List<PmsProduct> listByWarehouseIds(@Param("warehouseIds") List<Long> warehouseIds);
 
-    List<PmsProduct> getProductsBySns(List<String> productSn);
+    List<PmsProductWarehouseInfo> getWarehouseInfoByProductIds(List<Long> productIds);
 }

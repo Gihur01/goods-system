@@ -3,6 +3,7 @@ package com.macro.mall.dao;
 import com.macro.mall.dto.*;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderItem;
+import com.macro.mall.model.OmsOrderItemSimple;
 import com.macro.mall.model.OmsOrderParcel;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,4 +37,5 @@ public interface OmsOrderDao {
      */
     OmsOrderDetail getDetail(@Param("id") Long id);
 
+    List<OmsOrderItemSimple> getPackingListByQueryParam(@Param("queryParam") OmsOrderParcelQueryParam queryParam);
 }

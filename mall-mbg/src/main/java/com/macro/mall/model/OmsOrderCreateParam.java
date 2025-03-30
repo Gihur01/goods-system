@@ -1,4 +1,5 @@
 package com.macro.mall.model;
+import java.time.LocalDateTime;
 import java.util.Date;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -8,45 +9,31 @@ public class OmsOrderCreateParam {
     @ApiModelProperty(value = "订单编号")
     private String orderSn;
 
-    @ApiModelProperty(value = "提交时间")
-    private Date createTime;
-
-    @ApiModelProperty(value = "用户帐号")
-    private String memberUsername;
+    @ApiModelProperty(value = "订单来源")
+    private String orderChannelCode;
 
     @ApiModelProperty(value = "应付金额（实际支付金额）")
     private BigDecimal payAmount;
 
+    @ApiModelProperty(value = "支付时间")
+    private LocalDateTime paymentTime;
+
     @ApiModelProperty(value = "运费金额")
     private BigDecimal freightAmount;
-
-    @ApiModelProperty(value = "订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单")
-    private Integer status;
-
-    @ApiModelProperty(value = "收货人姓名")
-    private String receiverName;
-
-    @ApiModelProperty(value = "收货人电话")
-    private String receiverPhone;
-
-    @ApiModelProperty(value = "收货人邮编")
-    private String receiverPostCode;
-
-    @ApiModelProperty(value = "省份/直辖市")
-    private String receiverProvince;
-
-    @ApiModelProperty(value = "城市")
-    private String receiverCity;
-
-    @ApiModelProperty(value = "详细地址")
-    private String receiverDetailAddress;
 
     @ApiModelProperty(value = "订单备注")
     private String note;
 
+    @ApiModelProperty(value = "用户帐号")
+    private String memberUsername;
+
+    @ApiModelProperty("订单收获地址")
+    private OmsOrderReceiverAddress receiverAddress;
 
     @ApiModelProperty("订单商品列表")
-    private List<OmsOrderItem> orderItems;
+    private List<OmsOrderItemCreate> orderItems;
+
+    // Getter 和 Setter 方法
 
     public String getOrderSn() {
         return orderSn;
@@ -56,20 +43,12 @@ public class OmsOrderCreateParam {
         this.orderSn = orderSn;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getOrderChannelCode() {
+        return orderChannelCode;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getMemberUsername() {
-        return memberUsername;
-    }
-
-    public void setMemberUsername(String memberUsername) {
-        this.memberUsername = memberUsername;
+    public void setOrderChannelCode(String orderChannelCode) {
+        this.orderChannelCode = orderChannelCode;
     }
 
     public BigDecimal getPayAmount() {
@@ -80,68 +59,20 @@ public class OmsOrderCreateParam {
         this.payAmount = payAmount;
     }
 
+    public LocalDateTime getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(LocalDateTime paymentTime) {
+        this.paymentTime = paymentTime;
+    }
+
     public BigDecimal getFreightAmount() {
         return freightAmount;
     }
 
     public void setFreightAmount(BigDecimal freightAmount) {
         this.freightAmount = freightAmount;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getReceiverName() {
-        return receiverName;
-    }
-
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
-    }
-
-    public String getReceiverPhone() {
-        return receiverPhone;
-    }
-
-    public void setReceiverPhone(String receiverPhone) {
-        this.receiverPhone = receiverPhone;
-    }
-
-    public String getReceiverPostCode() {
-        return receiverPostCode;
-    }
-
-    public void setReceiverPostCode(String receiverPostCode) {
-        this.receiverPostCode = receiverPostCode;
-    }
-
-    public String getReceiverProvince() {
-        return receiverProvince;
-    }
-
-    public void setReceiverProvince(String receiverProvince) {
-        this.receiverProvince = receiverProvince;
-    }
-
-    public String getReceiverCity() {
-        return receiverCity;
-    }
-
-    public void setReceiverCity(String receiverCity) {
-        this.receiverCity = receiverCity;
-    }
-
-    public String getReceiverDetailAddress() {
-        return receiverDetailAddress;
-    }
-
-    public void setReceiverDetailAddress(String receiverDetailAddress) {
-        this.receiverDetailAddress = receiverDetailAddress;
     }
 
     public String getNote() {
@@ -152,11 +83,27 @@ public class OmsOrderCreateParam {
         this.note = note;
     }
 
-    public List<OmsOrderItem> getOrderItems() {
+    public String getMemberUsername() {
+        return memberUsername;
+    }
+
+    public void setMemberUsername(String memberUsername) {
+        this.memberUsername = memberUsername;
+    }
+
+    public OmsOrderReceiverAddress getReceiverAddress() {
+        return receiverAddress;
+    }
+
+    public void setReceiverAddress(OmsOrderReceiverAddress receiverAddress) {
+        this.receiverAddress = receiverAddress;
+    }
+
+    public List<OmsOrderItemCreate> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OmsOrderItem> orderItems) {
+    public void setOrderItems(List<OmsOrderItemCreate> orderItems) {
         this.orderItems = orderItems;
     }
 

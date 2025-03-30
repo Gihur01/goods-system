@@ -1,0 +1,29 @@
+API Name: searchOrderTracknumber
+Timestamp: 20250323_175608
+
+=== Original Request ===
+{
+  "OrderType" : "2",
+  "Verify" : {
+    "Clientid" : "David",
+    "Token" : "w1FBC42XNTjQ1C4y65sA"
+  },
+  "CorpBillidDatas" : [ {
+    "CorpBillid" : "EYT5032303309SZ"
+  } ]
+}
+
+=== Modified Request ===
+{
+  "OrderType" : "2",
+  "Verify" : {
+    "Clientid" : "BetaLogisz",
+    "Token" : "RFRESA==eV9dlEHB9uG8bIwv2p0g"
+  },
+  "CorpBillidDatas" : [ {
+    "CorpBillid" : "EYT5032303309SZ"
+  } ]
+}
+
+=== Response ===
+{"statusCode":"success","returnDatas":[{"statusCode":"success","corpBillid":"EYT5032303309SZ","trackNumber":"01805114342845","customerNumber":"test0315005","childTrackingNumber":"01805114342845,01805114342846,01805114342847,","shipmentid":"","labelBillid":"","totalAmt":"11.670","ccycode":"EUR","ifPianYuan":"0","isPaperless":"1","message":""}]}

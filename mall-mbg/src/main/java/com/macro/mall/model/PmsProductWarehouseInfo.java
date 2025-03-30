@@ -6,7 +6,7 @@ public class PmsProductWarehouseInfo {
     private Long id;  // ✅ 改为 Long 类型
 
     @ApiModelProperty(value = "仓库")
-    private String warehouseId;
+    private Long warehouseId;
 
     @ApiModelProperty(value = "国家")
     private String location;
@@ -20,11 +20,11 @@ public class PmsProductWarehouseInfo {
         this.id = id;
     }
 
-    public String getWarehouseId() {
+    public Long getWarehouseId() {
         return warehouseId;
     }
 
-    public void setWarehouseId(String warehouseId) {
+    public void setWarehouseId(Long warehouseId) {
         this.warehouseId = warehouseId;
     }
 

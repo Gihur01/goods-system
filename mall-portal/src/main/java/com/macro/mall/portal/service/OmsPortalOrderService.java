@@ -3,9 +3,7 @@ package com.macro.mall.portal.service;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.model.OmsOrder;
 import com.macro.mall.model.OmsOrderCreateParam;
-import com.macro.mall.portal.domain.ConfirmOrderResult;
-import com.macro.mall.portal.domain.OmsOrderDetail;
-import com.macro.mall.portal.domain.OrderParam;
+import com.macro.mall.portal.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,16 +14,7 @@ import java.util.Map;
  * Created by macro on 2018/8/30.
  */
 public interface OmsPortalOrderService {
-    /**
-     * 根据用户购物车信息生成确认单信息
-     */
-    ConfirmOrderResult generateConfirmOrder(List<Long> cartIds);
-
-    /**
-     * 根据提交信息生成订单
-     */
-    @Transactional
-    Map<String, Object> generateOrder(OrderParam orderParam);
+    int updateReceiverInfo(OmsReceiverInfoParam receiverInfoParam);
 
     /**
      * 创建订单
@@ -69,7 +58,7 @@ public interface OmsPortalOrderService {
     /**
      * 根据订单ID获取订单详情
      */
-    OmsOrderDetail detail(String orderSn);
+    OmsOrderDeliveryDetail detail(String orderSn);
 
     /**
      * 用户根据订单ID删除订单

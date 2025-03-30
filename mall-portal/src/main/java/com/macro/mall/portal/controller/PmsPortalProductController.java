@@ -61,11 +61,23 @@ public class PmsPortalProductController {
         return CommonResult.success(productDetail);
     }
 
+    @ApiOperation("根据商品SN获取库存信息")
+    @RequestMapping(value = "/stock/{productSn}", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<Integer> getStockByProductSn(@PathVariable String productSn) {
+        Integer stock = portalProductService.getStockByProductSn(productSn);
+        if (stock != null) {
+            return CommonResult.success(stock);
+        } else {
+            return CommonResult.failed("未找到该商品的库存信息");
+        }
+    }
+
     @ApiOperation("根据商品SN获取商品认证资料")
     @RequestMapping(value = "/certification/{productSn}", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<PmsCertification> getCertificationByProductSn(@PathVariable String productSn) {
-        PmsCertification certification = portalProductService.getCertificationByProductSn(productSn);
+    public CommonResult<PmsProduct> getCertificationByProductSn(@PathVariable String productSn) {
+        PmsProduct certification = portalProductService.getCertificationByProductSn(productSn);
 
         if (certification == null) {
             return CommonResult.failed("未找到该商品的认证资料");
