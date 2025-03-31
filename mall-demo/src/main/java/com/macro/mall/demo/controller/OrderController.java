@@ -25,7 +25,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @ApiOperation("创建订单（支持快件/仓储/快递制单）")
+    @ApiOperation("创建订单（支持快递制单）")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<?> createOrder(@RequestBody OrderCreateRequest request) {
         try {

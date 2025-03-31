@@ -1,11 +1,16 @@
 package com.macro.mall.mapper;
 
+import com.macro.mall.model.CusBaseLogistics;
 import com.macro.mall.model.CusLogistics;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CusLogisticsMapper {
-    List<CusLogistics> selectAll();
+    List<CusBaseLogistics> selectAllLogistics();
 
     int deleteByWaybillAndCustomerOrder(String waybillNumber, String customerOrderNumber, String fwTrackingNumber);
 
@@ -14,4 +19,12 @@ public interface CusLogisticsMapper {
     void updateByWaybillAndCustomerOrder(CusLogistics logistics);
 
     void insertLogistics(CusLogistics logistics);
+
+    // 根据柜号查找物流记录
+    @Select("SELECT * FROM cus_logistics WHERE container_number = #{containerNumber}")
+    CusLogistics findByContainerNumber(@Param("containerNumber") String containerNumber);
+
+    // 更新 customs_clearance_materials 字段
+    @Update("UPDATE cus_logistics SET customs_clearance_materials = #{filePath} WHERE container_number = #{containerNumber}")
+    void updateCustomsClearanceMaterials(@Param("containerNumber") String containerNumber, @Param("filePath") String filePath);
 }

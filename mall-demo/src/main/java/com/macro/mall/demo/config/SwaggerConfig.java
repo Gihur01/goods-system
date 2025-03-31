@@ -19,9 +19,9 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
                 .apiBasePackage("com.macro.mall.demo.controller")
-                .title("mall-demo系统")
-                .description("SpringBoot版本中的一些示例")
-                .contactName("macro")
+                .title("智联欧仓转单系统")
+                .description("提供一条面向欧洲物流快递的低成本之路")
+                .contactName("aitranstore")
                 .version("1.0")
                 .enableSecurity(true)
                 .build();

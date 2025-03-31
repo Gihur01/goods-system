@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.macro.mall.mapper.CusLogisticsMapper">
-    <resultMap id="BaseResultMap" type="com.macro.mall.model.CusLogistics">
+    <resultMap id="BaseResultMap" type="com.macro.mall.model.CusBaseLogistics">
         <result property="id" column="id"/>
         <result property="receiveDate" column="receive_date"/>
         <result property="receiveTime" column="receive_time"/>
@@ -15,9 +15,11 @@
         <result property="loadingTime" column="loading_time"/>
         <result property="arrivalPort" column="arrival_port"/>
         <result property="arrivalDate" column="arrival_date"/>
+        <result property="latestTrackNotes" column="latest_track_notes"/>
+        <result property="trackUpdateTime" column="track_update_time"/>
     </resultMap>
 
-    <select id="selectAll" resultMap="BaseResultMap">
+    <select id="selectAllLogistics" resultMap="BaseResultMap">
         SELECT * FROM logistics_records
     </select>
 

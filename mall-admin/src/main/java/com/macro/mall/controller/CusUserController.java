@@ -1,107 +1,134 @@
 package com.macro.mall.controller;
 
+import com.macro.mall.model.CusBaseLogistics;
 import com.macro.mall.model.CusLogistics;
 import com.macro.mall.service.CusLogisticsService;
 import io.swagger.annotations.Api;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.Optional;
 
-@Controller
+@RestController
 @Api(tags = "CusUserController")
 @Tag(name = "CusUserController", description = "清关管理")
 @RequestMapping("/cus")
+@RequiredArgsConstructor
 public class CusUserController {
-    @Autowired
-    private CusLogisticsService cusLogisticsService;
+    private static final Logger log = LoggerFactory.getLogger(CusUserController.class);
 
-    private static final String EXCEL_FILE_NAME = "logistics.xlsx";
-    private static final Logger logger = LoggerFactory.getLogger(CusUserController.class);
+    private final CusLogisticsService cusLogisticsService;
+
+    private static final String UPLOAD_DIR = "D:/java/Mall/";
+
 
     /**
-     * 导出物流信息为 Excel 文件
+     * 获取所有物流信息（POST 请求）
      */
-    @PostMapping("/exportExcel")
-    public void exportExcel(HttpServletResponse response) {
+    @PostMapping("/fetchAll")
+    public ResponseEntity<List<CusBaseLogistics>> fetchAllLogistics() {
         try {
-            // 设置响应头，防止乱码
-            String encodedFileName = URLEncoder.encode(EXCEL_FILE_NAME, "UTF-8").replaceAll("\\+", "%20");
-
-            // 设置文件类型为 Excel 并指定下载文件名
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFileName + "\"");
-
-            // 调用服务层，生成并返回 Excel 文件
-            cusLogisticsService.exportToExcel(response);
-        } catch (IOException e) {
-            logger.error("导出 Excel 文件失败", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            try {
-                response.getWriter().write("导出 Excel 文件失败: " + e.getMessage());
-            } catch (IOException ex) {
-                logger.error("写入响应失败", ex);
-            }
+            log.info("Fetching all logistics data...");  // 记录日志
+            List<CusBaseLogistics> logisticsList = cusLogisticsService.getAllLogistics();
+            log.info("Fetched logistics data: {}", logisticsList);  // 记录获取到的数据
+            return ResponseEntity.ok(logisticsList);
+        } catch (Exception e) {
+            log.error("获取物流信息失败", e);  // 记录错误
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
         }
     }
 
     /**
-     * 删除物流记录，支持删除多条数据
+     * 删除物流记录，支持批量删除（POST 请求）
      */
-    @PostMapping("/deleteLogistics")
-    public ResponseEntity<String> deleteLogistics(@RequestBody List<Map<String, String>> logisticsList) {
+    @PostMapping("/removeLogistics")
+    public ResponseEntity<String> removeLogistics(@RequestBody(required = false) List<Map<String, String>> logisticsList) {
+        if (logisticsList == null || logisticsList.isEmpty()) {
+            return ResponseEntity.badRequest().body("请求数据不能为空");
+        }
+
         try {
-            int totalDeleted = 0;
+            int totalDeleted = logisticsList.stream()
+                    .mapToInt(logistics -> cusLogisticsService.deleteLogistics(
+                            logistics.get("waybillNumber"),
+                            logistics.get("customerOrderNumber"),
+                            logistics.get("fwTrackingNumber")
+                    )).sum();
 
-            for (Map<String, String> logistics : logisticsList) {
-                String waybillNumber = logistics.get("waybillNumber");
-                String customerOrderNumber = logistics.get("customerOrderNumber");
-                String fwTrackingNumber = logistics.get("fwTrackingNumber");
-
-                int deletedRecords = cusLogisticsService.deleteLogistics(waybillNumber, customerOrderNumber, fwTrackingNumber);
-                totalDeleted += deletedRecords;
-            }
-
-            if (totalDeleted > 0) {
-                return ResponseEntity.ok(totalDeleted + " 条物流记录已删除");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到匹配的物流记录，删除失败");
-            }
+            return totalDeleted > 0
+                    ? ResponseEntity.ok(totalDeleted + " 条物流记录已删除")
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到匹配的物流记录，删除失败");
         } catch (Exception e) {
-            logger.error("删除物流记录失败", e);
+            log.error("删除物流记录失败", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("删除失败: " + e.getMessage());
         }
     }
 
     /**
-     * 保存或更新物流记录
+     * 保存或更新物流记录（POST 请求）
      */
     @PostMapping("/saveOrUpdate")
-    public ResponseEntity<String> saveOrUpdateLogistics(@RequestBody CusLogistics logistics) {
+    public ResponseEntity<String> saveOrUpdateLogistics(@RequestBody List<CusLogistics> logisticsList) {
         try {
-            cusLogisticsService.saveOrUpdate(logistics);
+            // 循环处理每个物流记录
+            for (CusLogistics logistics : logisticsList) {
+                cusLogisticsService.saveOrUpdateLogistics(logistics);
+            }
             return ResponseEntity.ok("操作成功");
         } catch (Exception e) {
-            logger.error("保存或更新物流记录失败", e);
+            log.error("保存或更新物流记录失败", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("操作失败: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
+                                             @RequestParam("containerNumber") String containerNumber) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("文件为空，上传失败");
+        }
+
+        try {
+            // 确保目录存在
+            File directory = new File(UPLOAD_DIR);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // 文件名使用柜号
+            String fileName = containerNumber + ".pdf";
+            File destinationFile = new File(UPLOAD_DIR + fileName);
+
+            // 保存文件
+            file.transferTo(destinationFile);
+
+            // 获取文件的相对路径
+            String filePath = UPLOAD_DIR + fileName;
+
+            // 查找柜号对应的物流记录
+            CusLogistics logistics = cusLogisticsService.findByContainerNumber(containerNumber);
+            if (logistics != null) {
+                // 更新数据库中的文件路径
+                cusLogisticsService.updateCustomsClearanceMaterials(containerNumber, filePath);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到对应的柜号：" + containerNumber);
+            }
+
+            return ResponseEntity.ok("文件上传成功，并已绑定到柜号：" + containerNumber);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败：" + e.getMessage());
         }
     }
 }
