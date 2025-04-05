@@ -21,6 +21,10 @@ public class QueryServiceImpl implements QueryService {
     private String k5Clientid;
     @Value("${k5.Verify.Token}")
     private String k5Token;
+    @Value("${k5.Verify.ClientidUPS}")
+    private String k5ClientidUPS;
+    @Value("${k5.Verify.TokenUPS}")
+    private String k5TokenUPS;
     @Value("${k5.url}")
     private String k5url;
 
@@ -171,15 +175,24 @@ public class QueryServiceImpl implements QueryService {
         // **记录修改前的 JSON 数据**
         QueryTrackingRequest originalRequest = objectMapper.readValue(objectMapper.writeValueAsString(request), QueryTrackingRequest.class);
 
-        log.info("替换为我们的 client_id 和 token");
         String clientId = request.getVerify().getClientId();
 
-        // 替换为我们的 client_id 和 token
-        request.getVerify().setClientId(k5Clientid);
-        request.getVerify().setToken(k5Token);
+        if("UPS_WLY_Be".equals(request.getChannelCode()) || "UPS_DE_Bet".equals(request.getChannelCode())) {
+            log.info("替换为我们的 client_idUPS 和 tokenUPS");
+            request.getVerify().setClientId(k5ClientidUPS);
+            request.getVerify().setToken(k5TokenUPS);
 
-        log.info("Clientid:{}", request.getVerify().getClientId());
-        log.info("Token:{}", request.getVerify().getToken());
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
+        else {
+            log.info("替换为我们的 client_id 和 token");
+            request.getVerify().setClientId(k5Clientid);
+            request.getVerify().setToken(k5Token);
+
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
 
         String response = restTemplate.postForObject(k5url+"searchTrack", request, String.class);
 

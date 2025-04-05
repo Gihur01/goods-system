@@ -8,13 +8,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +38,10 @@ public class CusUserController {
 
     private final CusLogisticsService cusLogisticsService;
 
-    private static final String UPLOAD_DIR = "D:/java/Mall/";
+    // 定义上传目录（确保 Spring Boot 允许访问此目录）
+    private static final String UPLOAD_DIR = "/home/ecs-user/server/download/";
+    private static final String BASE_URL = "http://47.91.89.160:8080/cus/download/"; // 访问 URL 前缀
+
 
 
     /**
@@ -107,28 +117,51 @@ public class CusUserController {
                 directory.mkdirs();
             }
 
-            // 文件名使用柜号
+            // 生成文件名
             String fileName = containerNumber + ".pdf";
             File destinationFile = new File(UPLOAD_DIR + fileName);
 
             // 保存文件
             file.transferTo(destinationFile);
 
-            // 获取文件的相对路径
-            String filePath = UPLOAD_DIR + fileName;
+            // 生成可访问的 URL
+            String fileUrl = BASE_URL + fileName;
 
             // 查找柜号对应的物流记录
             CusLogistics logistics = cusLogisticsService.findByContainerNumber(containerNumber);
             if (logistics != null) {
-                // 更新数据库中的文件路径
-                cusLogisticsService.updateCustomsClearanceMaterials(containerNumber, filePath);
+                // 更新数据库中的文件 URL（不是本地路径）
+                cusLogisticsService.updateCustomsClearanceMaterials(containerNumber, fileUrl);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到对应的柜号：" + containerNumber);
             }
 
-            return ResponseEntity.ok("文件上传成功，并已绑定到柜号：" + containerNumber);
+            return ResponseEntity.ok("文件上传成功：" + fileUrl);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败：" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+        try {
+            // 拼接文件路径
+            Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            // 检查文件是否存在
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // 设置 HTTP 响应头，支持文件下载
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .body(resource);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

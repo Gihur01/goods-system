@@ -13,6 +13,9 @@ public class PrintAddressRequest {
     @JsonProperty("CorpBillidDatas")
     private List<CorpBillidData> corpBillidDatas;
 
+    @JsonProperty("ChannelCode")
+    private String channelCode;
+
     @JsonProperty("OrderType")
     private String orderType;
 

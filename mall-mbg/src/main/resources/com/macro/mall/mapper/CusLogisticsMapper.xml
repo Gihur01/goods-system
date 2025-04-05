@@ -17,7 +17,52 @@
         <result property="arrivalDate" column="arrival_date"/>
         <result property="latestTrackNotes" column="latest_track_notes"/>
         <result property="trackUpdateTime" column="track_update_time"/>
+        <result property="customsClearanceMaterials" column="customs_clearance_materials"/>
     </resultMap>
+    <resultMap id="CusLogisticsResultMap" type="com.macro.mall.model.CusLogistics">
+        <result property="id" column="id"/>
+        <result property="receiveDate" column="receive_date"/>
+        <result property="receiveTime" column="receive_time"/>
+        <result property="waybillNumber" column="waybill_number"/>
+        <result property="customerOrderNumber" column="customer_order_number"/>
+        <result property="fwTrackingNumber" column="fw_tracking_number"/>
+        <result property="containerNumber" column="container_number"/>
+        <result property="status" column="status"/>
+        <result property="logisticsChannel" column="logistics_channel"/>
+        <result property="loadingPort" column="loading_port"/>
+        <result property="loadingTime" column="loading_time"/>
+        <result property="arrivalPort" column="arrival_port"/>
+        <result property="arrivalDate" column="arrival_date"/>
+        <result property="targetPostcode" column="target_postcode"/>
+        <result property="targetCountry" column="target_country"/>
+        <result property="ecommercePlatform" column="ecommerce_platform"/>
+        <result property="fulfillmentWarehouse" column="fulfillment_warehouse"/>
+        <result property="isRemote" column="is_remote"/>
+        <result property="ctns" column="ctns"/>
+        <result property="tilPcs" column="til_pcs"/>
+        <result property="netWeight" column="net_weight"/>
+        <result property="grossWeight" column="gross_weight"/>
+        <result property="measurement" column="measurement"/>
+        <result property="billWeight" column="bill_weight"/>
+        <result property="confirmedBillWeight" column="confirmed_bill_weight"/>
+        <result property="cdType" column="cd_type"/>
+        <result property="ccType" column="cc_type"/>
+        <result property="clType" column="cl_type"/>
+        <result property="material" column="material"/>
+        <result property="additionalNotes" column="additional_notes"/>
+        <result property="description" column="description"/>
+        <result property="ccAmount" column="cc_amount"/>
+        <result property="problemItemType" column="problem_item_type"/>
+        <result property="ladingNumber" column="lading_number"/>
+        <result property="latestTrackNotes" column="latest_track_notes"/>
+        <result property="trackUpdateTime" column="track_update_time"/>
+        <result property="customsClearanceMaterials" column="customs_clearance_materials"/>
+        <result property="acceptanceChannelNo" column="acceptance_channel_no"/>
+        <result property="ccCompanyNo" column="cc_company_no"/>
+        <result property="fwLogisticsNo" column="fw_logistics_no"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
 
     <select id="selectAllLogistics" resultMap="BaseResultMap">
         SELECT * FROM logistics_records
@@ -31,7 +76,7 @@
     </delete>
 
     <!-- 查询是否存在记录 -->
-    <select id="selectByWaybillAndCustomerOrder" resultType="com.macro.mall.model.CusLogistics">
+    <select id="selectByWaybillAndCustomerOrder" resultMap="CusLogisticsResultMap">
         SELECT * FROM logistics_records
         WHERE waybill_number = #{waybillNumber}
         AND customer_order_number = #{customerOrderNumber}
@@ -74,4 +119,8 @@
         #{arrivalDate}, #{targetPostcode}, #{targetCountry}, #{ecommercePlatform}, #{fulfillmentWarehouse}, NOW(), NOW()
         )
     </insert>
+
+<!--    <select id="findByContainerNumber">-->
+<!--        SELECT * FROM cus_logistics WHERE container_number = #{containerNumber}-->
+<!--    </select>-->
 </mapper>

@@ -13,6 +13,9 @@ public class ShippingTransferRequest {
     @JsonProperty("Verify")
     private Verify verify;
 
+    @JsonProperty("ChannelCode")
+    private String channelCode;
+
     @JsonProperty("CorpBillidDatas")
     private List<CorpBillidData> corpBillidDatas;
 }

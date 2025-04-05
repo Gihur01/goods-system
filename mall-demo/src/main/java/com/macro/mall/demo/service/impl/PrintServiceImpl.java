@@ -20,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PrintServiceImpl implements PrintService {
@@ -29,6 +31,10 @@ public class PrintServiceImpl implements PrintService {
     private String k5Clientid;
     @Value("${k5.Verify.Token}")
     private String k5Token;
+    @Value("${k5.Verify.ClientidUPS}")
+    private String k5ClientidUPS;
+    @Value("${k5.Verify.TokenUPS}")
+    private String k5TokenUPS;
     @Value("${k5.url}")
     private String k5url;
 
@@ -55,11 +61,22 @@ public class PrintServiceImpl implements PrintService {
         PrintAddressRequest originalRequest = objectMapper.readValue(
                 objectMapper.writeValueAsString(request), PrintAddressRequest.class);
 
-        log.info("替换为我们的 client_id 和 token");
+        if("UPS_WLY_Be".equals(request.getChannelCode()) || "UPS_DE_Bet".equals(request.getChannelCode())) {
+            log.info("替换为我们的 client_idUPS 和 tokenUPS");
+            request.getVerify().setClientId(k5ClientidUPS);
+            request.getVerify().setToken(k5TokenUPS);
 
-        // 替换 client_id 和 token
-        request.getVerify().setClientId(k5Clientid);
-        request.getVerify().setToken(k5Token);
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
+        else {
+            log.info("替换为我们的 client_id 和 token");
+            request.getVerify().setClientId(k5Clientid);
+            request.getVerify().setToken(k5Token);
+
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
 
         // 调用第三方 API
         String responseJson = restTemplate.postForObject(k5url + "printOrderLabel", request, String.class);
@@ -98,21 +115,28 @@ public class PrintServiceImpl implements PrintService {
             throw new Exception("Invalid ClientId or Token");
         }
 
-        // 创建 ObjectMapper
+        // 记录原始请求
         ObjectMapper objectMapper = new ObjectMapper();
-
-        // **记录修改前的 JSON 数据**
         PrintSupportedRequest originalRequest = objectMapper.readValue(objectMapper.writeValueAsString(request), PrintSupportedRequest.class);
 
-        log.info("替换为我们的 client_id 和 token");
         String clientId = request.getVerify().getClientId();
 
-        // 替换为我们的 client_id 和 token
-        request.getVerify().setClientId(k5Clientid);
-        request.getVerify().setToken(k5Token);
+        if("UPS_WLY_Be".equals(request.getChannelCode()) || "UPS_DE_Bet".equals(request.getChannelCode())) {
+            log.info("替换为我们的 client_idUPS 和 tokenUPS");
+            request.getVerify().setClientId(k5ClientidUPS);
+            request.getVerify().setToken(k5TokenUPS);
 
-        log.info("Clientid:{}", request.getVerify().getClientId());
-        log.info("Token:{}", request.getVerify().getToken());
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
+        else {
+            log.info("替换为我们的 client_id 和 token");
+            request.getVerify().setClientId(k5Clientid);
+            request.getVerify().setToken(k5Token);
+
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
 
         String response = restTemplate.postForObject(k5url+"searchPrintPaper", request, String.class);
 
@@ -148,12 +172,22 @@ public class PrintServiceImpl implements PrintService {
         log.info("替换为我们的 client_id 和 token");
         String clientId = request.getVerify().getClientId();
 
-        // 替换为我们的 client_id 和 token
-        request.getVerify().setClientId(k5Clientid);
-        request.getVerify().setToken(k5Token);
+        if("UPS_WLY_Be".equals(request.getChannelCode()) || "UPS_DE_Bet".equals(request.getChannelCode())) {
+            log.info("替换为我们的 client_idUPS 和 tokenUPS");
+            request.getVerify().setClientId(k5ClientidUPS);
+            request.getVerify().setToken(k5TokenUPS);
 
-        log.info("Clientid:{}", request.getVerify().getClientId());
-        log.info("Token:{}", request.getVerify().getToken());
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
+        else {
+            log.info("替换为我们的 client_id 和 token");
+            request.getVerify().setClientId(k5Clientid);
+            request.getVerify().setToken(k5Token);
+
+            log.info("Clientid:{}", request.getVerify().getClientId());
+            log.info("Token:{}", request.getVerify().getToken());
+        }
 
         String response = restTemplate.postForObject(k5url+"printOrderInvoice", request, String.class);
 

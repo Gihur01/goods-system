@@ -11,4 +11,8 @@ public class QueryTrackingRequest {
 
     @JsonProperty("Datas")
     private List<Data> datas;
+
+    @JsonProperty("ChannelCode")
+    private String channelCode;
+
 }

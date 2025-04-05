@@ -22,4 +22,5 @@ public class CusBaseLogistics {
     private String arrivalDate;
     private String latestTrackNotes;
     private Timestamp trackUpdateTime;
+    private String customsClearanceMaterials;
 }

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +32,7 @@ public class MallSecurityConfig {
         return username -> adminService.loadUserByUsername(username);
     }
 
+
     @Bean
     public DynamicSecurityService dynamicSecurityService() {
         return new DynamicSecurityService() {
@@ -45,4 +47,5 @@ public class MallSecurityConfig {
             }
         };
     }
+
 }

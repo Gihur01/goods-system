@@ -12,4 +12,7 @@ public class PrintInvoiceRequest {
 
     @JsonProperty("CorpBillidDatas")
     private List<CorpBillidData> corpBillidDatas;
+
+    @JsonProperty("ChannelCode")
+    private String channelCode;
 }

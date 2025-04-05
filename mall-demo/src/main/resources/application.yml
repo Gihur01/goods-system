@@ -36,4 +36,6 @@ k5:
   Verify:
     Clientid: BetaLogisz
     Token: RFRESA==eV9dlEHB9uG8bIwv2p0g
+    ClientidUPS: BetaUPS
+    TokenUPS: RFRESA==jfeNnSl4UM98dcqgYI03
   url: http://dtdh.kingtrans.net/PostInterfaceService?method=
