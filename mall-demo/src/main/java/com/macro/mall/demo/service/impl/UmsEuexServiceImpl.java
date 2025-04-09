@@ -15,4 +15,5 @@ public class UmsEuexServiceImpl implements UmsEuexService {
     public boolean validateAuth(Verify verify) {
         return euexMapper.validateAuth(verify) > 0;
     }
+
 }

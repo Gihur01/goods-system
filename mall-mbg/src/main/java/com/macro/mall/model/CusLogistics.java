@@ -43,6 +43,7 @@ public class CusLogistics {
     private String latestTrackNotes;
     private Timestamp trackUpdateTime;
     private String customsClearanceMaterials;
+    private String customsClearanceResult;
     private String acceptanceChannelNo;
     private String ccCompanyNo;
     private String fwLogisticsNo;

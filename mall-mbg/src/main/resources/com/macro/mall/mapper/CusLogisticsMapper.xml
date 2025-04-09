@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.macro.mall.mapper.CusLogisticsMapper">
-    <resultMap id="BaseResultMap" type="com.macro.mall.model.CusBaseLogistics">
+    <resultMap id="CusBaseLogisticsMap" type="com.macro.mall.model.CusBaseLogistics">
         <result property="id" column="id"/>
         <result property="receiveDate" column="receive_date"/>
         <result property="receiveTime" column="receive_time"/>
@@ -18,8 +18,10 @@
         <result property="latestTrackNotes" column="latest_track_notes"/>
         <result property="trackUpdateTime" column="track_update_time"/>
         <result property="customsClearanceMaterials" column="customs_clearance_materials"/>
+        <result property="customsClearanceResult" column="customs_clearance_result"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
-    <resultMap id="CusLogisticsResultMap" type="com.macro.mall.model.CusLogistics">
+    <resultMap id="CusLogisticsMap" type="com.macro.mall.model.CusLogistics">
         <result property="id" column="id"/>
         <result property="receiveDate" column="receive_date"/>
         <result property="receiveTime" column="receive_time"/>
@@ -62,10 +64,81 @@
         <result property="fwLogisticsNo" column="fw_logistics_no"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
+    <resultMap id="CusLogisticsHistoryMap" type="com.macro.mall.model.CusLogisticsHistory">
+        <result property="id" column="id"/>
+        <result property="logisticsId" column="logistics_id"/>
+        <result property="note" column="note"/>
+        <result property="trackUpdateTime" column="track_update_time"/>
+    </resultMap>
 
+    <select id="selectAllLogistics" resultMap="CusBaseLogisticsMap">
+        SELECT *
+        FROM logistics_records
+        WHERE
+        <choose>
+            <when test="field == 'cc_companyno'">
+                cc_companyno = #{username}
+            </when>
+            <when test="field == 'fw_logistics_no'">
+                fw_logistics_no = #{username}
+            </when>
+            <when test="field == 'acceptance_channel_no'">
+                acceptance_channel_no = #{username}
+            </when>
+            <otherwise>
+                1 = 0
+            </otherwise>
+        </choose>
 
-    <select id="selectAllLogistics" resultMap="BaseResultMap">
-        SELECT * FROM logistics_records
+        <if test="startTime != null">
+            AND create_time >= FROM_UNIXTIME(#{startTime} / 1000)
+        </if>
+        <if test="endTime != null">
+            AND create_time &lt;= FROM_UNIXTIME(#{endTime} / 1000)
+        </if>
+    </select>
+    <select id="ROOTselectAllLogistics" resultMap="CusBaseLogisticsMap">
+        SELECT *
+        FROM logistics_records
+        <where>
+            <if test="startTime != null">
+                create_time >= FROM_UNIXTIME(#{startTime} / 1000)
+            </if>
+            <if test="endTime != null">
+                create_time &lt;= FROM_UNIXTIME(#{endTime} / 1000)
+            </if>
+        </where>
+    </select>
+    <select id="querySingleLogistics" resultMap="CusLogisticsMap">
+        SELECT *
+        FROM logistics_records
+        WHERE
+        <choose>
+            <when test="field == 'cc_companyno'">
+                cc_companyno = #{username}
+            </when>
+            <when test="field == 'fw_logistics_no'">
+                fw_logistics_no = #{username}
+            </when>
+            <when test="field == 'acceptance_channel_no'">
+                acceptance_channel_no = #{username}
+            </when>
+            <otherwise>
+                1 = 0
+            </otherwise>
+        </choose>
+
+        <if test="waybillNumber != null and waybillNumber != ''">
+            AND waybill_number = #{waybillNumber}
+        </if>
+        <if test="customerOrderNumber != null and customerOrderNumber != ''">
+            AND customer_order_number = #{customerOrderNumber}
+        </if>
+        <if test="fwTrackingNumber != null and fwTrackingNumber != ''">
+            AND fw_tracking_number = #{fwTrackingNumber}
+        </if>
+
+        LIMIT 1
     </select>
 
     <delete id="deleteByWaybillAndCustomerOrder">
@@ -75,8 +148,17 @@
         AND fw_tracking_number = #{fwTrackingNumber};
     </delete>
 
+    <update id="updateNoteByKeys">
+        UPDATE logistics_records
+        SET latest_track_notes = #{note},
+        track_update_time = #{trackUpdateTime}
+        WHERE waybill_number = #{waybillNumber}
+        AND customer_order_number = #{customerOrderNumber}
+        AND fw_tracking_number = #{fwTrackingNumber}
+    </update>
+
     <!-- 查询是否存在记录 -->
-    <select id="selectByWaybillAndCustomerOrder" resultMap="CusLogisticsResultMap">
+    <select id="selectByWaybillAndCustomerOrder" resultMap="CusLogisticsMap">
         SELECT * FROM logistics_records
         WHERE waybill_number = #{waybillNumber}
         AND customer_order_number = #{customerOrderNumber}
@@ -111,16 +193,41 @@
     <insert id="insertLogistics" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO logistics_records (
         receive_date, receive_time, waybill_number, customer_order_number, fw_tracking_number,
-        container_number, status, logistics_channel, loading_port, loading_time, arrival_port, arrival_date,
-        target_postcode, target_country, ecommerce_platform, fulfillment_warehouse, create_time, track_update_time
+        container_number, status, logistics_channel, loading_port, loading_time,
+        arrival_port, arrival_date, target_postcode, target_country, ecommerce_platform,
+        fulfillment_warehouse, is_remote, ctns, til_pcs, net_weight,
+        gross_weight, measurement, bill_weight, confirmed_bill_weight, cd_type,
+        cc_type, cl_type, material, additional_notes, description,
+        cc_amount, problem_item_type, lading_number, latest_track_notes, track_update_time,
+        customs_clearance_materials, acceptance_channel_no, cc_companyno, fw_logistics_no, create_time
         ) VALUES (
         #{receiveDate}, #{receiveTime}, #{waybillNumber}, #{customerOrderNumber}, #{fwTrackingNumber},
-        #{containerNumber}, #{status}, #{logisticsChannel}, #{loadingPort}, #{loadingTime}, #{arrivalPort},
-        #{arrivalDate}, #{targetPostcode}, #{targetCountry}, #{ecommercePlatform}, #{fulfillmentWarehouse}, NOW(), NOW()
+        #{containerNumber}, #{status}, #{logisticsChannel}, #{loadingPort}, #{loadingTime},
+        #{arrivalPort}, #{arrivalDate}, #{targetPostcode}, #{targetCountry}, #{ecommercePlatform},
+        #{fulfillmentWarehouse}, #{isRemote}, #{ctns}, #{tilPcs}, #{netWeight},
+        #{grossWeight}, #{measurement}, #{billWeight}, #{confirmedBillWeight}, #{cdType},
+        #{ccType}, #{clType}, #{material}, #{additionalNotes}, #{description},
+        #{ccAmount}, #{problemItemType}, #{ladingNumber}, #{latestTrackNotes}, #{trackUpdateTime},
+        #{customsClearanceMaterials}, #{acceptanceChannelNo}, #{ccCompanyNo}, #{fwLogisticsNo}, #{createTime}
         )
     </insert>
 
-<!--    <select id="findByContainerNumber">-->
-<!--        SELECT * FROM cus_logistics WHERE container_number = #{containerNumber}-->
-<!--    </select>-->
+    <select id="getLogisticsId" resultType="long">
+        SELECT id FROM logistics_records
+        WHERE waybill_number = #{waybillNumber}
+        AND customer_order_number = #{customerOrderNumber}
+        AND fw_tracking_number = #{fwTrackingNumber}
+        LIMIT 1
+    </select>
+
+    <insert id="insertLogisticsHistory">
+        INSERT INTO logistics_history (logistics_id, note, track_update_time, username)
+        VALUES (#{logisticsId}, #{note}, #{trackUpdateTime}, #{username})
+    </insert>
+
+    <select id="getLogisticsHistoryByLogisticsId" resultMap="CusLogisticsHistoryMap">
+        SELECT id, logistics_id, note, track_update_time
+        FROM logistics_history
+        WHERE logistics_id = #{logisticsId}
+    </select>
 </mapper>

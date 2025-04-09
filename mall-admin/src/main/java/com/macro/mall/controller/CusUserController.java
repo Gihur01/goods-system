@@ -1,7 +1,12 @@
 package com.macro.mall.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.macro.mall.dto.CusQueryParam;
+import com.macro.mall.dto.CusQueryRequestDTO;
+import com.macro.mall.dto.CusUploadClearanceRequest;
 import com.macro.mall.model.CusBaseLogistics;
 import com.macro.mall.model.CusLogistics;
+import com.macro.mall.model.CusLogisticsHistory;
 import com.macro.mall.service.CusLogisticsService;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,17 +21,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.Optional;
 
 @RestController
 @Api(tags = "CusUserController")
@@ -48,15 +51,36 @@ public class CusUserController {
      * 获取所有物流信息（POST 请求）
      */
     @PostMapping("/fetchAll")
-    public ResponseEntity<List<CusBaseLogistics>> fetchAllLogistics() {
+    public ResponseEntity<List<CusBaseLogistics>> fetchAllLogistics(@RequestBody CusQueryParam queryParam) {
         try {
-            log.info("Fetching all logistics data...");  // 记录日志
-            List<CusBaseLogistics> logisticsList = cusLogisticsService.getAllLogistics();
-            log.info("Fetched logistics data: {}", logisticsList);  // 记录获取到的数据
+            log.info("Fetching all logistics data with query: {}", queryParam);
+
+            List<CusBaseLogistics> logisticsList = cusLogisticsService.getAllLogistics(queryParam);
+            log.info("Fetched logistics data: {}", logisticsList);
             return ResponseEntity.ok(logisticsList);
         } catch (Exception e) {
-            log.error("获取物流信息失败", e);  // 记录错误
+            log.error("获取物流信息失败", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+        }
+    }
+
+    @PostMapping("/query")
+    public ResponseEntity<CusLogistics> queryLogistics(@RequestBody CusQueryRequestDTO request) {
+        try {
+            log.info("Querying logistics with params: {}", request);
+            CusLogistics result = cusLogisticsService.queryLogistics(
+                    request.getWaybillNumber(),
+                    request.getCustomerOrderNumber(),
+                    request.getFwTrackingNumber());
+
+            if (result == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("查询物流信息失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -86,6 +110,47 @@ public class CusUserController {
         }
     }
 
+    @PostMapping("/updateLogisticsNote")
+    public ResponseEntity<String> updateLogisticsNote(@RequestBody Map<String, Object> requestData) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            String note = (String) requestData.get("note");
+
+            List<Map<String, String>> logisticsList = mapper.convertValue(
+                    requestData.get("logisticsList"),
+                    new TypeReference<List<Map<String, String>>>() {}
+            );
+
+            if (note == null || note.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("note 不能为空");
+            }
+
+            if (logisticsList == null || logisticsList.isEmpty()) {
+                return ResponseEntity.badRequest().body("logisticsList 不能为空");
+            }
+
+            int updatedCount = 0;
+            for (Map<String, String> logistics : logisticsList) {
+                boolean updated = cusLogisticsService.updateLogisticsNote(
+                        logistics.get("waybillNumber"),
+                        logistics.get("customerOrderNumber"),
+                        logistics.get("fwTrackingNumber"),
+                        note
+                );
+                if (updated) updatedCount++;
+            }
+
+            return updatedCount > 0
+                    ? ResponseEntity.ok(updatedCount + " 条物流记录已更新")
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到匹配的物流记录，更新失败");
+
+        } catch (Exception e) {
+            log.error("更新物流记录失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("更新失败: " + e.getMessage());
+        }
+    }
+
     /**
      * 保存或更新物流记录（POST 请求）
      */
@@ -103,50 +168,58 @@ public class CusUserController {
         }
     }
 
-    @PostMapping("/uploadFile")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
-                                             @RequestParam("containerNumber") String containerNumber) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("文件为空，上传失败");
-        }
-
+    @PostMapping("/uploadClearanceResult")
+    public ResponseEntity<?> uploadClearanceResult(@RequestParam("file") MultipartFile file,
+                                                   @RequestParam("requestData") String requestDataJson) {
+        // 反序列化 JSON 字符串为对象
+        ObjectMapper objectMapper = new ObjectMapper();
+        CusUploadClearanceRequest request;
         try {
-            // 确保目录存在
-            File directory = new File(UPLOAD_DIR);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
-            // 生成文件名
-            String fileName = containerNumber + ".pdf";
-            File destinationFile = new File(UPLOAD_DIR + fileName);
-
-            // 保存文件
-            file.transferTo(destinationFile);
-
-            // 生成可访问的 URL
-            String fileUrl = BASE_URL + fileName;
-
-            // 查找柜号对应的物流记录
-            CusLogistics logistics = cusLogisticsService.findByContainerNumber(containerNumber);
-            if (logistics != null) {
-                // 更新数据库中的文件 URL（不是本地路径）
-                cusLogisticsService.updateCustomsClearanceMaterials(containerNumber, fileUrl);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到对应的柜号：" + containerNumber);
-            }
-
-            return ResponseEntity.ok("文件上传成功：" + fileUrl);
+            request = objectMapper.readValue(requestDataJson, CusUploadClearanceRequest.class);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败：" + e.getMessage());
+            return ResponseEntity.badRequest().body("Invalid JSON format");
         }
+
+        List<String> result = cusLogisticsService.uploadFileAndUpdate(
+                file,
+                request.getIds(),
+                request.getContainerNumber(),
+                "customs_clearance_result",
+                "result/"
+        );
+        return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+    @PostMapping("/uploadClearanceMaterials")
+    public ResponseEntity<?> uploadClearanceMaterials(@RequestParam("file") MultipartFile file,
+                                                      @RequestParam("requestData") String requestDataJson) {
+        // 反序列化 JSON 字符串为对象
+        ObjectMapper objectMapper = new ObjectMapper();
+        CusUploadClearanceRequest request;
         try {
-            // 拼接文件路径
-            Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName).normalize();
+            request = objectMapper.readValue(requestDataJson, CusUploadClearanceRequest.class);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Invalid JSON format");
+        }
+
+        List<String> result = cusLogisticsService.uploadFileAndUpdate(
+                file,
+                request.getIds(),
+                request.getContainerNumber(),
+                "customs_clearance_materials",
+                "materials/"
+        );
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/download/{folder}/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String folder, @PathVariable String fileName) {
+        try {
+            // 拼接文件存储的根路径和动态文件夹
+            Path folderPath = Paths.get("/home/ecs-user/server/download").resolve(folder).normalize();
+            Path filePath = folderPath.resolve(fileName);
+
+            // 创建资源对象
             Resource resource = new UrlResource(filePath.toUri());
 
             // 检查文件是否存在
@@ -154,14 +227,35 @@ public class CusUserController {
                 return ResponseEntity.notFound().build();
             }
 
+            // 根据文件扩展名动态设置 MIME 类型
+            String contentType = Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // 默认二进制流
+            }
+
             // 设置 HTTP 响应头，支持文件下载
             return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
+                    .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(resource);
 
         } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().build();
+            // 文件路径错误处理
+            return ResponseEntity.badRequest().body(null);
+        } catch (IOException e) {
+            // 文件读取失败或 MIME 类型获取失败处理
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/getLogisticsHistory")
+    public ResponseEntity<?> getLogisticsHistory(@RequestParam Long logisticsId) {
+        try {
+            List<CusLogisticsHistory> historyList = cusLogisticsService.getLogisticsHistoryByLogisticsId(logisticsId);
+            return ResponseEntity.ok(historyList);
+        } catch (Exception e) {
+            log.error("查询历史轨迹失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("查询失败: " + e.getMessage());
         }
     }
 }

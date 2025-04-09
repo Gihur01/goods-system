@@ -1,6 +1,4 @@
 package com.macro.mall.model;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -23,4 +21,6 @@ public class CusBaseLogistics {
     private String latestTrackNotes;
     private Timestamp trackUpdateTime;
     private String customsClearanceMaterials;
+    private String customsClearanceResult;
+    private Timestamp createTime;
 }

@@ -70,9 +70,26 @@ public class UmsAdminController {
         if (token == null) {
             return CommonResult.validateFailed("用户名或密码错误");
         }
-        Map<String, String> tokenMap = new HashMap<>();
+        // 获取用户角色（你可能已经有缓存或者 DB 查询）
+        UmsAdmin admin = adminService.getAdminByUsername(umsAdminLoginParam.getUsername());
+        List<String> roles = adminService.getRoleList(admin.getId()).stream()
+                .map(UmsRole::getName)
+                .collect(Collectors.toList());
+
+        // 根据角色决定 defaultRoute
+        String defaultRoute = "/home"; // 默认
+        if (roles.contains("发货代理公司")) {
+            defaultRoute = "/sms/flash";
+        } else if (roles.contains("清关代理公司")) {
+            defaultRoute = "/sms/new";
+        } else if (roles.contains("超级管理员")) {
+            defaultRoute = "/sms/flash";
+        }
+        Map<String, Object> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
         tokenMap.put("tokenHead", tokenHead);
+        tokenMap.put("roles", roles);
+        tokenMap.put("defaultRoute", defaultRoute);
         return CommonResult.success(tokenMap);
     }
 
