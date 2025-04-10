@@ -82,6 +82,8 @@ public class UmsAdminController {
             defaultRoute = "/sms/flash";
         } else if (roles.contains("清关代理公司")) {
             defaultRoute = "/sms/new";
+        } else if (roles.contains("物流代理公司")) {
+            defaultRoute = "/sms/hot";
         } else if (roles.contains("超级管理员")) {
             defaultRoute = "/sms/flash";
         }

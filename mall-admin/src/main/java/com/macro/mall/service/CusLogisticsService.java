@@ -12,10 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface CusLogisticsService {
-
-
-    int deleteLogistics(String waybillNumber, String customerOrderNumber, String fwTrackingNumber);
-
+    
     void saveOrUpdateLogistics(CusLogistics logistics);
 
     boolean updateLogisticsNote(String waybillNumber, String customerOrderNumber, String fwTrackingNumber, String note);
@@ -27,4 +24,8 @@ public interface CusLogisticsService {
     List<CusBaseLogistics> getAllLogistics(CusQueryParam queryParam);
 
     List<String> uploadFileAndUpdate(MultipartFile file, List<Integer> ids, String containerNumber, String dbField, String subDir);
+
+    int updateStatusByIds(List<Integer> ids, String targetStatus);
+
+    int deleteLogisticsByIds(List<Integer> ids);
 }

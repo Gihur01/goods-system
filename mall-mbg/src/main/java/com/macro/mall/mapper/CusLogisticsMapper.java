@@ -13,9 +13,6 @@ import java.util.Optional;
 
 public interface CusLogisticsMapper {
 
-
-    int deleteByWaybillAndCustomerOrder(String waybillNumber, String customerOrderNumber, String fwTrackingNumber);
-
     CusLogistics selectByWaybillAndCustomerOrder(String waybillNumber, String customerOrderNumber, String fwTrackingNumber);
 
     void updateByWaybillAndCustomerOrder(CusLogistics logistics);
@@ -55,4 +52,8 @@ public interface CusLogisticsMapper {
     List<CusBaseLogistics> selectAllLogistics(@Param("field")String field, @Param("username") String username, @Param("startTime") Long startTimestamp, @Param("endTime") Long endTimestamp);
 
     List<CusBaseLogistics> ROOTselectAllLogistics(@Param("startTime") Long startTimestamp, @Param("endTime") Long endTimestamp);
+
+    int updateStatusByIds(List<Integer> ids, String status);
+
+    int deleteByIds(List<Integer> ids);
 }

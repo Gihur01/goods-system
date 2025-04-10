@@ -141,13 +141,21 @@
         LIMIT 1
     </select>
 
-    <delete id="deleteByWaybillAndCustomerOrder">
+    <delete id="deleteByIds">
         DELETE FROM logistics_records
-        WHERE waybill_number = #{waybillNumber}
-        AND customer_order_number = #{customerOrderNumber}
-        AND fw_tracking_number = #{fwTrackingNumber};
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </delete>
-
+    <update id="updateStatusByIds">
+        UPDATE logistics_records
+        SET status = #{status}
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
     <update id="updateNoteByKeys">
         UPDATE logistics_records
         SET latest_track_notes = #{note},

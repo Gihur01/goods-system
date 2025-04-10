@@ -88,25 +88,42 @@ public class CusUserController {
      * 删除物流记录，支持批量删除（POST 请求）
      */
     @PostMapping("/removeLogistics")
-    public ResponseEntity<String> removeLogistics(@RequestBody(required = false) List<Map<String, String>> logisticsList) {
-        if (logisticsList == null || logisticsList.isEmpty()) {
+    public ResponseEntity<String> removeLogistics(@RequestBody List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
             return ResponseEntity.badRequest().body("请求数据不能为空");
         }
 
         try {
-            int totalDeleted = logisticsList.stream()
-                    .mapToInt(logistics -> cusLogisticsService.deleteLogistics(
-                            logistics.get("waybillNumber"),
-                            logistics.get("customerOrderNumber"),
-                            logistics.get("fwTrackingNumber")
-                    )).sum();
+            // 调用服务层方法，批量删除物流记录
+            int totalDeleted = cusLogisticsService.deleteLogisticsByIds(ids);
 
             return totalDeleted > 0
                     ? ResponseEntity.ok(totalDeleted + " 条物流记录已删除")
                     : ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到匹配的物流记录，删除失败");
+
         } catch (Exception e) {
             log.error("删除物流记录失败", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("删除失败: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/updateStatusByIds")
+    public ResponseEntity<String> updateStatusByIds(@RequestBody List<Integer> ids) {
+        try {
+            if (ids == null || ids.isEmpty()) {
+                return ResponseEntity.badRequest().body("ID 列表不能为空");
+            }
+
+            String targetStatus = "close";
+
+            int updatedCount = cusLogisticsService.updateStatusByIds(ids, targetStatus);
+            return updatedCount > 0
+                    ? ResponseEntity.ok("成功更新 " + updatedCount + " 条记录")
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("未找到匹配记录，更新失败");
+
+        } catch (Exception e) {
+            log.error("批量更新状态失败", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("状态更新失败: " + e.getMessage());
         }
     }
 

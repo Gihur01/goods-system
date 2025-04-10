@@ -50,7 +50,7 @@ public class CusLogisticsServiceImpl implements CusLogisticsService {
     @Override
     public List<CusBaseLogistics> getAllLogistics(CusQueryParam queryParam) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        ZoneId zone = ZoneId.of("UTC"); // 强烈建议固定使用 UTC
+        ZoneId zone = ZoneId.of("UTC");
 
         Long startTimestamp = null;
         Long endTimestamp = null;
@@ -128,15 +128,26 @@ public class CusLogisticsServiceImpl implements CusLogisticsService {
         return dto;
     }
 
-    /**
-     * 根据运单号、客户订单号和 FW 追踪号删除物流记录
-     * @param waybillNumber 运单号
-     * @param customerOrderNumber 客户订单号
-     * @param fwTrackingNumber FW 追踪号
-     * @return 删除的记录数
-     */
-    public int deleteLogistics(String waybillNumber, String customerOrderNumber, String fwTrackingNumber) {
-        return cusLogisticsMapper.deleteByWaybillAndCustomerOrder(waybillNumber, customerOrderNumber, fwTrackingNumber);
+    @Override
+    public int deleteLogisticsByIds(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return 0;
+        }
+        // 调用 Mapper 层进行批量删除
+        return cusLogisticsMapper.deleteByIds(ids);
+    }
+
+    @Override
+    public int updateStatusByIds(List<Integer> ids, String status) {
+
+        // 如果传入的 ID 列表为空，则不进行操作
+        if (ids == null || ids.isEmpty()) {
+            return 0;
+        }
+
+
+
+        return cusLogisticsMapper.updateStatusByIds(ids, status);
     }
 
     public boolean updateLogisticsNote(String waybillNumber, String customerOrderNumber, String fwTrackingNumber, String note) {
@@ -186,6 +197,7 @@ public class CusLogisticsServiceImpl implements CusLogisticsService {
             logistics.setCreateTime(currentTimestamp); // 设置 create_time 和 track_update_time 为当前时间
             logistics.setTrackUpdateTime(currentTimestamp);
             logistics.setAcceptanceChannelNo(username);
+            logistics.setStatus("tracking");
             cusLogisticsMapper.insertLogistics(logistics);
         }
     }
